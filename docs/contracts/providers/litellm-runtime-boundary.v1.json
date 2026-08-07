@@ -1,0 +1,19 @@
+{
+  "interface_version": 1,
+  "name": "litellm_runtime_adapter",
+  "role": "provider_protocol_normalization",
+  "input_format": "openai_chat_completions",
+  "output_format": "openai_chat_completions",
+  "deployment_mode": null,
+  "deployment_mode_status": "ADR_NEEDED_SDK_OR_PROXY",
+  "version": null,
+  "version_status": "DEPENDENCY_SELECTION_TBD",
+  "retry_fallback_mode": "platform_orchestrator",
+  "retry_fallback_status": "implemented-v1",
+  "retry_fallback_contract": "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json",
+  "logging_body_default": "disabled",
+  "platform_owned_governance": ["tenant", "authentication", "authorization", "policy", "budget", "router", "audit", "config_version"],
+  "runtime_allowed_responsibilities": ["provider_request_translation", "normalized_response", "normalized_error_classification", "stream_translation"],
+  "secret_rule": "Credential material is resolved inside the adapter and never returned, logged, or stored in LiteLLM governance state.",
+  "source": "https://docs.litellm.ai/"
+}

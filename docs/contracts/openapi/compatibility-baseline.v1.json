@@ -1,0 +1,103 @@
+{
+  "baseline_version": 1,
+  "api_version": "v1",
+  "path": "/v1/chat/completions",
+  "method": "post",
+  "operation_id": "createChatCompletion",
+  "required_statuses": [
+    "200",
+    "400",
+    "401",
+    "403",
+    "429",
+    "502"
+  ],
+  "required_request_fields": [
+    "model",
+    "messages"
+  ],
+  "required_request_property_types": {
+    "model": "string",
+    "messages": "array"
+  },
+  "required_response_fields": [
+    "id",
+    "object",
+    "created",
+    "model",
+    "choices"
+  ],
+  "required_response_property_types": {
+    "id": "string",
+    "created": "integer",
+    "model": "string",
+    "choices": "array"
+  },
+  "response_object_const": "chat.completion",
+  "required_success_media_types": [
+    "application/json",
+    "text/event-stream"
+  ],
+  "required_security_capabilities": [
+    "BearerAuth",
+    "ApiKeyAuth"
+  ],
+  "required_security_scheme_types": {
+    "BearerAuth": "http:bearer",
+    "ApiKeyAuth": "http:bearer"
+  },
+  "required_security_credential_kinds": {
+    "BearerAuth": "bearer",
+    "ApiKeyAuth": "api_key"
+  },
+  "schema_property_signatures": {
+    "CreateChatCompletionRequest": {
+      "model": "type=string",
+      "messages": "type=array",
+      "stream": "type=boolean"
+    },
+    "ChatCompletionMessageParam": {
+      "role": "type=string;enum=assistant,developer,system,tool,user",
+      "content": "oneOf=type=array|type=null|type=string",
+      "name": "type=string"
+    },
+    "ChatCompletion": {
+      "id": "type=string",
+      "object": "const=chat.completion",
+      "created": "type=integer",
+      "model": "type=string",
+      "choices": "type=array",
+      "usage": "ref=#/components/schemas/CompletionUsage"
+    },
+    "ChatCompletionChoice": {
+      "index": "type=integer",
+      "message": "ref=#/components/schemas/ChatCompletionAssistantMessage",
+      "finish_reason": "type=null|string"
+    },
+    "ChatCompletionAssistantMessage": {
+      "role": "const=assistant",
+      "content": "type=null|string"
+    },
+    "CompletionUsage": {
+      "prompt_tokens": "type=integer",
+      "completion_tokens": "type=integer",
+      "total_tokens": "type=integer"
+    },
+    "ChatCompletionChunk": {
+      "id": "type=string",
+      "object": "const=chat.completion.chunk",
+      "created": "type=integer",
+      "model": "type=string",
+      "choices": "type=array"
+    },
+    "ChatCompletionChunkChoice": {
+      "index": "type=integer",
+      "delta": "ref=#/components/schemas/ChatCompletionChunkDelta",
+      "finish_reason": "type=null|string"
+    },
+    "ChatCompletionChunkDelta": {
+      "role": "type=string",
+      "content": "type=null|string"
+    }
+  }
+}

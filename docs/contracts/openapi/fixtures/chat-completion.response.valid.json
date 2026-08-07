@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl_contract_test",
+  "object": "chat.completion",
+  "created": 1767225600,
+  "model": "smart-chat",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Hello"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1,
+    "completion_tokens": 1,
+    "total_tokens": 2
+  }
+}

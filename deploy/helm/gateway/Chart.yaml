@@ -1,0 +1,10 @@
+apiVersion: v2
+name: gateway
+description: Enterprise AI Platform Gateway Data Plane
+type: application
+version: 0.1.0
+appVersion: "0.0.0-development"
+annotations:
+  requirements.platform.example/task: TASK-M3-002
+  requirements.platform.example/coverage: REQ-HELM-002,REQ-HELM-003,REQ-HELM-005,REQ-HELM-006
+

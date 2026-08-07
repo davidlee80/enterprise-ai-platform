@@ -1,0 +1,381 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Enterprise AI Platform API",
+    "version": "1.0.0",
+    "description": "OpenAI-compatible Data Plane API baseline. Error bodies and the final API-key header remain unresolved and are intentionally not invented by this contract."
+  },
+  "paths": {
+    "/v1/chat/completions": {
+      "post": {
+        "operationId": "createChatCompletion",
+        "summary": "Create a chat completion",
+        "description": "Creates a completion from a model alias and conversation messages.",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "x-authentication-contract": "../../../packages/auth/contracts/authentication-boundary.v1.json",
+        "x-authentication-tbd": "REQ-API-003: the concrete API-key scheme, custom header name, and Identity Provider remain unresolved after M2-002.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatCompletionRequest"
+              },
+              "examples": {
+                "minimal": {
+                  "$ref": "#/components/examples/CreateChatCompletionRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletion"
+                },
+                "examples": {
+                  "minimal": {
+                    "$ref": "#/components/examples/ChatCompletionExample"
+                  }
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string",
+                  "description": "Server-sent events containing ChatCompletionChunk data records and a terminal marker."
+                },
+                "x-event-schema": {
+                  "$ref": "#/components/schemas/ChatCompletionChunk"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Error body contract remains TBD-008."
+          },
+          "401": {
+            "description": "Authentication failed. Error body contract remains TBD-008."
+          },
+          "403": {
+            "description": "Policy or model denied. Error body contract remains TBD-008."
+          },
+          "429": {
+            "description": "Rate or quota exceeded. Error body contract remains TBD-008."
+          },
+          "502": {
+            "description": "Provider failure after fallback exhaustion. Error body contract remains TBD-008."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Bearer-class credential capability normalized through Authentication Boundary v1. The concrete Identity Provider remains TBD.",
+        "x-credential-kind": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "API-key credential capability normalized through Authentication Boundary v1. It remains bearer-class for OpenAI compatibility; a separate custom Header, if required, is TBD under REQ-API-003.",
+        "x-capability": "api-key",
+        "x-credential-kind": "api_key",
+        "x-custom-header-status": "TBD"
+      }
+    },
+    "schemas": {
+      "CreateChatCompletionRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "messages"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Tenant-visible model alias."
+          },
+          "messages": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/ChatCompletionMessageParam"
+            }
+          },
+          "stream": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChatCompletionMessageParam": {
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "developer",
+              "system",
+              "user",
+              "assistant",
+              "tool"
+            ]
+          },
+          "content": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChatCompletion": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "created",
+          "model",
+          "choices"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "const": "chat.completion"
+          },
+          "created": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "choices": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/ChatCompletionChoice"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/CompletionUsage"
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChatCompletionChoice": {
+        "type": "object",
+        "required": [
+          "index",
+          "message",
+          "finish_reason"
+        ],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "message": {
+            "$ref": "#/components/schemas/ChatCompletionAssistantMessage"
+          },
+          "finish_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChatCompletionAssistantMessage": {
+        "type": "object",
+        "required": [
+          "role",
+          "content"
+        ],
+        "properties": {
+          "role": {
+            "const": "assistant"
+          },
+          "content": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "CompletionUsage": {
+        "type": "object",
+        "required": [
+          "prompt_tokens",
+          "completion_tokens",
+          "total_tokens"
+        ],
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "completion_tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "total_tokens": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChatCompletionChunk": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "created",
+          "model",
+          "choices"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "const": "chat.completion.chunk"
+          },
+          "created": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatCompletionChunkChoice"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChatCompletionChunkChoice": {
+        "type": "object",
+        "required": [
+          "index",
+          "delta",
+          "finish_reason"
+        ],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "delta": {
+            "$ref": "#/components/schemas/ChatCompletionChunkDelta"
+          },
+          "finish_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChatCompletionChunkDelta": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "examples": {
+      "CreateChatCompletionRequestExample": {
+        "value": {
+          "model": "smart-chat",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Hello"
+            }
+          ]
+        }
+      },
+      "ChatCompletionExample": {
+        "value": {
+          "id": "chatcmpl_example",
+          "object": "chat.completion",
+          "created": 1767225600,
+          "model": "smart-chat",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Hello"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 1,
+            "completion_tokens": 1,
+            "total_tokens": 2
+          }
+        }
+      }
+    }
+  }
+}

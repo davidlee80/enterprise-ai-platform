@@ -1,0 +1,16 @@
+{
+  "id": "chatcmpl_contract_test",
+  "object": "chat.completion.chunk",
+  "created": 1767225600,
+  "model": "smart-chat",
+  "choices": [
+    {
+      "index": 0,
+      "delta": {
+        "role": "assistant",
+        "content": "Hello"
+      },
+      "finish_reason": null
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:policy:decision:v1",
+  "title": "Policy Decision v1",
+  "description": "Structured internal policy decision. It contains no policy source, Provider credential, endpoint, Prompt, or Response body.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "config_version",
+    "model_alias",
+    "outcome",
+    "allow",
+    "reason_code",
+    "deny_reason",
+    "obligations",
+    "matched_policy_ids",
+    "policy_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "model_alias": {
+      "type": "string",
+      "minLength": 1
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "allow",
+        "deny",
+        "indeterminate"
+      ]
+    },
+    "allow": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "deny_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "obligations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/obligation"
+      }
+    },
+    "matched_policy_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_version": {
+      "$ref": "#/$defs/version"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "allow"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "allow": {
+            "const": true
+          },
+          "deny_reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "deny"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "allow": {
+            "const": false
+          },
+          "deny_reason": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]*$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "indeterminate"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "allow": {
+            "type": "null"
+          },
+          "deny_reason": {
+            "type": "null"
+          },
+          "obligations": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "version": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "obligation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "target"
+          ],
+          "properties": {
+            "kind": {
+              "const": "mask"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "target"
+          ],
+          "properties": {
+            "kind": {
+              "const": "redact"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "region"
+          ],
+          "properties": {
+            "kind": {
+              "const": "force_region"
+            },
+            "region": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "enabled"
+          ],
+          "properties": {
+            "kind": {
+              "const": "disable_body_logging"
+            },
+            "enabled": {
+              "const": true
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "max_tokens"
+          ],
+          "properties": {
+            "kind": {
+              "const": "limit_max_tokens"
+            },
+            "max_tokens": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:snapshot-notification:v1",
+  "title": "Runtime Snapshot Notification v1",
+  "description": "Tenant-scoped notification that tells a Data Plane to fetch and validate a complete immutable Runtime Snapshot version.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "notification_id",
+    "tenant_id",
+    "config_version",
+    "content_hash",
+    "activated_at",
+    "transition_reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "notification_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "activated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "transition_reason": {
+      "enum": [
+        "PUBLISH",
+        "ROLLBACK"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

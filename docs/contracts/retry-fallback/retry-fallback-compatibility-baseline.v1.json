@@ -1,0 +1,14 @@
+{
+  "baseline_version": 1,
+  "request_schema_id": "urn:enterprise-ai-platform:retry-fallback:request:v1",
+  "plan_schema_id": "urn:enterprise-ai-platform:retry-fallback:plan:v1",
+  "result_schema_id": "urn:enterprise-ai-platform:retry-fallback:result:v1",
+  "telemetry_schema_id": "urn:enterprise-ai-platform:retry-fallback:telemetry:v1",
+  "required_request_fields": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "plan_id", "eligible_provider_ids", "invocation"],
+  "required_plan_fields": ["schema_version", "tenant_id", "config_version", "plan_id", "plan_version", "attempt_limit", "steps"],
+  "required_result_fields": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "plan_id", "plan_version", "outcome", "reason_code", "final_provider_result", "telemetry"],
+  "required_telemetry_fields": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "plan_id", "plan_version", "outcome", "reason_code", "initial_provider_id", "final_provider_id", "attempt_count", "retry_count", "fallback_count", "fallback_used", "failed_provider_ids", "attempts"],
+  "required_actions": ["initial", "retry", "fallback"],
+  "required_outcomes": ["succeeded", "failed", "indeterminate"],
+  "required_error_kinds": ["authentication", "rate_limit", "timeout", "provider_error", "invalid_response", "unavailable"]
+}

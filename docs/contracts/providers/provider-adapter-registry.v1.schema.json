@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:provider:adapter-registry:v1",
+  "title": "Provider Adapter Registry v1",
+  "description": "Tenant/version-scoped runtime adapter registrations.",
+  "type": "object",
+  "required": ["schema_version", "tenant_id", "config_version", "adapters"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "adapters": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["adapter_id", "adapter_version", "runtime_kind", "operations", "enabled"],
+        "properties": {
+          "adapter_id": { "type": "string", "minLength": 1 },
+          "adapter_version": { "$ref": "#/$defs/version" },
+          "runtime_kind": { "type": "string", "enum": ["native", "litellm"] },
+          "operations": {
+            "type": "array",
+            "items": { "const": "chat_completion" },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "enabled": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

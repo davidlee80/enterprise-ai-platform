@@ -1,0 +1,34 @@
+{
+  "interface_version": 1,
+  "name": "provider_adapter",
+  "status": "implemented-v1",
+  "scope": "data_plane",
+  "request_schema": "provider-invocation-request.v1.schema.json",
+  "result_schema": "provider-invocation-result.v1.schema.json",
+  "runtime_config_schema": "provider-runtime-config.v1.schema.json",
+  "registry_schema": "provider-adapter-registry.v1.schema.json",
+  "adapter_method_signature": null,
+  "adapter_method_signature_status": "TBD-001",
+  "secret_resolver": null,
+  "secret_resolver_status": "TBD-012",
+  "invariants": [
+    "Only a selected Route Decision enters the Provider Adapter boundary.",
+    "Request, registry, and Provider runtime config use the same tenant_id and config_version.",
+    "Upper layers provide only an opaque provider_id and never depend on endpoint, secret_ref, Provider model, or plaintext credential.",
+    "The adapter resolves internal runtime config and secret_ref inside the infrastructure boundary.",
+    "Provider-specific responses and errors are normalized into stable structured results.",
+    "One boundary invocation performs one Provider attempt; retry and fallback orchestration is delegated to its versioned boundary.",
+    "The online Data Plane path never queries Control Plane PostgreSQL.",
+    "Usage, Billing, Audit, and Analytics persistence never blocks Provider invocation."
+  ],
+  "retry_and_fallback": {
+    "implementation": "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json",
+    "status": "implemented-v1"
+  },
+  "litellm_runtime_contract": "litellm-runtime-boundary.v1.json",
+  "forbidden_dependencies": ["control_plane_postgresql", "litellm_governance_state"],
+  "forbidden_upper_layer_fields": ["endpoint", "secret_ref", "provider_model", "provider_key", "credential"],
+  "forbidden_result_fields": ["endpoint", "secret_ref", "provider_model", "provider_key", "credential", "raw_error", "stack_trace"],
+  "runtime_language_status": "TBD-001",
+  "dependency_injection_status": "TBD-002"
+}

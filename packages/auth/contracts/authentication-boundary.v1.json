@@ -1,0 +1,58 @@
+{
+  "interface_version": 1,
+  "name": "gateway_authentication",
+  "scope": "data_plane",
+  "request_schema": "authentication-request.v1.schema.json",
+  "decision_schema": "authentication-decision.v1.schema.json",
+  "supported_credential_kinds": [
+    "bearer",
+    "api_key"
+  ],
+  "transport_adapter": {
+    "implementation": null,
+    "status": "REQ-API-003-TBD",
+    "header_name": null,
+    "rule": "Normalize transport credentials into credential_candidates without logging or persisting their values."
+  },
+  "verifier_ports": {
+    "bearer": {
+      "implementation": null,
+      "identity_provider": null,
+      "status": "TASK-M2-002-IDP-TBD"
+    },
+    "api_key": {
+      "implementation": null,
+      "verification_material_source": null,
+      "status": "API_KEY_STORAGE_AND_ROTATION_ADR_NEEDED"
+    }
+  },
+  "invariants": [
+    "Only an authenticated decision may enter the policy authorization boundary.",
+    "Tenant identity comes from verified principal data and cannot be supplied or overridden by the client request.",
+    "Authentication proves identity only; model and resource authorization belongs to TASK-M2-003.",
+    "Credential values never appear in decisions, public errors, logs, metrics, traces, or persistence.",
+    "The online Data Plane authentication path never queries Control Plane PostgreSQL.",
+    "Verifier unavailability is indeterminate and never produces an authenticated principal."
+  ],
+  "credential_cardinality": {
+    "zero": "CREDENTIAL_MISSING",
+    "one": "VERIFY",
+    "multiple": "CREDENTIAL_AMBIGUOUS"
+  },
+  "next_boundary": {
+    "name": "policy_authorization",
+    "task": "TASK-M2-003",
+    "status": "implemented-v1",
+    "contract": "docs/contracts/policy-decisions/policy-boundary.v1.json",
+    "required_authentication_outcome": "authenticated"
+  },
+  "forbidden_dependencies": [
+    "control_plane_postgresql",
+    "provider_runtime",
+    "litellm"
+  ],
+  "public_error_schema_status": "TBD-008",
+  "runtime_language_status": "TBD-001",
+  "dependency_injection_status": "TBD-002",
+  "secret_manager_status": "TBD-012"
+}

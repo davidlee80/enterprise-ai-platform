@@ -1,0 +1,6 @@
+-- NON-EXECUTABLE TEMPLATE: contract phase
+-- Execute only after compatibility, backfill, observation, rollback-window, and
+-- approval gates have passed.
+ALTER TABLE <reviewed_table>
+  DROP COLUMN <reviewed_old_column>;
+

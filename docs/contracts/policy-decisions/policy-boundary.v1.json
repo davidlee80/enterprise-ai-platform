@@ -1,0 +1,40 @@
+{
+  "interface_version": 1,
+  "name": "policy_authorization",
+  "scope": "data_plane",
+  "request_schema": "policy-evaluation-request.v1.schema.json",
+  "decision_schema": "policy-decision.v1.schema.json",
+  "runtime": null,
+  "runtime_status": "TBD-004",
+  "input_source": "published_runtime_policy_context",
+  "invariants": [
+    "Evaluation requires an authenticated principal from Authentication Boundary v1.",
+    "The principal tenant, request tenant, and published policy-context tenant scope must agree before evaluation.",
+    "Policy context and the request must carry the same config_version.",
+    "Only an allow outcome may enter the router boundary.",
+    "Deny and indeterminate outcomes use structured reason_code values and never rely on free-text logs.",
+    "Policy source, Prompt or Response bodies, Provider credentials, and internal endpoints never appear in decisions.",
+    "The online Data Plane evaluation path never queries Control Plane PostgreSQL.",
+    "Usage, Billing, Audit, and Analytics persistence never blocks the decision path."
+  ],
+  "indeterminate_handling": {
+    "mapping": null,
+    "status": "TBD-017",
+    "rule": "Indeterminate is never silently converted to allow or deny inside this interface."
+  },
+  "next_boundary": {
+    "name": "router",
+    "task": "TASK-M2-004",
+    "status": "implemented-v1",
+    "contract": "docs/contracts/router/router-boundary.v1.json",
+    "required_policy_outcome": "allow"
+  },
+  "forbidden_dependencies": [
+    "control_plane_postgresql",
+    "provider_runtime",
+    "litellm"
+  ],
+  "public_error_schema_status": "TBD-008",
+  "runtime_language_status": "TBD-001",
+  "dependency_injection_status": "TBD-002"
+}

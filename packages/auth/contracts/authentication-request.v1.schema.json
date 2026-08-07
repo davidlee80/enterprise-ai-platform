@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:auth:authentication-request:v1",
+  "title": "Authentication Request v1",
+  "description": "Language-neutral input to the Gateway authentication boundary. Transport-specific Header extraction happens before this contract.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request",
+    "credential_candidates"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "request": {
+      "type": "object",
+      "required": [
+        "method",
+        "path"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "pattern": "^[A-Z]+$"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      },
+      "additionalProperties": false
+    },
+    "credential_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "value"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "bearer",
+              "api_key"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "writeOnly": true,
+            "description": "Sensitive credential material. It must never be persisted, logged, measured, or returned."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,14 @@
+{
+  "baseline_version": 1,
+  "request_schema_id": "urn:enterprise-ai-platform:router:request:v1",
+  "plugin_result_schema_id": "urn:enterprise-ai-platform:router:plugin-result:v1",
+  "decision_schema_id": "urn:enterprise-ai-platform:router:decision:v1",
+  "registry_schema_id": "urn:enterprise-ai-platform:router:registry:v1",
+  "required_request_fields": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "route_strategy", "policy", "candidates"],
+  "required_plugin_result_fields": ["schema_version", "plugin_id", "plugin_version", "outcome", "reason_code", "ordered_candidate_ids"],
+  "required_decision_fields": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "route_strategy", "outcome", "reason_code", "selected_provider_id", "ordered_candidate_ids", "plugin_trace", "applied_obligation_kinds", "forwarded_obligations"],
+  "required_registry_fields": ["schema_version", "tenant_id", "config_version", "plugins", "pipelines"],
+  "required_plugin_outcomes": ["applied", "skipped", "rejected", "indeterminate"],
+  "required_route_outcomes": ["selected", "no_route", "indeterminate"],
+  "required_provider_adapter_outcome": "selected"
+}

@@ -1,0 +1,19 @@
+-- NON-EXECUTABLE TEMPLATE: business state and outbox event share one transaction.
+BEGIN;
+
+<reviewed_tenant_scoped_business_write>;
+
+SELECT enqueue_outbox_event(
+  <event_id_uuid>,
+  <event_type_text>,
+  <schema_version_integer>,
+  <occurred_at_timestamptz>,
+  <tenant_id_uuid_or_reviewed_global_null>,
+  <request_id_text_or_null>,
+  <trace_id_text_or_null>,
+  <producer_text>,
+  <payload_jsonb_without_secrets>
+);
+
+COMMIT;
+

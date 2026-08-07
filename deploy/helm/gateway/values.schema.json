@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "environment",
+    "replicaCount",
+    "image",
+    "service",
+    "probes",
+    "resources",
+    "strategy",
+    "podDisruptionBudget",
+    "topologySpreadConstraints"
+  ],
+  "properties": {
+    "environment": {
+      "type": "string",
+      "enum": ["development", "test", "production"]
+    },
+    "replicaCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "pullPolicy", "tag", "digest"],
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "pullPolicy": { "type": "string", "enum": ["Always", "IfNotPresent", "Never"] },
+        "tag": { "type": "string" },
+        "digest": { "type": "string", "pattern": "^$|^sha256:[a-f0-9]{64}$" }
+      }
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "nameOverride": { "type": "string" },
+    "fullnameOverride": { "type": "string" },
+    "podAnnotations": { "type": "object" },
+    "podLabels": { "type": "object" },
+    "podSecurityContext": { "type": "object" },
+    "securityContext": { "type": "object" },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "port", "targetPort"],
+      "properties": {
+        "type": { "type": "string", "enum": ["ClusterIP", "NodePort", "LoadBalancer"] },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "targetPort": { "type": "integer", "const": 8080 }
+      }
+    },
+    "probes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readiness", "liveness", "startup"],
+      "properties": {
+        "readiness": { "$ref": "#/definitions/probe" },
+        "liveness": { "$ref": "#/definitions/probe" },
+        "startup": { "$ref": "#/definitions/probe" }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requests", "limits"],
+      "properties": {
+        "requests": { "$ref": "#/definitions/resources" },
+        "limits": { "$ref": "#/definitions/resources" }
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "rollingUpdate"],
+      "properties": {
+        "type": { "type": "string", "const": "RollingUpdate" },
+        "rollingUpdate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maxUnavailable", "maxSurge"],
+          "properties": {
+            "maxUnavailable": { "type": ["integer", "string"] },
+            "maxSurge": { "type": ["integer", "string"] }
+          }
+        }
+      }
+    },
+    "progressDeadlineSeconds": { "type": "integer", "minimum": 1 },
+    "revisionHistoryLimit": { "type": "integer", "minimum": 1 },
+    "terminationGracePeriodSeconds": { "type": "integer", "minimum": 1 },
+    "podDisruptionBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "minAvailable": { "type": ["integer", "string"] }
+      }
+    },
+    "topologySpreadConstraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["maxSkew", "topologyKey", "whenUnsatisfiable"],
+        "properties": {
+          "maxSkew": { "type": "integer", "minimum": 1 },
+          "topologyKey": { "type": "string", "minLength": 1 },
+          "whenUnsatisfiable": { "type": "string", "enum": ["DoNotSchedule", "ScheduleAnyway"] }
+        }
+      }
+    },
+    "nodeSelector": { "type": "object" },
+    "tolerations": { "type": "array" },
+    "affinity": { "type": "object" }
+  },
+  "definitions": {
+    "probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "periodSeconds", "timeoutSeconds", "failureThreshold"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^/" },
+        "periodSeconds": { "type": "integer", "minimum": 1 },
+        "timeoutSeconds": { "type": "integer", "minimum": 1 },
+        "failureThreshold": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpu", "memory"],
+      "properties": {
+        "cpu": { "type": ["string", "integer"] },
+        "memory": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

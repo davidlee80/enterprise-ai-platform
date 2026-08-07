@@ -1,0 +1,12 @@
+{
+  "baseline_version": 1,
+  "event_schema_id": "urn:enterprise-ai-platform:usage:event:v1",
+  "processing_result_schema_id": "urn:enterprise-ai-platform:usage:processing-result:v1",
+  "required_envelope_fields": ["event_id", "event_type", "schema_version", "occurred_at", "tenant_id", "request_id", "trace_id", "producer", "payload"],
+  "required_payload_fields": ["usage_record_id", "request_outcome", "final_reason_code", "model_alias", "provider_id", "config_version", "plan_id", "plan_version", "request_started_at", "request_completed_at", "duration_ms", "retry_count", "fallback_count", "fallback_used", "cache_status", "token_usage", "cost"],
+  "required_processing_result_fields": ["schema_version", "stage", "event_id", "usage_record_id", "request_id", "trace_id", "tenant_id", "config_version", "outcome", "reason_code", "online_response", "next_action"],
+  "required_request_outcomes": ["succeeded", "failed", "indeterminate"],
+  "required_processing_stages": ["enqueue", "publish", "consume"],
+  "required_processing_outcomes": ["accepted", "published", "processed", "duplicate", "rejected", "failed"],
+  "required_next_actions": ["none", "retry", "dead_letter"]
+}

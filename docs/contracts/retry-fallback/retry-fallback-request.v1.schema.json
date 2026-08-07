@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:retry-fallback:request:v1",
+  "title": "Retry Fallback Request v1",
+  "description": "Data Plane orchestration request bound to one Provider invocation and one versioned attempt plan.",
+  "type": "object",
+  "required": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "plan_id", "eligible_provider_ids", "invocation"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "model_alias": { "type": "string", "minLength": 1 },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "eligible_provider_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Opaque Provider IDs remaining after Policy obligations and Router candidate filtering."
+    },
+    "invocation": { "$ref": "urn:enterprise-ai-platform:provider:invocation-request:v1" }
+  },
+  "additionalProperties": false
+}

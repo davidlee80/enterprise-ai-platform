@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:router:decision:v1",
+  "title": "Route Decision v1",
+  "description": "Structured route decision containing opaque Provider identifiers without endpoint or credential material.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "config_version",
+    "model_alias",
+    "route_strategy",
+    "outcome",
+    "reason_code",
+    "selected_provider_id",
+    "ordered_candidate_ids",
+    "plugin_trace",
+    "applied_obligation_kinds",
+    "forwarded_obligations"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "model_alias": { "type": "string", "minLength": 1 },
+    "route_strategy": { "type": "string", "minLength": 1 },
+    "outcome": {
+      "type": "string",
+      "enum": ["selected", "no_route", "indeterminate"]
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "selected_provider_id": { "type": ["string", "null"] },
+    "ordered_candidate_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "plugin_trace": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/plugin_trace" }
+    },
+    "applied_obligation_kinds": {
+      "type": "array",
+      "items": { "const": "force_region" },
+      "uniqueItems": true
+    },
+    "forwarded_obligations": {
+      "type": "array",
+      "items": { "$ref": "urn:enterprise-ai-platform:policy:decision:v1#/$defs/obligation" }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "outcome": { "const": "selected" } }, "required": ["outcome"] },
+      "then": {
+        "properties": {
+          "selected_provider_id": { "type": "string", "minLength": 1 },
+          "ordered_candidate_ids": { "minItems": 1 }
+        }
+      },
+      "else": {
+        "properties": { "selected_provider_id": { "type": "null" } }
+      }
+    }
+  ],
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "plugin_trace": {
+      "type": "object",
+      "required": ["plugin_id", "plugin_version", "outcome", "reason_code"],
+      "properties": {
+        "plugin_id": { "type": "string", "minLength": 1 },
+        "plugin_version": { "$ref": "#/$defs/version" },
+        "outcome": {
+          "type": "string",
+          "enum": ["applied", "skipped", "rejected", "indeterminate"]
+        },
+        "reason_code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

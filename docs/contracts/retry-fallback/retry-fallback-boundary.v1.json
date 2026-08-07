@@ -1,0 +1,59 @@
+{
+  "interface_version": 1,
+  "name": "retry_fallback_orchestrator",
+  "status": "implemented-v1",
+  "scope": "data_plane",
+  "request_schema": "retry-fallback-request.v1.schema.json",
+  "plan_schema": "retry-fallback-plan.v1.schema.json",
+  "result_schema": "retry-fallback-result.v1.schema.json",
+  "telemetry_schema": "retry-fallback-telemetry.v1.schema.json",
+  "provider_adapter_contract": "docs/contracts/providers/provider-adapter-boundary.v1.json",
+  "orchestrator_method_signature": null,
+  "orchestrator_method_signature_status": "TBD-001",
+  "dependency_injection_status": "TBD-002",
+  "invariants": [
+    "The Provider Adapter remains single-attempt; only this boundary coordinates retry and fallback.",
+    "Request, plan, and every Provider result use the same tenant_id and config_version.",
+    "The first plan step is initial and matches the selected Provider; retry retains the previous Provider and fallback changes it.",
+    "Every planned Provider is an opaque member of the post-Policy Router eligible_provider_ids set.",
+    "A later step runs only after a retryable result whose error_kind is explicitly eligible for that step.",
+    "Success and non-retryable results stop the plan immediately.",
+    "Every attempt, delay, and Provider identifier is explicit in a versioned Runtime Snapshot plan; no hidden retry default exists.",
+    "Every attempt and final outcome emits structured reason and telemetry without Prompt, Response, endpoint, secret_ref, or credential content.",
+    "The online Data Plane path never queries Control Plane PostgreSQL or LiteLLM governance state.",
+    "Usage, Billing, Audit, and Analytics persistence remains asynchronous and never blocks orchestration."
+  ],
+  "attempt_limit_source": "plan.attempt_limit",
+  "global_attempt_limit_default": null,
+  "timing_policy": {
+    "delay_source": "plan.steps[].delay_ms",
+    "backoff_algorithm": null,
+    "jitter_algorithm": null,
+    "status": "ADR_NEEDED"
+  },
+  "public_failure_mapping": {
+    "mapping": null,
+    "status": "TBD-008/TBD-017"
+  },
+  "streaming_retry_policy": {
+    "retry_after_partial_output": null,
+    "status": "ADR_NEEDED"
+  },
+  "telemetry_projection": {
+    "metrics": ["provider_attempt_total", "provider_attempt_duration_ms", "retry_fallback_completed_total"],
+    "allowed_metric_labels": ["provider_id", "action", "outcome", "error_kind"],
+    "controlled_metric_labels": ["tenant_id"],
+    "forbidden_metric_labels": ["request_id", "trace_id", "user_id"],
+    "correlation_attributes": ["request_id", "trace_id", "tenant_id", "config_version", "plan_id", "plan_version"]
+  },
+  "next_boundary": {
+    "name": "usage_event",
+    "task": "TASK-M2-007",
+    "status": "implemented-v1",
+    "contract": "docs/contracts/events/usage/usage-event-boundary.v1.json",
+    "event_schema": "docs/contracts/events/usage/usage-event.v1.schema.json",
+    "async_required": true
+  },
+  "forbidden_fields": ["endpoint", "secret_ref", "provider_model", "provider_key", "credential", "prompt", "response_body", "raw_error", "stack_trace"],
+  "forbidden_dependencies": ["control_plane_postgresql", "litellm_governance_state", "synchronous_usage_sql", "synchronous_billing_sql", "synchronous_audit_sql"]
+}

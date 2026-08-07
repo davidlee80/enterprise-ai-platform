@@ -1,0 +1,40 @@
+{
+  "interface_version": 1,
+  "name": "router_plugin_pipeline",
+  "scope": "data_plane",
+  "request_schema": "router-request.v1.schema.json",
+  "plugin_result_schema": "router-plugin-result.v1.schema.json",
+  "decision_schema": "route-decision.v1.schema.json",
+  "registry_schema": "router-registry.v1.schema.json",
+  "plugin_method_signature": null,
+  "plugin_method_signature_status": "TBD-003",
+  "selection_algorithm": null,
+  "selection_algorithm_status": "ROUTE_STRATEGY_DOMAIN_DECISION",
+  "weight_and_observation_semantics": null,
+  "weight_and_observation_status": "TBD-014",
+  "invariants": [
+    "Only a Policy Decision v1 allow outcome may enter routing.",
+    "Request, registry, and candidate configuration use the same tenant_id and config_version.",
+    "A route_strategy resolves to an ordered plugin pipeline through the registry; core lifecycle code does not dispatch strategy-specific branches.",
+    "Adding a registered plugin changes registry composition, not the core request lifecycle.",
+    "Every plugin and final route decision emits a structured reason_code and trace metadata.",
+    "Candidates and decisions contain opaque Provider identifiers only, never endpoint or credential material.",
+    "The online Data Plane routing path never queries Control Plane PostgreSQL.",
+    "Usage, Billing, Audit, and Analytics persistence never blocks routing."
+  ],
+  "indeterminate_handling": {
+    "mapping": null,
+    "status": "TBD-017"
+  },
+  "next_boundary": {
+    "name": "provider_adapter",
+    "task": "TASK-M2-005",
+    "status": "implemented-v1",
+    "contract": "docs/contracts/providers/provider-adapter-boundary.v1.json",
+    "required_route_outcome": "selected"
+  },
+  "forbidden_fields": ["endpoint", "secret_ref", "provider_key", "credential"],
+  "forbidden_dependencies": ["control_plane_postgresql", "litellm_governance_state"],
+  "runtime_language_status": "TBD-001",
+  "dependency_injection_status": "TBD-002"
+}

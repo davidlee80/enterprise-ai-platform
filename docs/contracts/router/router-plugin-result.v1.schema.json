@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:router:plugin-result:v1",
+  "title": "Router Plugin Result v1",
+  "description": "Language-neutral plugin result protocol; the production method signature remains TBD-003.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "plugin_id",
+    "plugin_version",
+    "outcome",
+    "reason_code",
+    "ordered_candidate_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "plugin_id": { "type": "string", "minLength": 1 },
+    "plugin_version": { "$ref": "#/$defs/version" },
+    "outcome": {
+      "type": "string",
+      "enum": ["applied", "skipped", "rejected", "indeterminate"]
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "ordered_candidate_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

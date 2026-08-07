@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "task": "TASK-M3-001",
+  "component": "gateway",
+  "status": "blocked-tbd-001",
+  "blocked_by": [
+    "TBD-001"
+  ],
+  "dockerfile": "deploy/images/gateway/Dockerfile",
+  "build_context": null,
+  "runtime_selection": {
+    "language": null,
+    "framework": null,
+    "package_manager": null,
+    "dependency_lock_file": null,
+    "build_image": null,
+    "runtime_image": null,
+    "artifact": null,
+    "entrypoint": null
+  },
+  "requirements": {
+    "multi_stage": true,
+    "digest_pinned_base_images": true,
+    "minimal_runtime": true,
+    "numeric_non_root_user": true,
+    "locked_dependencies": true,
+    "explicit_artifact_copy": true,
+    "secret_free_layers": true,
+    "secret_free_cache": true
+  },
+  "health": {
+    "port": 8080,
+    "liveness_path": "/healthz",
+    "readiness_path": "/readyz"
+  },
+  "traceability": {
+    "image_tag_format": null,
+    "image_tag_format_status": "TBD-013",
+    "required_oci_labels": [
+      "org.opencontainers.image.source",
+      "org.opencontainers.image.revision",
+      "org.opencontainers.image.version"
+    ]
+  },
+  "supply_chain": {
+    "sbom_required": true,
+    "sbom_generator": null,
+    "image_scanner": null,
+    "signing_provider": null,
+    "tool_selection_status": "TBD",
+    "ci_artifact_required": true,
+    "signature_capability_required": true
+  },
+  "acceptance_evidence": {
+    "image_build": null,
+    "image_inspection": null,
+    "health_probe_test": null,
+    "sbom": null,
+    "image_scan": null,
+    "history_secret_scan": null,
+    "rollback_by_digest": null
+  }
+}
+

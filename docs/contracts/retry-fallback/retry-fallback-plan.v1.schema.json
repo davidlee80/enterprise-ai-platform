@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:retry-fallback:plan:v1",
+  "title": "Retry Fallback Plan v1",
+  "description": "Tenant/config-scoped Runtime Snapshot plan. Every attempt and delay is explicit; this contract defines no hidden retry default.",
+  "type": "object",
+  "required": ["schema_version", "tenant_id", "config_version", "plan_id", "plan_version", "attempt_limit", "steps"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "plan_version": { "$ref": "#/$defs/version" },
+    "attempt_limit": { "type": "integer", "minimum": 1 },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ordinal", "action", "provider_id", "eligible_error_kinds", "delay_ms"],
+        "properties": {
+          "ordinal": { "type": "integer", "minimum": 1 },
+          "action": { "type": "string", "enum": ["initial", "retry", "fallback"] },
+          "provider_id": { "type": "string", "minLength": 1 },
+          "eligible_error_kinds": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/error_kind" },
+            "uniqueItems": true
+          },
+          "delay_ms": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "error_kind": {
+      "type": "string",
+      "enum": ["authentication", "rate_limit", "timeout", "provider_error", "invalid_response", "unavailable"]
+    }
+  },
+  "additionalProperties": false
+}

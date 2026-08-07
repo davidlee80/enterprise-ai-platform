@@ -1,0 +1,5 @@
+-- NON-EXECUTABLE TEMPLATE: expand phase
+-- Add only backward-compatible structure. Do not remove or reinterpret old data.
+ALTER TABLE <reviewed_table>
+  ADD COLUMN <reviewed_new_column> <reviewed_type> NULL;
+

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:retry-fallback:telemetry:v1",
+  "title": "Retry Fallback Telemetry v1",
+  "description": "Secret-free orchestration evidence. Request and trace identifiers are correlation attributes, never Prometheus labels.",
+  "type": "object",
+  "required": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "plan_id", "plan_version", "outcome", "reason_code", "initial_provider_id", "final_provider_id", "attempt_count", "retry_count", "fallback_count", "fallback_used", "failed_provider_ids", "attempts"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "model_alias": { "type": "string", "minLength": 1 },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "plan_version": { "$ref": "#/$defs/version" },
+    "outcome": { "type": "string", "enum": ["succeeded", "failed", "indeterminate"] },
+    "reason_code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+    "initial_provider_id": { "type": "string", "minLength": 1 },
+    "final_provider_id": { "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+    "attempt_count": { "type": "integer", "minimum": 0 },
+    "retry_count": { "type": "integer", "minimum": 0 },
+    "fallback_count": { "type": "integer", "minimum": 0 },
+    "fallback_used": { "type": "boolean" },
+    "failed_provider_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "attempts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/attempt" }
+    }
+  },
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "error_kind": {
+      "type": ["string", "null"],
+      "enum": [null, "authentication", "rate_limit", "timeout", "provider_error", "invalid_response", "unavailable"]
+    },
+    "attempt": {
+      "type": "object",
+      "required": ["ordinal", "action", "provider_id", "outcome", "reason_code", "error_kind", "retry_hint", "duration_ms"],
+      "properties": {
+        "ordinal": { "type": "integer", "minimum": 1 },
+        "action": { "type": "string", "enum": ["initial", "retry", "fallback"] },
+        "provider_id": { "type": "string", "minLength": 1 },
+        "outcome": { "type": "string", "enum": ["succeeded", "failed", "indeterminate"] },
+        "reason_code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "error_kind": { "$ref": "#/$defs/error_kind" },
+        "retry_hint": { "type": "string", "enum": ["not_applicable", "retryable", "non_retryable", "unknown"] },
+        "duration_ms": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

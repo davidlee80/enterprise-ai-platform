@@ -1,0 +1,9 @@
+{
+  "model": "smart-chat",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello"
+    }
+  ]
+}

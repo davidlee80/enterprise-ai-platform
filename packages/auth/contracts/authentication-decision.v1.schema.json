@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:auth:authentication-decision:v1",
+  "title": "Authentication Decision v1",
+  "description": "Structured internal authentication result. This is not the public API Error Schema reserved by TBD-008.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "outcome",
+    "reason_code"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "authenticated",
+        "denied",
+        "indeterminate"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "AUTHENTICATED",
+        "CREDENTIAL_MISSING",
+        "CREDENTIAL_AMBIGUOUS",
+        "CREDENTIAL_MALFORMED",
+        "CREDENTIAL_INVALID",
+        "CREDENTIAL_EXPIRED",
+        "CREDENTIAL_REVOKED",
+        "AUTHENTICATOR_UNAVAILABLE",
+        "AUTHENTICATOR_RESULT_INVALID"
+      ]
+    },
+    "principal": {
+      "$ref": "#/$defs/principal"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "authenticated"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "required": [
+          "principal"
+        ],
+        "properties": {
+          "reason_code": {
+            "const": "AUTHENTICATED"
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "principal"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "denied"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_code": {
+            "enum": [
+              "CREDENTIAL_MISSING",
+              "CREDENTIAL_AMBIGUOUS",
+              "CREDENTIAL_MALFORMED",
+              "CREDENTIAL_INVALID",
+              "CREDENTIAL_EXPIRED",
+              "CREDENTIAL_REVOKED"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "indeterminate"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason_code": {
+            "enum": [
+              "AUTHENTICATOR_UNAVAILABLE",
+              "AUTHENTICATOR_RESULT_INVALID"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "principal": {
+      "type": "object",
+      "required": [
+        "subject_id",
+        "tenant_id",
+        "credential_kind",
+        "scopes"
+      ],
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tenant_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Verified tenant identity supplied by the verifier, never by client request data."
+        },
+        "credential_kind": {
+          "type": "string",
+          "enum": [
+            "bearer",
+            "api_key"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "credential_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional opaque identifier suitable for revocation and audit correlation; never raw credential material."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

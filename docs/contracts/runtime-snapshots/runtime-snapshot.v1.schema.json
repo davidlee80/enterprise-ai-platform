@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:runtime-snapshot:v1",
+  "title": "Runtime Snapshot v1",
+  "description": "Compact, versioned request-affecting configuration consumed by the Data Plane.",
+  "type": "object",
+  "required": [
+    "config_version",
+    "tenant_id",
+    "model_alias",
+    "policy_ids",
+    "route_strategy",
+    "providers"
+  ],
+  "properties": {
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_alias": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "route_strategy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "providers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "retry_fallback_plan": {
+      "$ref": "urn:enterprise-ai-platform:retry-fallback:plan:v1",
+      "description": "Optional additive TASK-M2-006 attempt plan; when used it must match this Snapshot tenant_id and config_version."
+    }
+  },
+  "additionalProperties": true
+}

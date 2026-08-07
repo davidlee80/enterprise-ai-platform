@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:provider:invocation-result:v1",
+  "title": "Provider Invocation Result v1",
+  "description": "Normalized single-attempt Provider result without raw errors, endpoint, credential, or Provider model disclosure.",
+  "type": "object",
+  "required": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "provider_id", "adapter_id", "adapter_version", "outcome", "reason_code", "error_kind", "retry_hint", "response_mode", "response"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "model_alias": { "type": "string", "minLength": 1 },
+    "provider_id": { "type": "string", "minLength": 1 },
+    "adapter_id": { "type": "string", "minLength": 1 },
+    "adapter_version": { "$ref": "#/$defs/version" },
+    "outcome": { "type": "string", "enum": ["succeeded", "failed", "indeterminate"] },
+    "reason_code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+    "error_kind": {
+      "type": ["string", "null"],
+      "enum": [null, "authentication", "rate_limit", "timeout", "provider_error", "invalid_response", "unavailable"]
+    },
+    "retry_hint": { "type": "string", "enum": ["not_applicable", "retryable", "non_retryable", "unknown"] },
+    "response_mode": { "type": ["string", "null"], "enum": [null, "complete", "stream"] },
+    "response": { "oneOf": [{ "$ref": "#/$defs/chat_completion" }, { "type": "null" }] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "outcome": { "const": "succeeded" } }, "required": ["outcome"] },
+      "then": {
+        "properties": {
+          "error_kind": { "type": "null" },
+          "retry_hint": { "const": "not_applicable" },
+          "response_mode": { "type": "string" },
+          "response": { "$ref": "#/$defs/chat_completion" }
+        }
+      },
+      "else": {
+        "properties": {
+          "error_kind": { "type": "string" },
+          "retry_hint": { "enum": ["retryable", "non_retryable", "unknown"] },
+          "response_mode": { "type": "null" },
+          "response": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "chat_completion": {
+      "type": "object",
+      "required": ["id", "object", "created", "model", "choices"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "object": { "enum": ["chat.completion", "chat.completion.chunk"] },
+        "created": { "type": "integer", "minimum": 0 },
+        "model": { "type": "string", "minLength": 1, "description": "Tenant-visible model alias, never the Provider model identifier." },
+        "choices": { "type": "array" },
+        "usage": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

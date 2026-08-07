@@ -1,0 +1,7 @@
+-- NON-EXECUTABLE TEMPLATE: backfill phase
+-- Apply reviewed batches, rate limits, checkpoints, metrics, and retry semantics.
+UPDATE <reviewed_table>
+SET <reviewed_new_column> = <reviewed_conversion>
+WHERE <reviewed_new_column> IS NULL
+  AND <reviewed_batch_predicate>;
+

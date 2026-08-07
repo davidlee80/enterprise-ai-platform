@@ -1,0 +1,190 @@
+name: PR Gates
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-gates-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          persist-credentials: false
+      - name: Repository lint
+        shell: pwsh
+        run: ./scripts/task.ps1 lint
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.4-trixie
+        env:
+          POSTGRES_USER: migration_test
+          POSTGRES_DB: migration_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U migration_test -d migration_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:8.8.1-trixie
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          persist-credentials: false
+      - name: Setup Helm
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+        with:
+          version: v3.21.3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: 1.15.8
+          terraform_wrapper: false
+      - name: Repository tests
+        shell: pwsh
+        run: ./scripts/task.ps1 test
+      - name: Verify Data Plane Snapshot Consumer
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m1-004
+      - name: Verify OpenAPI 3.1 Contract
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m2-001
+      - name: Verify Authentication Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m2-002
+      - name: Verify Policy Decision Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m2-003
+      - name: Verify Router Plugin Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m2-004
+      - name: Verify Provider Adapter Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m2-005
+      - name: Verify Retry Fallback Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m2-006
+      - name: Verify Usage Event Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m2-007
+      - name: Verify Production Image Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m3-001
+      - name: Verify Gateway Helm Chart
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m3-002
+      - name: Verify Terraform Skeleton
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m3-003
+      - name: Migration static validation
+        shell: pwsh
+        run: ./scripts/migration.ps1 validate
+      - name: Empty database migration
+        shell: pwsh
+        run: |
+          $migrationRoot = "${{ github.workspace }}/packages/db/migrations"
+          $migrations = @(Get-ChildItem -LiteralPath $migrationRoot -Filter "*.up.sql" -File | Sort-Object Name)
+          foreach ($migration in $migrations) {
+            $hash = (Get-FileHash -LiteralPath $migration.FullName -Algorithm SHA256).Hash
+            docker run --rm --network host `
+              --volume "${{ github.workspace }}:/workspace:ro" `
+              postgres:18.4-trixie `
+              psql --host=127.0.0.1 --username=migration_test --dbname=migration_test `
+                --set=ON_ERROR_STOP=1 --set="migration_hash=$hash" `
+                --file="/workspace/packages/db/migrations/$($migration.Name)"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Output "status=fail reason_code=EMPTY_DATABASE_MIGRATION_FAILED migration=$($migration.Name)"
+              exit 1
+            }
+          }
+      - name: Verify baseline schema
+        shell: pwsh
+        run: |
+          $tables = docker run --rm --network host postgres:18.4-trixie `
+            psql --host=127.0.0.1 --username=migration_test --dbname=migration_test `
+              --tuples-only --no-align `
+              --command="SELECT string_agg(tablename, ',' ORDER BY tablename) FROM pg_tables WHERE schemaname = 'public';"
+          if ($LASTEXITCODE -ne 0 -or $tables.Trim() -ne "model_route,outbox_event,provider_endpoint,schema_migration,tenant") {
+            Write-Output "status=fail reason_code=BASELINE_SCHEMA_VERIFICATION_FAILED"
+            exit 1
+          }
+          Write-Output "status=pass reason_code=EMPTY_DATABASE_MIGRATION_OK"
+      - name: Verify transactional Outbox
+        shell: pwsh
+        run: |
+          docker run --rm --network host `
+            --volume "${{ github.workspace }}:/workspace:ro" `
+            postgres:18.4-trixie `
+            psql --host=127.0.0.1 --username=migration_test --dbname=migration_test `
+              --set=ON_ERROR_STOP=1 `
+              --file=/workspace/packages/db/outbox/outbox.integration.sql
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "status=fail reason_code=OUTBOX_INTEGRATION_FAILED"
+            exit 1
+          }
+          Write-Output "status=pass reason_code=OUTBOX_INTEGRATION_OK"
+      - name: Verify failed migration rollback
+        shell: pwsh
+        run: |
+          docker run --rm --network host postgres:18.4-trixie `
+            psql --host=127.0.0.1 --username=migration_test --dbname=migration_test `
+              --set=ON_ERROR_STOP=1 `
+              --command="BEGIN; ALTER TABLE tenant ADD COLUMN rollback_probe TEXT; SELECT 1 / 0; COMMIT;"
+          if ($LASTEXITCODE -eq 0) {
+            Write-Output "status=fail reason_code=FAILURE_INJECTION_DID_NOT_FAIL"
+            exit 1
+          }
+          $probeCount = docker run --rm --network host postgres:18.4-trixie `
+            psql --host=127.0.0.1 --username=migration_test --dbname=migration_test `
+              --tuples-only --no-align `
+              --command="SELECT count(*) FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'tenant' AND column_name = 'rollback_probe';"
+          if ($LASTEXITCODE -ne 0 -or $probeCount.Trim() -ne "0") {
+            Write-Output "status=fail reason_code=MIGRATION_FAILURE_DAMAGED_SCHEMA"
+            exit 1
+          }
+          Write-Output "status=pass reason_code=MIGRATION_FAILURE_ROLLBACK_OK"
+      - name: Verify Redis Snapshot Store
+        shell: pwsh
+        run: |
+          ./packages/cache/snapshot-store/snapshot-store.integration.ps1 `
+            -UseDocker `
+            -RedisImage "redis:8.8.1-trixie"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "status=fail reason_code=REDIS_SNAPSHOT_STORE_INTEGRATION_FAILED"
+            exit 1
+          }
+
+  security:
+    name: security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          persist-credentials: false
+      - name: Bootstrap secret safety check
+        shell: pwsh
+        run: ./scripts/task.ps1 security

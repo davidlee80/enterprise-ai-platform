@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:provider:invocation-request:v1",
+  "title": "Provider Invocation Request v1",
+  "description": "Provider-neutral chat invocation assembled after a selected Route Decision. It contains no endpoint or credential material.",
+  "type": "object",
+  "required": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "route", "operation", "model_alias", "messages", "stream", "obligations"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "route": {
+      "type": "object",
+      "required": ["outcome", "provider_id"],
+      "properties": {
+        "outcome": { "const": "selected" },
+        "provider_id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "operation": { "const": "chat_completion" },
+    "model_alias": { "type": "string", "minLength": 1 },
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["role"],
+        "properties": {
+          "role": { "type": "string", "minLength": 1 },
+          "content": {}
+        },
+        "additionalProperties": true
+      }
+    },
+    "stream": { "type": "boolean" },
+    "obligations": {
+      "type": "array",
+      "items": { "$ref": "urn:enterprise-ai-platform:policy:decision:v1#/$defs/obligation" }
+    }
+  },
+  "additionalProperties": false
+}

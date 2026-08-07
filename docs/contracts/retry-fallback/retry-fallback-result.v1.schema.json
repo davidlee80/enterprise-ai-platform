@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:retry-fallback:result:v1",
+  "title": "Retry Fallback Result v1",
+  "description": "Final structured orchestration result with normalized Provider result and telemetry evidence.",
+  "type": "object",
+  "required": ["schema_version", "request_id", "trace_id", "tenant_id", "config_version", "model_alias", "plan_id", "plan_version", "outcome", "reason_code", "final_provider_result", "telemetry"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "model_alias": { "type": "string", "minLength": 1 },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "plan_version": { "$ref": "#/$defs/version" },
+    "outcome": { "type": "string", "enum": ["succeeded", "failed", "indeterminate"] },
+    "reason_code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+    "final_provider_result": {
+      "oneOf": [
+        { "$ref": "urn:enterprise-ai-platform:provider:invocation-result:v1" },
+        { "type": "null" }
+      ]
+    },
+    "telemetry": { "$ref": "urn:enterprise-ai-platform:retry-fallback:telemetry:v1" }
+  },
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

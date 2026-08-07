@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:usage:processing-result:v1",
+  "title": "Usage Processing Result v1",
+  "description": "Structured enqueue, publish, or consume result without event payload or secret material.",
+  "type": "object",
+  "required": ["schema_version", "stage", "event_id", "usage_record_id", "request_id", "trace_id", "tenant_id", "config_version", "outcome", "reason_code", "online_response", "next_action"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "stage": { "type": "string", "enum": ["enqueue", "publish", "consume"] },
+    "event_id": { "type": "string", "format": "uuid" },
+    "usage_record_id": { "type": "string", "format": "uuid" },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "format": "uuid" },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "outcome": { "type": "string", "enum": ["accepted", "published", "processed", "duplicate", "rejected", "failed"] },
+    "reason_code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+    "online_response": { "type": "string", "enum": ["released", "not_applicable"] },
+    "next_action": { "type": "string", "enum": ["none", "retry", "dead_letter"] }
+  },
+  "additionalProperties": false
+}

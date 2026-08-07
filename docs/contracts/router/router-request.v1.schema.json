@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:router:request:v1",
+  "title": "Router Request v1",
+  "description": "Tenant/version-scoped routing input containing opaque Provider identifiers and non-secret routing metadata.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "config_version",
+    "model_alias",
+    "route_strategy",
+    "policy",
+    "candidates"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "model_alias": { "type": "string", "minLength": 1 },
+    "route_strategy": { "type": "string", "minLength": 1 },
+    "policy": {
+      "type": "object",
+      "required": ["outcome", "policy_version", "obligations"],
+      "properties": {
+        "outcome": { "const": "allow" },
+        "policy_version": { "$ref": "#/$defs/version" },
+        "obligations": {
+          "type": "array",
+          "items": { "$ref": "urn:enterprise-ai-platform:policy:decision:v1#/$defs/obligation" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["provider_id", "region", "priority", "weight", "enabled"],
+        "properties": {
+          "provider_id": { "type": "string", "minLength": 1 },
+          "region": { "type": "string", "minLength": 1 },
+          "priority": { "type": "integer" },
+          "weight": { "type": "integer", "minimum": 0 },
+          "enabled": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "version": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

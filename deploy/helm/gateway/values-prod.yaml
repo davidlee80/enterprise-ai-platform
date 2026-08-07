@@ -1,0 +1,17 @@
+environment: production
+
+replicaCount: 3
+
+image:
+  tag: ""
+  digest: ""
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: DoNotSchedule
+
