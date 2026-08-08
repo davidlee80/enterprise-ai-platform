@@ -39,45 +39,56 @@ windows, and production SLO values remain TBD.
 
 ## Development commands
 
-Run these commands from this directory with Windows PowerShell 5.1 or newer:
+Linux is the primary development and CI execution environment. Install Bash,
+Git, PowerShell 7 (`pwsh`), .NET SDK 10.0.302, Helm v3.21.3, and Terraform
+1.15.8. Docker is also required for the image, PostgreSQL, and Redis integration
+suites. From the repository root, run:
 
-```powershell
-powershell -NoProfile -File .\scripts\task.ps1 lint
-powershell -NoProfile -File .\scripts\task.ps1 test
-powershell -NoProfile -File .\scripts\task.ps1 test-m0-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m0-003
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-001
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-003
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-004
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-001
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-003
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-004
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-005
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-006
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-007
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-001
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-003
-powershell -NoProfile -File .\scripts\task.ps1 security
-powershell -NoProfile -File .\scripts\task.ps1 build
+```bash
+./scripts/task.sh lint
+./scripts/task.sh test
+./scripts/task.sh test-linux
+./scripts/task.sh test-m0-002
+./scripts/task.sh test-m0-003
+./scripts/task.sh test-m1-001
+./scripts/task.sh test-m1-002
+./scripts/task.sh test-m1-003
+./scripts/task.sh test-m1-004
+./scripts/task.sh test-m2-001
+./scripts/task.sh test-m2-002
+./scripts/task.sh test-m2-003
+./scripts/task.sh test-m2-004
+./scripts/task.sh test-m2-005
+./scripts/task.sh test-m2-006
+./scripts/task.sh test-m2-007
+./scripts/task.sh test-m3-001
+./scripts/task.sh test-m3-002
+./scripts/task.sh test-m3-003
+./scripts/task.sh security
+./scripts/task.sh build
+```
+
+Run the Linux host/tool/version/entrypoint smoke check with:
+
+```bash
+./scripts/linux-smoke.sh
 ```
 
 Validate or apply PostgreSQL migrations through the dedicated forward-only
-entrypoint:
+entrypoint. The `up` and `status` commands also require `psql` on `PATH`:
 
-```powershell
-powershell -NoProfile -File .\scripts\migration.ps1 validate
-powershell -NoProfile -File .\scripts\migration.ps1 up
-powershell -NoProfile -File .\scripts\migration.ps1 status
+```bash
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 validate
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 up
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 status
 ```
 
-On systems with PowerShell Core, replace `powershell` with `pwsh`. PowerShell is
-only the repository bootstrap task runner; it does not decide the backend
-language, web framework, or dependency-injection framework (`TBD-001` and
-`TBD-002`). Component-specific commands can be delegated from this entrypoint as
-implementations are added.
+On Windows, use PowerShell 7 directly, for example
+`pwsh -NoLogo -NoProfile -File .\scripts\task.ps1 lint`. PowerShell is only the
+repository task runner. The Gateway runtime is selected by
+[`ADR-001`](docs/adr/ADR-001-gateway-dotnet-linux-runtime.md); the
+dependency-injection boundary remains `TBD-002`. Component-specific commands
+are delegated from this entrypoint.
 
 ## Development boundaries
 
@@ -125,7 +136,8 @@ inventing `TBD-016` or `TBD-017` policy defaults.
 `POST /v1/chat/completions`, versioned compatibility baseline, contract fixtures,
 language-neutral Gateway handler binding, and SDK generation-input entrypoint.
 Authentication implementation, a custom API-key Header, complete error bodies,
-server framework, and SDK language remain explicit TBD items.
+and SDK language remain explicit TBD items. `ADR-001` now supplies the Gateway
+server runtime without changing the M2-001 API contract.
 
 `TASK-M2-002` adds a language-neutral Bearer/API Key authentication boundary.
 Credential transport is normalized before verification, verified principal data
@@ -151,9 +163,9 @@ Provider execution remains `TASK-M2-005`.
 `TASK-M2-005` adds a Provider-neutral, single-attempt adapter boundary with
 tenant/config-scoped runtime bindings, an adapter registry, normalized results,
 compatibility baseline, and native/LiteLLM Provider mocks. LiteLLM is limited to
-protocol normalization and is not a governance source. Runtime language and DI,
-LiteLLM SDK-versus-Proxy deployment/version and Secret Manager integration
-remain `TBD-001`, `TBD-002`, and `TBD-012`.
+protocol normalization and is not a governance source. The Gateway language is
+resolved by `ADR-001`; DI, LiteLLM SDK-versus-Proxy deployment/version and
+Secret Manager integration remain `TBD-002` and `TBD-012`.
 
 `TASK-M2-006` adds a versioned, tenant/config-scoped Retry/Fallback attempt plan,
 structured final result, per-attempt telemetry, compatibility baseline, and
@@ -168,14 +180,12 @@ Policy through Router, Provider Mock, Retry/Fallback, publication, and an
 idempotent Billing consumer. Broker/buffer topology, retry/DLQ, Usage storage,
 aggregation, retention, and pricing precision remain explicit TBD/ADR items.
 
-`TASK-M3-001` cannot yet produce a truthful production Dockerfile because the
-repository has no application runtime, entrypoint, or dependency lock and
-`TBD-001` forbids selecting them implicitly. The versioned Gateway image
-boundary and `test-m3-001` make that blocker executable while locking in the
-multi-stage, digest-pinned, minimal, numeric non-root, health, SBOM,
-traceability, rollback, and Secret-free completion controls. This guard is not
-`AC-BLD-001` acceptance evidence; a reviewed runtime ADR and real image tests
-remain required.
+`TASK-M3-001` now has the `ADR-001` .NET 10 Gateway runtime, locked NuGet graph,
+digest-pinned multi-stage Linux Dockerfile, numeric non-root user, and executable
+health/readiness probes. `test-m3-001` builds and probes the application and
+statically validates the image boundary; CI additionally builds and probes the
+Linux image. `AC-BLD-001` remains `acceptance=not-met` until `REQ-CICD-004` and
+`TASK-CICD-001` select and wire SBOM, scanning, and signing evidence.
 
 `TASK-M3-002` adds a single Gateway Helm chart with development, test, and
 production values overlays. Its default renders 3 replicas, port 8080, all

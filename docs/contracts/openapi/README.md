@@ -38,9 +38,9 @@ internal endpoint, policy source, or stack trace.
 Run from the repository root:
 
 ```powershell
-powershell -NoProfile -File .\scripts\openapi.ps1 validate
-powershell -NoProfile -File .\scripts\openapi.ps1 compatibility
-powershell -NoProfile -File .\packages\sdk\generate.ps1 plan
+pwsh -NoLogo -NoProfile -File ./scripts/openapi.ps1 validate
+pwsh -NoLogo -NoProfile -File ./scripts/openapi.ps1 compatibility
+pwsh -NoLogo -NoProfile -File ./packages/sdk/generate.ps1 plan
 ```
 
 Validation parses the contract, resolves all local references, checks the
@@ -58,6 +58,7 @@ generator. SDK language and generator selection remain `TBD-007`, so it emits a
 structured plan rather than choosing a language or producing misleading SDK
 artifacts.
 
-The language/framework-neutral handler binding is stored at
+The handler binding is stored at
 [`apps/gateway/contracts/chat-completions.binding.v1.json`](../../../apps/gateway/contracts/chat-completions.binding.v1.json).
-Its runtime handler remains `TBD-001`; M2-001 does not select a server framework.
+`ADR-001` maps it to the .NET 10 bootstrap handler; M2-001 remains the
+authoritative language-neutral API contract.

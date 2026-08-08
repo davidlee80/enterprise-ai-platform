@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <AssemblyName>EnterpriseAiPlatform.Gateway</AssemblyName>
+    <Description>Enterprise AI Platform Linux Data Plane Gateway</Description>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>EnterpriseAiPlatform.Gateway</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+</Project>

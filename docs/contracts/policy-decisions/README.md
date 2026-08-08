@@ -35,7 +35,7 @@ persistence remains asynchronous and cannot block the decision.
 Run the executable policy mock/conformance suite from the repository root:
 
 ```powershell
-powershell -NoProfile -File .\apps\policy\policy-decision.conformance.ps1
+pwsh -NoLogo -NoProfile -File ./apps/policy/policy-decision.conformance.ps1
 ```
 
 The policy runtime product remains `TBD-004`. The conformance mock exercises the

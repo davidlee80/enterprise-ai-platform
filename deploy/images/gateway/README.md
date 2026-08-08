@@ -3,28 +3,22 @@
 `production-image-boundary.v1.json` is the executable readiness boundary for
 `TASK-M3-001`. Run it through:
 
-```powershell
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-001
+```bash
+./scripts/task.sh test-m3-001
 ```
 
 ## Current state
 
-The boundary is `blocked-tbd-001`. `TBD-001` has not selected a backend
-language/Web Framework, and the repository therefore has no production
-application artifact, entrypoint, package manager, or dependency lock file.
-There is intentionally no `Dockerfile`: inventing a runtime or shipping a
-non-functional placeholder would violate the Codex Guardrails and
-`REQ-BLD-004`.
+`ADR-001` resolves the Gateway runtime as C#/.NET 10, ASP.NET Core Minimal APIs,
+Kestrel, and locked NuGet restore on Linux. The boundary is
+`runtime-implemented-supply-chain-tbd`: the application and image can be built
+and probed, while `AC-BLD-001` remains `acceptance=not-met` until
+`REQ-CICD-004` and `TASK-CICD-001` select the repository-wide SBOM, scanner,
+and signing tools and provide evidence.
 
-The guard passes only when this unresolved state is explicit and no hidden
-runtime selection has been committed. It does **not** claim that `AC-BLD-001`
-has passed.
+## Implemented controls
 
-## Completion transition
-
-After a reviewed ADR resolves `TBD-001`, change the boundary to
-`implemented-v1` and provide every selected field plus the referenced lock
-file and Dockerfile. The validator then requires:
+The runtime boundary provides:
 
 - at least two digest-pinned build stages and an explicit artifact copy;
 - a minimal final stage with no package-manager installation;
@@ -32,14 +26,21 @@ file and Dockerfile. The validator then requires:
 - port `8080`, `/healthz`, and `/readyz` runtime contracts;
 - source/revision/version OCI traceability labels while the exact tag format
   remains `TBD-013`;
-- a CI SBOM artifact and image-signing capability;
+- an Ubuntu CI build, metadata inspection, and container probe test;
 - no credential-shaped `ARG`, `ENV`, copied Secret, or Secret-bearing layer.
 
-Final acceptance also requires an actual image build, image inspection,
-container probe tests, SBOM generation, image/history scanning, and
-failure-injection evidence. Static boundary validation alone is insufficient.
+Run the image-only integration check on a Docker-capable host with:
 
-Rollback before runtime selection is a source-control revert. After an image is
-implemented, rollback selects a previously verified immutable image digest; it
-must not rebuild an old mutable tag.
+```powershell
+pwsh -NoLogo -NoProfile -File ./deploy/images/gateway/gateway-image.integration.ps1
+```
 
+## Remaining completion transition
+
+After supply-chain tooling is reviewed, fill the currently null tool and
+evidence fields, wire SBOM generation, scanning, and signing into CI, then move
+the boundary to `implemented-v1`. Static validation and an unsigned local image
+alone are insufficient for final acceptance.
+
+Rollback selects a previously verified immutable image digest; it must not
+rebuild an old mutable tag.

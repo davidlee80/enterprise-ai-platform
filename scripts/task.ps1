@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("lint", "test", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "security", "build")]
+    [ValidateSet("lint", "test", "test-linux", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "security", "build")]
     [string]$Command
 )
 
@@ -279,6 +279,66 @@ function Invoke-Lint {
     Assert-FileContains "packages/common/README.md" "must not contain domain business logic" "COMMON_BOUNDARY_UNEXPLAINED"
 }
 
+function Invoke-LinuxCompatibilityTest {
+    $requiredFiles = @(
+        ".gitattributes",
+        "scripts/task.sh",
+        "scripts/linux-smoke.sh"
+    )
+    foreach ($relativePath in $requiredFiles) {
+        Assert-File $relativePath
+    }
+
+    Assert-FileContains ".gitattributes" "*.sh text eol=lf" "LINUX_SHELL_LF_POLICY_MISSING"
+    Assert-FileContains ".gitattributes" "*.ps1 text eol=lf" "POWERSHELL_LF_POLICY_MISSING"
+    Assert-FileContains "scripts/task.sh" "#!/usr/bin/env bash" "LINUX_TASK_SHEBANG_MISSING"
+    Assert-FileContains "scripts/task.sh" "POWERSHELL_CORE_NOT_AVAILABLE" "LINUX_PWSH_FAILURE_REASON_MISSING"
+    Assert-FileContains "scripts/linux-smoke.sh" "LINUX_ENTRYPOINT_SMOKE_OK" "LINUX_SMOKE_SUCCESS_REASON_MISSING"
+    Assert-FileContains "scripts/linux-smoke.sh" "LINUX_CASE_COLLISION" "LINUX_CASE_GUARD_MISSING"
+    Assert-FileContains "README.md" "./scripts/task.sh lint" "ROOT_LINUX_LINT_ENTRY_MISSING"
+    Assert-FileContains "README.md" "PowerShell 7" "ROOT_LINUX_POWERSHELL_REQUIREMENT_MISSING"
+    Assert-FileContains "scripts/README.md" "./scripts/linux-smoke.sh" "LINUX_SMOKE_DOCUMENTATION_MISSING"
+
+    $scriptFiles = @(Get-ChildItem -LiteralPath $repoRoot -Recurse -File | Where-Object {
+        @(".ps1", ".psm1", ".sh") -contains $_.Extension.ToLowerInvariant() -and
+        $_.FullName -notmatch '[\\/]\.git[\\/]'
+    })
+    foreach ($file in $scriptFiles) {
+        $relativePath = $file.FullName.Substring($repoRoot.Length + 1).Replace("\", "/")
+        $bytes = [System.IO.File]::ReadAllBytes($file.FullName)
+        for ($index = 0; $index -lt ($bytes.Length - 1); $index++) {
+            if ($bytes[$index] -eq 13 -and $bytes[$index + 1] -eq 10) {
+                Add-Failure "LINUX_SCRIPT_CRLF" $relativePath "executable and PowerShell scripts must use LF line endings"
+                break
+            }
+        }
+    }
+
+    if ($null -eq (Get-Command git -ErrorAction SilentlyContinue)) {
+        Add-Failure "GIT_NOT_AVAILABLE" "git" "Git is required to validate Linux path and executable metadata"
+        return
+    }
+
+    $trackedPaths = @(& git -C $repoRoot ls-files)
+    $caseMap = @{}
+    foreach ($trackedPath in $trackedPaths) {
+        $foldedPath = $trackedPath.ToLowerInvariant()
+        if ($caseMap.ContainsKey($foldedPath) -and $caseMap[$foldedPath] -cne $trackedPath) {
+            Add-Failure "LINUX_CASE_COLLISION" $trackedPath ("case-insensitive duplicate of " + $caseMap[$foldedPath])
+        }
+        else {
+            $caseMap[$foldedPath] = $trackedPath
+        }
+    }
+
+    foreach ($relativePath in @("scripts/task.sh", "scripts/linux-smoke.sh")) {
+        $indexEntry = [string](& git -C $repoRoot ls-files --stage -- $relativePath)
+        if ($indexEntry -notmatch '^100755\s') {
+            Add-Failure "LINUX_ENTRYPOINT_NOT_EXECUTABLE" $relativePath "Git mode 100755 is required"
+        }
+    }
+}
+
 function Invoke-Test {
     $requiredDirectories = @(
         "apps",
@@ -303,31 +363,33 @@ function Invoke-Test {
     }
 
     Assert-FileContains "README.md" "DEVELOPMENT-REQUIREMENTS.md" "ROOT_REQUIREMENTS_LINK_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 lint" "ROOT_LINT_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test" "ROOT_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m0-002" "ROOT_M0_002_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m0-003" "ROOT_M0_003_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m1-001" "ROOT_M1_001_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m1-002" "ROOT_M1_002_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m1-003" "ROOT_M1_003_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m1-004" "ROOT_M1_004_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m2-001" "ROOT_M2_001_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m2-002" "ROOT_M2_002_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m2-003" "ROOT_M2_003_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m2-004" "ROOT_M2_004_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m2-005" "ROOT_M2_005_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m2-006" "ROOT_M2_006_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m2-007" "ROOT_M2_007_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m3-001" "ROOT_M3_001_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m3-002" "ROOT_M3_002_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 test-m3-003" "ROOT_M3_003_TEST_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 security" "ROOT_SECURITY_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\migration.ps1 validate" "ROOT_MIGRATION_VALIDATE_ENTRY_MISSING"
-    Assert-FileContains "README.md" "scripts\task.ps1 build" "ROOT_BUILD_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh lint" "ROOT_LINT_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test" "ROOT_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-linux" "ROOT_LINUX_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m0-002" "ROOT_M0_002_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m0-003" "ROOT_M0_003_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m1-001" "ROOT_M1_001_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m1-002" "ROOT_M1_002_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m1-003" "ROOT_M1_003_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m1-004" "ROOT_M1_004_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m2-001" "ROOT_M2_001_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m2-002" "ROOT_M2_002_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m2-003" "ROOT_M2_003_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m2-004" "ROOT_M2_004_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m2-005" "ROOT_M2_005_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m2-006" "ROOT_M2_006_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m2-007" "ROOT_M2_007_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m3-001" "ROOT_M3_001_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m3-002" "ROOT_M3_002_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-m3-003" "ROOT_M3_003_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh security" "ROOT_SECURITY_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/migration.ps1 validate" "ROOT_MIGRATION_VALIDATE_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh build" "ROOT_BUILD_ENTRY_MISSING"
     Assert-FileContains "README.md" "stable APIs or versioned events" "CROSS_DOMAIN_BOUNDARY_MISSING"
     Assert-FileContains "docs/versioning.md" "Git revision" "SOURCE_TRACEABILITY_MISSING"
     Assert-FileContains "docs/versioning.md" "unified version or independently versioned" "VERSION_TBD_MISSING"
 
+    Invoke-LinuxCompatibilityTest
     Invoke-ContractDirectoryTest
     Invoke-CISkeletonTest
     Invoke-MigrationTest
@@ -405,6 +467,8 @@ function Invoke-CISkeletonTest {
     Assert-FileContains $workflow "./scripts/task.ps1 lint" "CI_LINT_COMMAND_MISSING"
     Assert-FileContains $workflow "./scripts/task.ps1 test" "CI_TEST_COMMAND_MISSING"
     Assert-FileContains $workflow "./scripts/task.ps1 security" "CI_SECURITY_COMMAND_MISSING"
+    Assert-FileContains $workflow "./scripts/linux-smoke.sh" "CI_LINUX_SMOKE_COMMAND_MISSING"
+    Assert-FileContains $workflow "shell: bash" "CI_LINUX_BASH_SHELL_MISSING"
 
     Assert-FileNotContains $workflow "kubectl apply" "CI_DIRECT_PRODUCTION_DEPLOY_FORBIDDEN"
     Assert-FileNotContains $workflow "secrets." "CI_SECRET_REFERENCE_FORBIDDEN"
@@ -746,7 +810,7 @@ function Invoke-SnapshotConsumerTest {
     Assert-FileContains $consumerReadme "must never perform a synchronous PostgreSQL fallback" "SNAPSHOT_DATABASE_FALLBACK_FORBIDDEN"
     Assert-FileContains $consumerReadme "TBD-016" "SNAPSHOT_STALENESS_TBD_MISSING"
     Assert-FileContains $consumerReadme "TBD-017" "SNAPSHOT_FAILURE_POLICY_TBD_MISSING"
-    Assert-FileContains $consumerReadme "does not select the backend language" "SNAPSHOT_RUNTIME_LANGUAGE_TBD_MISSING"
+    Assert-FileContains $consumerReadme '`ADR-001` selects C#/.NET 10' "SNAPSHOT_RUNTIME_LANGUAGE_ADR_MISSING"
     Assert-FileContains $consumerReadme "requires an ADR" "SNAPSHOT_INFLIGHT_ADR_GUARD_MISSING"
 
     foreach ($evidence in @(
@@ -873,7 +937,7 @@ function Invoke-OpenApiContractTest {
     Assert-FileContains $baseline '"schema_property_signatures"' "OPENAPI_SCHEMA_COMPATIBILITY_BASELINE_MISSING"
     Assert-FileContains $openApiRunner 'OPENAPI_BREAKING_PROPERTY_REMOVAL' "OPENAPI_PROPERTY_REMOVAL_GUARD_MISSING"
     Assert-FileContains $openApiRunner 'OPENAPI_BREAKING_PROPERTY_CHANGE' "OPENAPI_PROPERTY_CHANGE_GUARD_MISSING"
-    Assert-FileContains $binding '"runtime_handler_status": "TBD-001"' "OPENAPI_HANDLER_LANGUAGE_TBD_MISSING"
+    Assert-FileContains $binding '"runtime_handler_status": "implemented-bootstrap-v1"' "OPENAPI_RUNTIME_HANDLER_BINDING_MISSING"
     Assert-FileContains $contractReadme "TBD-007" "OPENAPI_SDK_LANGUAGE_TBD_MISSING"
     Assert-FileContains $contractReadme "TBD-008" "OPENAPI_ERROR_SCHEMA_TBD_MISSING"
     Assert-FileContains $contractReadme "breaking-change and migration plan" "OPENAPI_BREAKING_CHANGE_GUARD_MISSING"
@@ -967,7 +1031,7 @@ function Invoke-AuthenticationBoundaryTest {
             if ($boundary.transport_adapter.status -ne "REQ-API-003-TBD" -or
                 $null -ne $boundary.transport_adapter.header_name -or
                 $boundary.public_error_schema_status -ne "TBD-008" -or
-                $boundary.runtime_language_status -ne "TBD-001" -or
+                $boundary.runtime_language_status -ne "ADR-001" -or
                 $boundary.dependency_injection_status -ne "TBD-002" -or
                 $boundary.secret_manager_status -ne "TBD-012") {
                 Add-Failure "AUTH_TBD_BOUNDARY_VIOLATED" $boundaryFile "Header, error, runtime, DI, and Secret Manager decisions must remain unresolved"
@@ -1375,7 +1439,7 @@ function Invoke-ProviderAdapterTest {
         if ($null -ne $runtimeConfigSchema.properties.PSObject.Properties["provider_key"] -or
             $boundary.status -ne "implemented-v1" -or
             $null -ne $boundary.adapter_method_signature -or
-            $boundary.adapter_method_signature_status -ne "TBD-001" -or
+            $boundary.adapter_method_signature_status -ne "ADR_NEEDED" -or
             $null -ne $boundary.secret_resolver -or
             $boundary.secret_resolver_status -ne "TBD-012" -or
             $boundary.retry_and_fallback.implementation -ne "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json" -or
@@ -1515,7 +1579,7 @@ function Invoke-RetryFallbackTest {
         }
         if ($boundary.status -ne "implemented-v1" -or
             $null -ne $boundary.orchestrator_method_signature -or
-            $boundary.orchestrator_method_signature_status -ne "TBD-001" -or
+            $boundary.orchestrator_method_signature_status -ne "ADR_NEEDED" -or
             $boundary.dependency_injection_status -ne "TBD-002" -or
             $null -ne $boundary.global_attempt_limit_default -or
             $boundary.attempt_limit_source -ne "plan.attempt_limit" -or
@@ -1692,7 +1756,7 @@ function Invoke-UsageEventTest {
             $boundary.online_enqueue_mode -ne "non_blocking_try_enqueue" -or
             $boundary.delivery_contract -ne "at_least_once_consumer_idempotency_required" -or
             $null -ne $boundary.producer_method_signature -or
-            $boundary.producer_method_signature_status -ne "TBD-001/TBD-002" -or
+            $boundary.producer_method_signature_status -ne "ADR_NEEDED/TBD-002" -or
             $null -ne $boundary.broker_product -or
             $null -ne $boundary.topic_name -or
             $null -ne $boundary.partition_key -or
@@ -1765,6 +1829,8 @@ function Invoke-UsageEventTest {
 function Invoke-ProductionImageTest {
     $boundaryFile = "deploy/images/gateway/production-image-boundary.v1.json"
     $conformanceFile = "deploy/images/gateway/production-image.conformance.ps1"
+    $runtimeConformanceFile = "apps/gateway/gateway-runtime.conformance.ps1"
+    $imageIntegrationFile = "deploy/images/gateway/gateway-image.integration.ps1"
     $workflow = ".github/workflows/pr-gates.yml"
 
     Assert-Directory "deploy/images"
@@ -1773,23 +1839,49 @@ function Invoke-ProductionImageTest {
     Assert-File "deploy/images/gateway/README.md"
     Assert-File $boundaryFile
     Assert-File $conformanceFile
+    Assert-File $runtimeConformanceFile
+    Assert-File $imageIntegrationFile
+    Assert-File "deploy/images/gateway/Dockerfile"
+    Assert-File "docs/adr/ADR-001-gateway-dotnet-linux-runtime.md"
+    Assert-File "global.json"
+    Assert-File "Directory.Build.props"
+    Assert-File "Directory.Packages.props"
+    Assert-File "apps/gateway/src/EnterpriseAiPlatform.Gateway/EnterpriseAiPlatform.Gateway.csproj"
+    Assert-File "apps/gateway/src/EnterpriseAiPlatform.Gateway/packages.lock.json"
+    Assert-File "apps/gateway/src/EnterpriseAiPlatform.Gateway/Program.cs"
 
-    Assert-FileContains "deploy/images/README.md" "TBD-001" "PRODUCTION_IMAGE_RUNTIME_TBD_MISSING"
+    Assert-FileContains "docs/adr/ADR-001-gateway-dotnet-linux-runtime.md" "Status: Accepted" "GATEWAY_RUNTIME_ADR_NOT_ACCEPTED"
+    Assert-FileContains "docs/adr/ADR-001-gateway-dotnet-linux-runtime.md" 'Resolved item: `TBD-001`' "GATEWAY_RUNTIME_TBD_RESOLUTION_MISSING"
     Assert-FileContains "deploy/images/gateway/README.md" "AC-BLD-001" "PRODUCTION_IMAGE_ACCEPTANCE_BOUNDARY_MISSING"
     Assert-FileContains "deploy/images/gateway/README.md" "previously verified immutable image digest" "PRODUCTION_IMAGE_ROLLBACK_MISSING"
-    Assert-FileContains $boundaryFile '"status": "blocked-tbd-001"' "PRODUCTION_IMAGE_BLOCKER_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"status": "runtime-implemented-supply-chain-tbd"' "PRODUCTION_IMAGE_RUNTIME_STATUS_MISSING"
     Assert-FileContains $boundaryFile '"image_tag_format_status": "TBD-013"' "PRODUCTION_IMAGE_TAG_TBD_MISSING"
     Assert-FileContains $boundaryFile '"sbom_required": true' "PRODUCTION_IMAGE_SBOM_REQUIREMENT_MISSING"
     Assert-FileContains $boundaryFile '"secret_free_layers": true' "PRODUCTION_IMAGE_SECRET_GUARD_MISSING"
+
+    $runtimeConformancePath = Join-Path $repoRoot $runtimeConformanceFile
+    if (Test-Path -LiteralPath $runtimeConformancePath -PathType Leaf) {
+        try {
+            $runtimeOutput = @(& $runtimeConformancePath)
+            foreach ($line in $runtimeOutput) { Write-Output $line }
+            $runtimeSuccess = @($runtimeOutput | Where-Object { $_ -like "status=pass reason_code=GATEWAY_DOTNET_RUNTIME_CONFORMANCE_OK*" })
+            if ($runtimeSuccess.Count -ne 1) {
+                Add-Failure "GATEWAY_DOTNET_RUNTIME_CONFORMANCE_FAILED" $runtimeConformanceFile "build and runtime probe success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "GATEWAY_DOTNET_RUNTIME_CONFORMANCE_FAILED" $runtimeConformanceFile $_.Exception.Message
+        }
+    }
 
     $conformancePath = Join-Path $repoRoot $conformanceFile
     if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
         try {
             $output = @(& $conformancePath)
             foreach ($line in $output) { Write-Output $line }
-            $success = @($output | Where-Object { $_ -like "status=pass reason_code=PRODUCTION_IMAGE_BOUNDARY_GUARD_OK*" })
+            $success = @($output | Where-Object { $_ -like "status=pass reason_code=PRODUCTION_IMAGE_RUNTIME_STATIC_OK*" })
             if ($success.Count -ne 1) {
-                Add-Failure "PRODUCTION_IMAGE_CONFORMANCE_FAILED" $conformanceFile "explicit blocked-state guard evidence was not emitted"
+                Add-Failure "PRODUCTION_IMAGE_CONFORMANCE_FAILED" $conformanceFile "runtime-selected static image evidence was not emitted"
             }
         }
         catch {
@@ -1799,6 +1891,10 @@ function Invoke-ProductionImageTest {
 
     Assert-FileContains $workflow "Verify Production Image Boundary" "CI_PRODUCTION_IMAGE_TEST_MISSING"
     Assert-FileContains $workflow "test-m3-001" "CI_PRODUCTION_IMAGE_COMMAND_MISSING"
+    Assert-FileContains $workflow "Verify Gateway .NET runtime" "CI_GATEWAY_DOTNET_RUNTIME_TEST_MISSING"
+    Assert-FileContains $workflow "Verify Gateway Linux image" "CI_GATEWAY_LINUX_IMAGE_TEST_MISSING"
+    Assert-FileContains $workflow "actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68" "CI_DOTNET_SETUP_NOT_PINNED"
+    Assert-FileContains $workflow "global-json-file: global.json" "CI_DOTNET_GLOBAL_JSON_MISSING"
 }
 
 function Invoke-GatewayHelmTest {
@@ -1930,6 +2026,10 @@ switch ($Command) {
     "test" {
         Invoke-Test
     }
+    "test-linux" {
+        Invoke-LinuxCompatibilityTest
+        Invoke-CISkeletonTest
+    }
     "test-m0-002" {
         Invoke-ContractDirectoryTest
     }
@@ -2007,7 +2107,7 @@ switch ($Command) {
         Invoke-Lint
         Invoke-Test
         if ($script:Failures.Count -eq 0) {
-            Write-Output "status=info command=build reason_code=NO_APPLICATION_RUNTIME_BUILD component_count=13 detail=repository and migration assets validated; no buildable application runtime exists yet"
+            Write-Output "status=info command=build reason_code=GATEWAY_RUNTIME_BUILD_READY component=gateway framework=net10.0 production_image_acceptance=not-met blocked_by=REQ-CICD-004,TASK-CICD-001"
         }
     }
 }
@@ -2022,6 +2122,7 @@ if ($script:Failures.Count -gt 0) {
 $successReason = switch ($Command) {
     "lint" { "REPOSITORY_LINT_OK" }
     "test" { "REPOSITORY_CONTRACT_OK" }
+    "test-linux" { "LINUX_COMPATIBILITY_STATIC_OK" }
     "test-m0-002" { "PUBLIC_CONTRACT_DIRECTORIES_OK" }
     "test-m0-003" { "PR_GATE_SKELETON_OK" }
     "test-m1-001" { "POSTGRESQL_MIGRATION_BASELINE_OK" }
@@ -2035,7 +2136,7 @@ $successReason = switch ($Command) {
     "test-m2-005" { "PROVIDER_ADAPTER_BOUNDARY_OK" }
     "test-m2-006" { "RETRY_FALLBACK_BOUNDARY_OK" }
     "test-m2-007" { "USAGE_EVENT_BOUNDARY_OK" }
-    "test-m3-001" { "PRODUCTION_IMAGE_BOUNDARY_GUARD_OK" }
+    "test-m3-001" { "PRODUCTION_IMAGE_RUNTIME_BOUNDARY_OK" }
     "test-m3-002" { "GATEWAY_HELM_CHART_OK" }
     "test-m3-003" { "TERRAFORM_SKELETON_OK" }
     "security" { "BOOTSTRAP_SECRET_SCAN_OK" }

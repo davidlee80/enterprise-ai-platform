@@ -30,12 +30,11 @@ audited runtime integration.
 
 Run the complete conformance gate with:
 
-```powershell
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-003
+```bash
+./scripts/task.sh test-m3-003
 ```
 
 Environment initialization uses `terraform init -backend=false`; a reviewed,
 encrypted, locked remote backend remains required before any real environment
 plan or apply. Normal production delivery will be owned by `TASK-M3-004` GitOps
 and an approved infrastructure workflow, never ad-hoc application CI.
-

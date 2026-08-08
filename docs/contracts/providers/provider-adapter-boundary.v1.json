@@ -8,7 +8,7 @@
   "runtime_config_schema": "provider-runtime-config.v1.schema.json",
   "registry_schema": "provider-adapter-registry.v1.schema.json",
   "adapter_method_signature": null,
-  "adapter_method_signature_status": "TBD-001",
+  "adapter_method_signature_status": "ADR_NEEDED",
   "secret_resolver": null,
   "secret_resolver_status": "TBD-012",
   "invariants": [
@@ -29,6 +29,6 @@
   "forbidden_dependencies": ["control_plane_postgresql", "litellm_governance_state"],
   "forbidden_upper_layer_fields": ["endpoint", "secret_ref", "provider_model", "provider_key", "credential"],
   "forbidden_result_fields": ["endpoint", "secret_ref", "provider_model", "provider_key", "credential", "raw_error", "stack_trace"],
-  "runtime_language_status": "TBD-001",
+  "runtime_language_status": "ADR-001",
   "dependency_injection_status": "TBD-002"
 }

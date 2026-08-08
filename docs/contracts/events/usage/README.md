@@ -32,8 +32,9 @@ and event must commit atomically; request completion has no synchronous business
 database write to pair with it. Production broker/buffer durability and failure
 recovery still require an explicit ADR.
 
-Backend language and producer interface remain `TBD-001`/`TBD-002`. Broker,
-topic, partition key, producer buffer durability, overflow handling, publisher
+The Gateway language is selected by `ADR-001`; producer interface and DI remain
+`TBD-002`/ADR-needed. Broker, topic, partition key, producer buffer durability,
+overflow handling, publisher
 retry/DLQ, Usage aggregation table/buckets/retention, pricing precision,
 currency policy, and cost authority are intentionally unresolved. The contract
 does not create the pending `usage` table or select Kafka over an equivalent
@@ -42,7 +43,7 @@ event mechanism.
 Run the asynchronous pipeline and duplicate-delivery conformance suite:
 
 ```powershell
-powershell -NoProfile -File .\apps\billing\usage-event.conformance.ps1
+pwsh -NoLogo -NoProfile -File ./apps/billing/usage-event.conformance.ps1
 ```
 
 Schema rollback retains Usage Event v1 for replay and compatible consumers.

@@ -54,6 +54,12 @@ jobs:
         uses: actions/checkout@v6.0.2
         with:
           persist-credentials: false
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: apps/gateway/src/EnterpriseAiPlatform.Gateway/packages.lock.json
       - name: Setup Helm
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
         with:
@@ -63,6 +69,12 @@ jobs:
         with:
           terraform_version: 1.15.8
           terraform_wrapper: false
+      - name: Linux entrypoint smoke test
+        shell: bash
+        run: ./scripts/linux-smoke.sh
+      - name: Verify Gateway .NET runtime
+        shell: pwsh
+        run: ./apps/gateway/gateway-runtime.conformance.ps1
       - name: Repository tests
         shell: pwsh
         run: ./scripts/task.ps1 test
@@ -93,6 +105,9 @@ jobs:
       - name: Verify Production Image Boundary
         shell: pwsh
         run: ./scripts/task.ps1 test-m3-001
+      - name: Verify Gateway Linux image
+        shell: pwsh
+        run: ./deploy/images/gateway/gateway-image.integration.ps1
       - name: Verify Gateway Helm Chart
         shell: pwsh
         run: ./scripts/task.ps1 test-m3-002

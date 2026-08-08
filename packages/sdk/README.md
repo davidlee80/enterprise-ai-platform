@@ -9,7 +9,7 @@ input. It intentionally does not select a generator or language while `TBD-007`
 is unresolved:
 
 ```powershell
-powershell -NoProfile -File .\packages\sdk\generate.ps1 plan
+pwsh -NoLogo -NoProfile -File ./packages/sdk/generate.ps1 plan
 ```
 
 This package must not contain domain repositories or directly read/write another

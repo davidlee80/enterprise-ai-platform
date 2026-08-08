@@ -6,13 +6,20 @@
 | Job | Repository command | Bootstrap responsibility |
 |---|---|---|
 | `lint` | `./scripts/task.ps1 lint` | Repository and managed-document lint |
-| `test` | `./scripts/task.ps1 test` | Repository, contract-directory, and migration validation |
+| `test` | `./scripts/linux-smoke.sh`, then `./scripts/task.ps1 test` | Native Bash entrypoint smoke test plus repository, contract, and migration validation |
 | `security` | `./scripts/task.ps1 security` | Basic plaintext-credential and private-key pattern checks |
 
 The workflow grants only `contents: read`, does not persist checkout credentials,
 does not reference repository secrets, and has no deployment or production
 cluster permissions. It must never add direct production `kubectl apply` as a
 normal delivery path.
+
+The test job runs on `ubuntu-latest`. Its Bash smoke step requires tracked
+executable bits and LF line endings, rejects case-colliding paths, verifies
+PowerShell 7 and the CI-pinned .NET/Helm/Terraform versions, and invokes `lint`
+plus the CI skeleton test through `scripts/task.sh`. This is executable Linux-host
+evidence; subsequent PowerShell steps exercise all task-specific suites on the
+same Ubuntu runner.
 
 The bootstrap security command is deliberately narrow. It is machine-verifiable
 evidence for this task, not the final dependency/image/Secret scanning standard.
@@ -90,13 +97,13 @@ broker publication and covers queue rejection, broker failure, duplicate event
 and business keys, tenant conflicts, body/secret exclusion, and transport/store
 TBD guards without connecting to a real broker or Billing database.
 
-The Production Image Boundary gate currently validates an explicit
-`blocked-tbd-001` state. It rejects an unapproved Dockerfile or hidden runtime,
-package-manager, base-image, tool, and evidence selections while preserving all
-mandatory image completion controls. Its passing output includes
-`acceptance=not-met`; image build, SBOM, scanning, signing, container inspection,
-and probe jobs can only replace that state after a reviewed runtime ADR and a
-real locked application artifact exist.
+The Production Image Boundary gate validates the `ADR-001` .NET 10 runtime,
+locked NuGet graph, digest-pinned multi-stage Dockerfile, minimal numeric
+non-root runtime, OCI traceability, health contract, and Secret-free build
+inputs. The Ubuntu job builds the Gateway, builds the Linux image, inspects its
+metadata, and probes `/healthz` and `/readyz`. The gate still reports
+`acceptance=not-met`: SBOM generation, scanning, signing, and their acceptance
+evidence remain blocked on `REQ-CICD-004` and `TASK-CICD-001`.
 
 The Gateway Helm gate uses Helm v3.21.3 installed by a commit-SHA-pinned setup
 action. It lints the chart, renders development/test/production overlays,

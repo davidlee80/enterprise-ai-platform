@@ -1,11 +1,11 @@
 # Data Plane Runtime Snapshot Consumer
 
 This package implements the `TASK-M1-004` consumption state machine and an
-executable conformance reference. It does not select the backend language, web
-framework, DDD directory convention, or dependency-injection framework. The
-PowerShell/.NET implementation exists so the contract and concurrency behavior
-can be tested before `TBD-001` and `TBD-002` are decided; a production runtime in
-another language must pass equivalent tests.
+executable conformance reference. `ADR-001` selects C#/.NET 10 and ASP.NET Core
+for the Gateway, but does not select the DDD directory convention or
+dependency-injection boundary (`TBD-002`). The existing PowerShell/.NET
+reference remains the executable contract until it is composed into the
+production runtime.
 
 ## Publication and notification contract
 

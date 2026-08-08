@@ -9,7 +9,7 @@
   "telemetry_schema": "retry-fallback-telemetry.v1.schema.json",
   "provider_adapter_contract": "docs/contracts/providers/provider-adapter-boundary.v1.json",
   "orchestrator_method_signature": null,
-  "orchestrator_method_signature_status": "TBD-001",
+  "orchestrator_method_signature_status": "ADR_NEEDED",
   "dependency_injection_status": "TBD-002",
   "invariants": [
     "The Provider Adapter remains single-attempt; only this boundary coordinates retry and fallback.",

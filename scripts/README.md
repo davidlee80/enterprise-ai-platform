@@ -1,36 +1,52 @@
 # Repository scripts
 
-`task.ps1` is the bootstrap command entrypoint:
+On Linux, `task.sh` is the repository command entrypoint. It resolves its own
+location, requires PowerShell 7 (`pwsh`), and forwards arguments without shell
+evaluation:
 
-```powershell
-powershell -NoProfile -File .\scripts\task.ps1 lint
-powershell -NoProfile -File .\scripts\task.ps1 test
-powershell -NoProfile -File .\scripts\task.ps1 test-m0-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m0-003
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-001
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-003
-powershell -NoProfile -File .\scripts\task.ps1 test-m1-004
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-001
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-003
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-004
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-005
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-006
-powershell -NoProfile -File .\scripts\task.ps1 test-m2-007
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-001
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-002
-powershell -NoProfile -File .\scripts\task.ps1 test-m3-003
-powershell -NoProfile -File .\scripts\task.ps1 security
-powershell -NoProfile -File .\scripts\task.ps1 build
+```bash
+./scripts/task.sh lint
+./scripts/task.sh test
+./scripts/task.sh test-linux
+./scripts/task.sh test-m0-002
+./scripts/task.sh test-m0-003
+./scripts/task.sh test-m1-001
+./scripts/task.sh test-m1-002
+./scripts/task.sh test-m1-003
+./scripts/task.sh test-m1-004
+./scripts/task.sh test-m2-001
+./scripts/task.sh test-m2-002
+./scripts/task.sh test-m2-003
+./scripts/task.sh test-m2-004
+./scripts/task.sh test-m2-005
+./scripts/task.sh test-m2-006
+./scripts/task.sh test-m2-007
+./scripts/task.sh test-m3-001
+./scripts/task.sh test-m3-002
+./scripts/task.sh test-m3-003
+./scripts/task.sh security
+./scripts/task.sh build
 ```
 
-PostgreSQL migration commands use the separate entrypoint:
+`linux-smoke.sh` is executed by the Ubuntu PR gate. It verifies Linux,
+PowerShell 7, the pinned Helm/Terraform versions, LF entrypoints, executable
+bits, case-sensitive path safety, and then invokes the repository through the
+Bash entrypoint:
+
+```bash
+./scripts/linux-smoke.sh
+```
+
+On Windows, call `task.ps1` with PowerShell 7 directly, for example
+`pwsh -NoLogo -NoProfile -File .\scripts\task.ps1 lint`.
+
+PostgreSQL migration commands use the separate entrypoint. The following
+PowerShell 7 form works on Linux and Windows:
 
 ```powershell
-powershell -NoProfile -File .\scripts\migration.ps1 validate
-powershell -NoProfile -File .\scripts\migration.ps1 up
-powershell -NoProfile -File .\scripts\migration.ps1 status
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 validate
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 up
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 status
 ```
 
 The dedicated `test-m0-002` command validates the public-contract and ADR storage
@@ -96,13 +112,12 @@ publish failure, duplicate event/business-key consumption, tenant isolation,
 token/cost observation shape, high-cardinality label guards, secret/body
 non-disclosure, and the unresolved transport/storage/pricing decisions.
 
-`test-m3-001` validates the versioned production-image readiness boundary. In
-the current `blocked-tbd-001` state it requires all runtime/package/base-image
-choices and acceptance evidence to remain null, rejects an unapproved
-Dockerfile, and verifies the mandatory multi-stage, digest pinning, minimal
-runtime, numeric non-root, health, SBOM, traceability, rollback, and Secret-free
-transition controls. A passing guard reports `acceptance=not-met`; it is not a
-substitute for building and probing a real image after `TBD-001` is resolved.
+`test-m3-001` restores the exact .NET 10 SDK graph in locked mode, builds the
+Gateway, probes `/healthz` and fail-closed `/readyz`, verifies log/body Secret
+non-disclosure, and validates the versioned production-image boundary and
+Dockerfile. CI also builds and probes the Linux image. The boundary reports
+`runtime-implemented` with `acceptance=not-met` until `REQ-CICD-004` and
+`TASK-CICD-001` select and wire SBOM, scanner, signing, and evidence tooling.
 
 `test-m3-002` runs real Helm lint/template checks for the Gateway chart and all
 three environment overlays. It verifies the 3-replica/8080 baseline, readiness,
@@ -119,15 +134,20 @@ checking all eight required modules and cloud-neutral architecture contracts.
 OpenAPI-specific commands are also available directly:
 
 ```powershell
-powershell -NoProfile -File .\scripts\openapi.ps1 validate
-powershell -NoProfile -File .\scripts\openapi.ps1 compatibility
-powershell -NoProfile -File .\packages\sdk\generate.ps1 plan
+pwsh -NoLogo -NoProfile -File ./scripts/openapi.ps1 validate
+pwsh -NoLogo -NoProfile -File ./scripts/openapi.ps1 compatibility
+pwsh -NoLogo -NoProfile -File ./packages/sdk/generate.ps1 plan
 ```
 
-The runner uses structured `reason_code` values for validation failures. It is a
-repository utility, not a backend language or framework decision.
+The runner uses structured `reason_code` values for validation failures. The
+Gateway runtime decision is recorded separately in `docs/adr/ADR-001-*`.
 
-The general `test`/`build` commands require Helm v3.21.3 and Terraform 1.15.8
-because they include the real `TASK-M3-002` and `TASK-M3-003` gates. The PR
-workflow installs both through commit-SHA-pinned actions; local runs must place
-compatible `helm` and `terraform` binaries on `PATH`.
+`test-linux` statically validates the LF policy, Bash entrypoints, Linux-first
+documentation, structured missing-dependency failure, case-collision guard, and
+Ubuntu smoke-test wiring. `linux-smoke.sh` supplies the host-specific evidence
+that cannot be produced by this static command on Windows.
+
+The general `test`/`build` commands require .NET SDK 10.0.302, Helm v3.21.3,
+and Terraform 1.15.8 because they include the real M3 gates. The PR workflow
+installs all three through commit-SHA-pinned actions; local runs must place
+compatible `dotnet`, `helm`, and `terraform` binaries on `PATH`.

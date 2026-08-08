@@ -26,7 +26,8 @@ Plans arrive through the existing versioned Runtime Snapshot publication path.
 Usage, Billing, Audit, and Analytics persistence stays asynchronous; the Usage
 Event boundary is implemented by `TASK-M2-007` and never blocks this result.
 
-The backend method signature stays `TBD-001`/`TBD-002`; public error mapping is
+The backend method signature and DI composition stay `TBD-002`/ADR-needed;
+`ADR-001` only selects the Gateway language. Public error mapping is
 `TBD-008`/`TBD-017`. Production attempt limits, backoff/jitter algorithms,
 timeouts, plan values, and SLO thresholds require tenant configuration or ADR
 and are not selected by this reference. Retry after partial streaming output is
@@ -37,7 +38,7 @@ in the conformance suite are test fixtures only.
 Run the failure-injection suite:
 
 ```powershell
-powershell -NoProfile -File .\apps\provider\retry-fallback.conformance.ps1
+pwsh -NoLogo -NoProfile -File ./apps/provider/retry-fallback.conformance.ps1
 ```
 
 Update the v1 compatibility baseline only with an explicitly reviewed migration

@@ -23,8 +23,21 @@ traceable by Git revision; release version topology remains TBD under
 The language-neutral
 [`createChatCompletion` binding](contracts/chat-completions.binding.v1.json)
 maps `POST /v1/chat/completions` to the authoritative OpenAPI request, response,
-and stream schemas. The concrete runtime handler remains `TBD-001` and is not
-selected by `TASK-M2-001`.
+and stream schemas. `ADR-001` implements its bootstrap handler with C#/.NET 10,
+ASP.NET Core Minimal APIs, Kestrel, and locked NuGet restore on Linux. Until the
+remaining auth/policy/router composition decisions are implemented, the route
+fails closed with HTTP 503 and no invented `TBD-008` public error body.
+
+From a Linux repository checkout with .NET SDK 10.0.302:
+
+```bash
+dotnet restore apps/gateway/src/EnterpriseAiPlatform.Gateway/EnterpriseAiPlatform.Gateway.csproj --locked-mode
+ASPNETCORE_URLS=http://0.0.0.0:8080 dotnet run --project apps/gateway/src/EnterpriseAiPlatform.Gateway/EnterpriseAiPlatform.Gateway.csproj --configuration Release --no-restore
+```
+
+`/healthz` returns 200 once the process is live. `/readyz` deliberately returns
+503 until a validated Runtime Snapshot and the remaining runtime boundaries are
+composed; the bootstrap process must not receive normal model traffic.
 
 The binding now requires an `authenticated` result from
 [`Authentication Boundary v1`](../../packages/auth/contracts/authentication-boundary.v1.json)

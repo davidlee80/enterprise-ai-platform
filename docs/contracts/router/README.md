@@ -37,10 +37,11 @@ No synchronous Usage, Billing, Audit, or Analytics write blocks routing.
 Run the conformance suite:
 
 ```powershell
-powershell -NoProfile -File .\apps\router\router-plugin.conformance.ps1
+pwsh -NoLogo -NoProfile -File ./apps/router/router-plugin.conformance.ps1
 ```
 
-The production language, DI binding, plugin method signature, route algorithms,
-grey weights, and observation windows remain `TBD-001`, `TBD-002`, `TBD-003`,
-and `TBD-014`. Update `router-compatibility-baseline.v1.json` only with an
+The production language is selected by `ADR-001`. DI binding, plugin method
+signature, route algorithms, grey weights, and observation windows remain
+`TBD-002`, `TBD-003`, and `TBD-014`. Update
+`router-compatibility-baseline.v1.json` only with an
 explicitly reviewed breaking-change and migration plan.

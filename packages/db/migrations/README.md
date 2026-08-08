@@ -11,15 +11,15 @@ standard; the production PostgreSQL migration tool remains TBD under
 
 Validate without a database:
 
-```powershell
-powershell -NoProfile -File .\scripts\migration.ps1 validate
+```bash
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 validate
 ```
 
 Apply all pending migrations with an installed `psql` client:
 
-```powershell
-$env:PGSERVICE = "reviewed-service-name"
-powershell -NoProfile -File .\scripts\migration.ps1 up
+```bash
+export PGSERVICE="reviewed-service-name"
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 up
 ```
 
 Standard libpq `PG*` environment variables may be used instead of `PGSERVICE`.
@@ -29,8 +29,8 @@ argument.
 
 Check applied versions:
 
-```powershell
-powershell -NoProfile -File .\scripts\migration.ps1 status
+```bash
+pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 status
 ```
 
 ## Forward and rollback policy

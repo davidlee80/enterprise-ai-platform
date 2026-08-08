@@ -2,21 +2,22 @@
   "schema_version": 1,
   "task": "TASK-M3-001",
   "component": "gateway",
-  "status": "blocked-tbd-001",
+  "status": "runtime-implemented-supply-chain-tbd",
   "blocked_by": [
-    "TBD-001"
+    "REQ-CICD-004",
+    "TASK-CICD-001"
   ],
   "dockerfile": "deploy/images/gateway/Dockerfile",
-  "build_context": null,
+  "build_context": ".",
   "runtime_selection": {
-    "language": null,
-    "framework": null,
-    "package_manager": null,
-    "dependency_lock_file": null,
-    "build_image": null,
-    "runtime_image": null,
-    "artifact": null,
-    "entrypoint": null
+    "language": "C#",
+    "framework": "ASP.NET Core Minimal APIs on .NET 10 LTS with Kestrel",
+    "package_manager": "NuGet through dotnet SDK 10.0.302",
+    "dependency_lock_file": "apps/gateway/src/EnterpriseAiPlatform.Gateway/packages.lock.json",
+    "build_image": "mcr.microsoft.com/dotnet/sdk:10.0.302-noble@sha256:72dd743782f2ae7e5476fd64f6a460045e3998dc862218b80e6944cba79a01b0",
+    "runtime_image": "mcr.microsoft.com/dotnet/aspnet:10.0.10-noble-chiseled-extra@sha256:f9bd6be9b5ab75b8196bff0f0972580edaea7fa8ca04e6ef530950e33caee5b0",
+    "artifact": "/app/EnterpriseAiPlatform.Gateway.dll",
+    "entrypoint": "dotnet EnterpriseAiPlatform.Gateway.dll"
   },
   "requirements": {
     "multi_stage": true,
@@ -61,4 +62,3 @@
     "rollback_by_digest": null
   }
 }
-

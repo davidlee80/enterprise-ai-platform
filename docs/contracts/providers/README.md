@@ -29,7 +29,7 @@ Retry/Fallback stays platform-owned outside LiteLLM. This boundary follows the o
 Run the Provider Mock conformance suite:
 
 ```powershell
-powershell -NoProfile -File .\apps\provider\provider-adapter.conformance.ps1
+pwsh -NoLogo -NoProfile -File ./apps/provider/provider-adapter.conformance.ps1
 ```
 
 Adding an adapter is a registry/runtime-binding change and does not change the

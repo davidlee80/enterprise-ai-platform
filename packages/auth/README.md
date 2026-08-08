@@ -54,9 +54,10 @@ public errors. Provider credentials are outside this package and remain
 Run the executable conformance suite from the repository root:
 
 ```powershell
-powershell -NoProfile -File .\packages\auth\authentication-boundary.conformance.ps1
+pwsh -NoLogo -NoProfile -File ./packages/auth/authentication-boundary.conformance.ps1
 ```
 
-The concrete OpenAPI Header/security scheme, Identity Provider, backend
-language, Web Framework, and DI implementation remain `REQ-API-003`, `TBD-001`,
-and `TBD-002`. Complete public error bodies remain `TBD-008`.
+The concrete OpenAPI Header/security scheme and Identity Provider remain
+`REQ-API-003`; DI remains `TBD-002`. `ADR-001` selects C#/.NET 10 and ASP.NET
+Core for the Gateway without selecting the authentication implementation.
+Complete public error bodies remain `TBD-008`.

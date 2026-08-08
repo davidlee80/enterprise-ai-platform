@@ -1,0 +1,8 @@
+.git
+.build
+.terraform
+**/bin
+**/obj
+*.tfplan
+crash.log
+crash.*.log
