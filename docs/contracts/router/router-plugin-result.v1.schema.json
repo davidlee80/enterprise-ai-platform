@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:enterprise-ai-platform:router:plugin-result:v1",
   "title": "Router Plugin Result v1",
-  "description": "Language-neutral plugin result protocol; the production method signature remains TBD-003.",
+  "description": "Language-neutral plugin result protocol used by the ADR-003 Gateway Router Plugin method.",
   "type": "object",
   "required": [
     "schema_version",

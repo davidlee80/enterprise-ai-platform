@@ -114,7 +114,10 @@ Assert-Condition ($requestSchema.'$schema' -eq "https://json-schema.org/draft/20
 Assert-Condition ($decisionSchema.'$schema' -eq "https://json-schema.org/draft/2020-12/schema") "POLICY_DECISION_SCHEMA_DRAFT_INVALID"
 Assert-Condition ($requestSchema.additionalProperties -eq $false) "POLICY_REQUEST_UNVERSIONED_EXTENSION_ALLOWED"
 Assert-Condition ($decisionSchema.additionalProperties -eq $false) "POLICY_DECISION_UNVERSIONED_EXTENSION_ALLOWED"
-Assert-Condition ($boundary.runtime_status -eq "TBD-004" -and $null -eq $boundary.runtime) "POLICY_RUNTIME_PREMATURELY_SELECTED"
+Assert-Condition ($boundary.runtime_status -eq "ADR-004") "POLICY_RUNTIME_DECISION_MISSING"
+Assert-Condition ($boundary.runtime.product -eq "Open Policy Agent" -and $boundary.runtime.version -eq "1.19.0") "POLICY_RUNTIME_PRODUCT_INVALID"
+Assert-Condition ($boundary.runtime.topology -eq "loopback_sidecar" -and $boundary.runtime.api -eq "REST Data API v1") "POLICY_RUNTIME_API_INVALID"
+Assert-Condition ($boundary.runtime.base_address -eq "http://127.0.0.1:8181/" -and $boundary.runtime.decision_path -eq "v1/data/enterprise_ai/gateway/decision") "POLICY_RUNTIME_ENDPOINT_INVALID"
 Assert-Condition ($boundary.indeterminate_handling.status -eq "TBD-017" -and $null -eq $boundary.indeterminate_handling.mapping) "POLICY_FAILURE_DEFAULT_PREMATURELY_SELECTED"
 
 $obligations = @(

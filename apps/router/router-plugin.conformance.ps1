@@ -153,7 +153,8 @@ foreach ($schema in @($requestSchema, $pluginResultSchema, $decisionSchema, $reg
     Assert-Condition ($schema.'$schema' -eq "https://json-schema.org/draft/2020-12/schema") "ROUTER_SCHEMA_DRAFT_INVALID"
     Assert-Condition ($schema.additionalProperties -eq $false) "ROUTER_SCHEMA_UNVERSIONED_EXTENSION_ALLOWED"
 }
-Assert-Condition ($null -eq $boundary.plugin_method_signature -and $boundary.plugin_method_signature_status -eq "TBD-003") "ROUTER_METHOD_SIGNATURE_PREMATURELY_SELECTED"
+Assert-Condition ($boundary.plugin_method_signature_status -eq "ADR-003") "ROUTER_METHOD_SIGNATURE_DECISION_MISSING"
+Assert-Condition ($boundary.plugin_method_signature -eq "ValueTask<RouterPluginResult> RouteAsync(RouterPluginContext context, CancellationToken cancellationToken)") "ROUTER_METHOD_SIGNATURE_INVALID"
 Assert-Condition ($null -eq $boundary.selection_algorithm) "ROUTER_ALGORITHM_PREMATURELY_SELECTED"
 Assert-Condition ($null -eq $boundary.weight_and_observation_semantics -and $boundary.weight_and_observation_status -eq "TBD-014") "ROUTER_WEIGHT_SEMANTICS_PREMATURELY_SELECTED"
 

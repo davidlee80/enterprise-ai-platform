@@ -10,7 +10,8 @@ contracts implemented by `TASK-M2-003`:
   `allow`, a structured denial reason through `deny_reason`/`reason_code`, typed
   obligations, matched policy identifiers, and policy version.
 - [`policy-boundary.v1.json`](policy-boundary.v1.json) defines pipeline and
-  failure invariants without choosing a policy runtime.
+  failure invariants and binds the Gateway adapter to OPA Data API v1 through
+  `ADR-004`.
 - [`policy-compatibility-baseline.v1.json`](policy-compatibility-baseline.v1.json)
   records the v1 fields, outcomes, obligation kinds, and router guard that
   cannot be silently removed or changed.
@@ -38,11 +39,15 @@ Run the executable policy mock/conformance suite from the repository root:
 pwsh -NoLogo -NoProfile -File ./apps/policy/policy-decision.conformance.ps1
 ```
 
-The policy runtime product remains `TBD-004`. The conformance mock exercises the
-requirement example but does not select CEL, OPA, a custom engine, evaluation
-order, or production tenant policy. Decisions contain no policy source, Prompt
-or Response body, Provider credential, internal endpoint, or subject identity.
-Complete public error bodies remain `TBD-008`.
+`ADR-004` selects Open Policy Agent `v1.19.0` behind the replaceable
+`IPolicyRuntime` port. The Gateway posts `{ "input": ... }` to the loopback
+Data API document `v1/data/enterprise_ai/gateway/decision` and accepts only a
+closed Policy Decision v1 object in `result`. Runtime/bundle upgrades remain
+pinned and reviewed; production tenant policy content and evaluation order are
+not hard-coded by the adapter. Decisions contain no policy source, Prompt or
+Response body, Provider credential, internal endpoint, or subject identity.
+Complete public error bodies remain `TBD-008`, and indeterminate resource
+mapping remains `TBD-017`.
 
 Changing the compatibility baseline requires an explicitly reviewed breaking-
 change and migration plan. Ordinary additive reason codes or optional contract

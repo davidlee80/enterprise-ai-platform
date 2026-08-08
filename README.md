@@ -152,16 +152,17 @@ public Error Schema remain explicit TBD/ADR items.
 `TASK-M2-003` adds tenant/config-scoped Policy Evaluation and Policy Decision v1
 contracts plus a framework-neutral conformance mock. Decisions carry allow,
 structured denial reasons, typed obligations, matched policy IDs, policy
-version, and trace context. The production policy runtime and indeterminate
-resource behavior remain `TBD-004` and `TBD-017`; only explicit `allow` results
-can proceed toward `TASK-M2-004` routing.
+version, and trace context. `ADR-004` selects OPA Data API v1 behind a
+replaceable Gateway port; indeterminate resource behavior remains `TBD-017`.
+Only explicit `allow` results can proceed toward `TASK-M2-004` routing.
 
 `TASK-M2-004` adds a Router Plugin v1 registry/composition protocol, structured
 plugin results and Route Decisions, compatibility baseline, and mock-plugin
 conformance suite. New strategies are registered in a pipeline without adding
-strategy branches to the core lifecycle. Method signature, algorithms,
-grey-weight semantics, and observation windows remain `TBD-003`/`TBD-014`;
-Provider execution remains `TASK-M2-005`.
+strategy branches to the core lifecycle. `ADR-003` selects an async,
+cancellable method signature; algorithms, grey-weight semantics, and
+observation windows remain `TBD-014`. Provider execution remains
+`TASK-M2-005`.
 
 `TASK-M2-005` adds a Provider-neutral, single-attempt adapter boundary with
 tenant/config-scoped runtime bindings, an adapter registry, normalized results,

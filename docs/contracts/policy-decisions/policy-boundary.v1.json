@@ -4,8 +4,18 @@
   "scope": "data_plane",
   "request_schema": "policy-evaluation-request.v1.schema.json",
   "decision_schema": "policy-decision.v1.schema.json",
-  "runtime": null,
-  "runtime_status": "TBD-004",
+  "runtime": {
+    "product": "Open Policy Agent",
+    "version": "1.19.0",
+    "topology": "loopback_sidecar",
+    "api": "REST Data API v1",
+    "base_address": "http://127.0.0.1:8181/",
+    "decision_path": "v1/data/enterprise_ai/gateway/decision",
+    "request_envelope": "input",
+    "response_document": "result"
+  },
+  "runtime_status": "ADR-004",
+  "runtime_adr": "docs/adr/ADR-004-opa-policy-runtime.md",
   "input_source": "published_runtime_policy_context",
   "invariants": [
     "Evaluation requires an authenticated principal from Authentication Boundary v1.",

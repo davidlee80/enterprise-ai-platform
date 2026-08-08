@@ -22,9 +22,10 @@ traceable by Git revision; release version topology remains TBD under
 
 The versioned [`Policy Boundary v1`](../../docs/contracts/policy-decisions/policy-boundary.v1.json)
 consumes an authenticated, tenant-bound principal plus published policy context
-and emits a structured decision. The conformance mock covers tenant status,
-model/region allowlists, projected monthly budget, and typed obligations without
-selecting the production policy runtime (`TBD-004`).
+and emits a structured decision. `ADR-004` selects OPA `v1.19.0` Data API v1
+behind the replaceable Gateway `IPolicyRuntime` port. The conformance mock still
+covers tenant status, model/region allowlists, projected monthly budget, and
+typed obligations independently of production tenant policy content.
 
 Only an `allow` outcome can proceed toward the Router. `deny` carries a
 structured denial reason; `indeterminate` preserves unresolved runtime/context

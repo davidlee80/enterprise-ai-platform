@@ -447,7 +447,7 @@ function Invoke-ContractDirectoryTest {
     Assert-FileContains "docs/contracts/runtime-snapshots/README.md" "TBD-016" "SNAPSHOT_STALENESS_TBD_MISSING"
     Assert-FileContains "docs/contracts/runtime-snapshots/README.md" "last valid snapshot" "SNAPSHOT_ROLLBACK_MISSING"
     Assert-FileContains "docs/contracts/policy-decisions/README.md" "denial reason" "POLICY_REASON_MISSING"
-    Assert-FileContains "docs/contracts/policy-decisions/README.md" "TBD-004" "POLICY_RUNTIME_TBD_MISSING"
+    Assert-FileContains "docs/contracts/policy-decisions/README.md" "ADR-004" "POLICY_RUNTIME_DECISION_MISSING"
     Assert-FileContains "docs/adr/README.md" "REQ-*" "ADR_TRACEABILITY_MISSING"
     Assert-FileContains "docs/adr/README.md" "rollback or replacement path" "ADR_ROLLBACK_MISSING"
 }
@@ -1083,11 +1083,27 @@ function Invoke-PolicyDecisionTest {
     $boundaryFile = "docs/contracts/policy-decisions/policy-boundary.v1.json"
     $baselineFile = "docs/contracts/policy-decisions/policy-compatibility-baseline.v1.json"
     $conformanceFile = "apps/policy/policy-decision.conformance.ps1"
+    $runtimeConformanceFile = "apps/gateway/gateway-boundary-runtime.conformance.ps1"
     $bindingFile = "apps/gateway/contracts/chat-completions.binding.v1.json"
     $authBoundaryFile = "packages/auth/contracts/authentication-boundary.v1.json"
+    $adrFile = "docs/adr/ADR-004-opa-policy-runtime.md"
     $workflow = ".github/workflows/pr-gates.yml"
 
-    foreach ($file in @($requestSchemaFile, $decisionSchemaFile, $boundaryFile, $baselineFile, $conformanceFile, $bindingFile, $authBoundaryFile)) {
+    foreach ($file in @(
+        $requestSchemaFile,
+        $decisionSchemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile,
+        $runtimeConformanceFile,
+        $bindingFile,
+        $authBoundaryFile,
+        $adrFile,
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Policy/IPolicyRuntime.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Policy/EvaluatePolicy.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/Policy/OpaPolicyRuntime.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/Policy/OpaPolicyRuntimeOptions.cs"
+    )) {
         Assert-File $file
     }
 
@@ -1176,8 +1192,13 @@ function Invoke-PolicyDecisionTest {
             }
 
             if ($boundary.interface_version -ne 1 -or
-                $null -ne $boundary.runtime -or
-                $boundary.runtime_status -ne "TBD-004" -or
+                $boundary.runtime_status -ne "ADR-004" -or
+                $boundary.runtime.product -ne "Open Policy Agent" -or
+                $boundary.runtime.version -ne "1.19.0" -or
+                $boundary.runtime.api -ne "REST Data API v1" -or
+                $boundary.runtime.topology -ne "loopback_sidecar" -or
+                $boundary.runtime.base_address -ne "http://127.0.0.1:8181/" -or
+                $boundary.runtime.decision_path -ne "v1/data/enterprise_ai/gateway/decision" -or
                 $boundary.dependency_injection_status -ne "ADR-002" -or
                 $null -ne $boundary.indeterminate_handling.mapping -or
                 $boundary.indeterminate_handling.status -ne "TBD-017" -or
@@ -1186,7 +1207,7 @@ function Invoke-PolicyDecisionTest {
                 $boundary.next_boundary.contract -ne "docs/contracts/router/router-boundary.v1.json" -or
                 $boundary.next_boundary.required_policy_outcome -ne "allow" -or
                 $baseline.required_router_outcome -ne "allow") {
-                Add-Failure "POLICY_TBD_OR_PIPELINE_BOUNDARY_INVALID" $boundaryFile "runtime/failure defaults must remain TBD and only allow may reach routing"
+                Add-Failure "POLICY_RUNTIME_OR_PIPELINE_BOUNDARY_INVALID" $boundaryFile "OPA runtime must match ADR-004, failure mapping stays TBD, and only allow may reach routing"
             }
             foreach ($dependency in @("control_plane_postgresql", "provider_runtime", "litellm")) {
                 if (@($boundary.forbidden_dependencies) -notcontains $dependency) {
@@ -1215,11 +1236,27 @@ function Invoke-PolicyDecisionTest {
         }
     }
 
+    $runtimeConformancePath = Join-Path $repoRoot $runtimeConformanceFile
+    if (Test-Path -LiteralPath $runtimeConformancePath -PathType Leaf) {
+        try {
+            $runtimeOutput = @(& $runtimeConformancePath -Boundary Policy)
+            foreach ($line in $runtimeOutput) { Write-Output $line }
+            if ($runtimeOutput -notcontains "status=pass reason_code=POLICY_GATEWAY_RUNTIME_CONFORMANCE_OK") {
+                Add-Failure "POLICY_GATEWAY_RUNTIME_CONFORMANCE_FAILED" $runtimeConformanceFile "OPA adapter runtime evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "POLICY_GATEWAY_RUNTIME_CONFORMANCE_FAILED" $runtimeConformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $adrFile "Status: Accepted" "POLICY_RUNTIME_ADR_NOT_ACCEPTED"
+    Assert-FileContains $adrFile 'Resolved item: `TBD-004`' "POLICY_RUNTIME_TBD_RESOLUTION_MISSING"
     Assert-FileNotContains $decisionSchemaFile '"policy_source"' "POLICY_SOURCE_DISCLOSURE_FORBIDDEN"
     Assert-FileNotContains $decisionSchemaFile '"provider_key"' "POLICY_PROVIDER_KEY_DISCLOSURE_FORBIDDEN"
     Assert-FileContains $bindingFile '"policy_boundary": "docs/contracts/policy-decisions/policy-boundary.v1.json"' "POLICY_GATEWAY_BINDING_MISSING"
     Assert-FileContains $bindingFile '"required_policy_outcome": "allow"' "POLICY_GATEWAY_ALLOW_GUARD_MISSING"
-    Assert-FileContains $bindingFile '"policy_runtime_status": "TBD-004"' "POLICY_RUNTIME_TBD_MISSING"
+    Assert-FileContains $bindingFile '"policy_runtime_status": "ADR-004"' "POLICY_RUNTIME_BINDING_MISSING"
     Assert-FileContains $authBoundaryFile '"status": "implemented-v1"' "AUTH_TO_POLICY_BINDING_INCOMPLETE"
     Assert-FileContains "docs/contracts/policy-decisions/README.md" "must not synchronously query Control Plane" "POLICY_CP_DP_GUARD_MISSING"
     Assert-FileContains "docs/contracts/policy-decisions/README.md" "TBD-017" "POLICY_FAILURE_POLICY_TBD_MISSING"
@@ -1235,11 +1272,28 @@ function Invoke-RouterPluginTest {
     $boundaryFile = "docs/contracts/router/router-boundary.v1.json"
     $baselineFile = "docs/contracts/router/router-compatibility-baseline.v1.json"
     $conformanceFile = "apps/router/router-plugin.conformance.ps1"
+    $runtimeConformanceFile = "apps/gateway/gateway-boundary-runtime.conformance.ps1"
     $policyBoundaryFile = "docs/contracts/policy-decisions/policy-boundary.v1.json"
     $bindingFile = "apps/gateway/contracts/chat-completions.binding.v1.json"
+    $adrFile = "docs/adr/ADR-003-router-plugin-method-signature.md"
     $workflow = ".github/workflows/pr-gates.yml"
 
-    foreach ($file in @($requestSchemaFile, $pluginResultSchemaFile, $decisionSchemaFile, $registrySchemaFile, $boundaryFile, $baselineFile, $conformanceFile, $policyBoundaryFile, $bindingFile)) {
+    foreach ($file in @(
+        $requestSchemaFile,
+        $pluginResultSchemaFile,
+        $decisionSchemaFile,
+        $registrySchemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile,
+        $runtimeConformanceFile,
+        $policyBoundaryFile,
+        $bindingFile,
+        $adrFile,
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Routing/IRouterPlugin.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Routing/RouterPluginPipeline.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/Routing/RouterContracts.cs"
+    )) {
         Assert-File $file
     }
 
@@ -1303,8 +1357,8 @@ function Invoke-RouterPluginTest {
         }
 
         if ($requestSchema.properties.policy.properties.outcome.const -ne "allow" -or
-            $null -ne $boundary.plugin_method_signature -or
-            $boundary.plugin_method_signature_status -ne "TBD-003" -or
+            $boundary.plugin_method_signature -ne "ValueTask<RouterPluginResult> RouteAsync(RouterPluginContext context, CancellationToken cancellationToken)" -or
+            $boundary.plugin_method_signature_status -ne "ADR-003" -or
             $boundary.dependency_injection_status -ne "ADR-002" -or
             $null -ne $boundary.selection_algorithm -or
             $null -ne $boundary.weight_and_observation_semantics -or
@@ -1316,7 +1370,7 @@ function Invoke-RouterPluginTest {
             $boundary.next_boundary.contract -ne "docs/contracts/providers/provider-adapter-boundary.v1.json" -or
             $boundary.next_boundary.required_route_outcome -ne "selected" -or
             $baseline.required_provider_adapter_outcome -ne "selected") {
-            Add-Failure "ROUTER_TBD_OR_PIPELINE_BOUNDARY_INVALID" $boundaryFile "method/algorithm/weight/failure defaults must remain unresolved and only selected may reach the Provider Adapter"
+            Add-Failure "ROUTER_METHOD_OR_PIPELINE_BOUNDARY_INVALID" $boundaryFile "ADR-003 must bind the method while algorithm/weight/failure defaults stay unresolved and only selected reaches the Provider Adapter"
         }
         foreach ($dependency in @("control_plane_postgresql", "litellm_governance_state")) {
             if (@($boundary.forbidden_dependencies) -notcontains $dependency) {
@@ -1342,12 +1396,28 @@ function Invoke-RouterPluginTest {
         }
     }
 
+    $runtimeConformancePath = Join-Path $repoRoot $runtimeConformanceFile
+    if (Test-Path -LiteralPath $runtimeConformancePath -PathType Leaf) {
+        try {
+            $runtimeOutput = @(& $runtimeConformancePath -Boundary Router)
+            foreach ($line in $runtimeOutput) { Write-Output $line }
+            if ($runtimeOutput -notcontains "status=pass reason_code=ROUTER_GATEWAY_RUNTIME_CONFORMANCE_OK") {
+                Add-Failure "ROUTER_GATEWAY_RUNTIME_CONFORMANCE_FAILED" $runtimeConformanceFile "Router plugin runtime evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "ROUTER_GATEWAY_RUNTIME_CONFORMANCE_FAILED" $runtimeConformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $adrFile "Status: Accepted" "ROUTER_PLUGIN_ADR_NOT_ACCEPTED"
+    Assert-FileContains $adrFile 'Resolved item: `TBD-003`' "ROUTER_PLUGIN_TBD_RESOLUTION_MISSING"
     Assert-FileNotContains $conformanceFile 'switch ([string]$Request.route_strategy)' "ROUTER_STRATEGY_DISPATCH_CHAIN_FORBIDDEN"
     Assert-FileContains $policyBoundaryFile '"status": "implemented-v1"' "POLICY_TO_ROUTER_BINDING_INCOMPLETE"
     Assert-FileContains $policyBoundaryFile '"contract": "docs/contracts/router/router-boundary.v1.json"' "POLICY_TO_ROUTER_CONTRACT_MISSING"
     Assert-FileContains $bindingFile '"router_boundary": "docs/contracts/router/router-boundary.v1.json"' "ROUTER_GATEWAY_BINDING_MISSING"
     Assert-FileContains $bindingFile '"required_route_outcome": "selected"' "ROUTER_GATEWAY_SELECTED_GUARD_MISSING"
-    Assert-FileContains $bindingFile '"router_plugin_method_status": "TBD-003"' "ROUTER_METHOD_TBD_MISSING"
+    Assert-FileContains $bindingFile '"router_plugin_method_status": "ADR-003"' "ROUTER_METHOD_BINDING_MISSING"
     Assert-FileContains "docs/contracts/router/README.md" "must not query Control Plane PostgreSQL" "ROUTER_CP_DP_GUARD_MISSING"
     Assert-FileContains "docs/contracts/router/README.md" "TBD-014" "ROUTER_WEIGHT_TBD_MISSING"
     Assert-FileContains $workflow "Verify Router Plugin Boundary" "CI_ROUTER_BOUNDARY_TEST_MISSING"

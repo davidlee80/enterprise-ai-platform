@@ -17,3 +17,7 @@ Accepted Gateway decisions:
 - `ADR-001-gateway-dotnet-linux-runtime.md` resolves `TBD-001`.
 - `ADR-002-gateway-ddd-dependency-injection.md` resolves `TBD-002` for the
   Gateway without setting an unimplemented service-wide standard.
+- `ADR-003-router-plugin-method-signature.md` resolves `TBD-003` for the
+  Gateway with an async, cancellable, registry-composed plugin port.
+- `ADR-004-opa-policy-runtime.md` resolves `TBD-004` for the Gateway with an
+  OPA Data API sidecar behind a replaceable application port.

@@ -6,8 +6,8 @@ TASK-M2-004 defines a language-neutral registration/composition boundary:
   requests and opaque Provider candidates.
 - `router-registry.v1.schema.json` maps a `route_strategy` to an ordered list of
   registered plugins.
-- `router-plugin-result.v1.schema.json` defines structured plugin results while
-  the production method signature remains `TBD-003`.
+- `router-plugin-result.v1.schema.json` defines structured results returned by
+  the production method selected in `ADR-003`.
 - `route-decision.v1.schema.json` records selection, reason, ordered candidates,
   plugin trace, and obligation handling.
 - `router-boundary.v1.json` preserves pipeline invariants and the pending
@@ -40,8 +40,8 @@ Run the conformance suite:
 pwsh -NoLogo -NoProfile -File ./apps/router/router-plugin.conformance.ps1
 ```
 
-The production language is selected by `ADR-001` and Gateway DI composition by
-`ADR-002`. Plugin method signature, route algorithms, grey weights, and
-observation windows remain `TBD-003` and `TBD-014`. Update
+The production language is selected by `ADR-001`, Gateway DI composition by
+`ADR-002`, and the async/cancellable plugin signature by `ADR-003`. Route
+algorithms, grey weights, and observation windows remain `TBD-014`. Update
 `router-compatibility-baseline.v1.json` only with an
 explicitly reviewed breaking-change and migration plan.

@@ -8,6 +8,8 @@
 - Resolved item: `TBD-001`
 - Still unresolved: `TBD-003`, `TBD-004`, `TBD-008`, `TBD-009`,
   `TBD-012`, `TBD-013`, `TBD-016`, `TBD-017`, `TBD-018`, `TBD-019`
+- Subsequent decisions: `TBD-003` is resolved by ADR-003 and `TBD-004` by
+  ADR-004; the line above records this ADR's decision-time scope.
 
 ## Context
 

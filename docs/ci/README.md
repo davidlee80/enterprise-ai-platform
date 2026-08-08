@@ -69,8 +69,9 @@ the authorization pipeline.
 The Policy Decision gate executes a framework-neutral policy mock over active
 tenant, model/region allowlist, projected-budget, tenant-mismatch, version-
 mismatch, runtime-unavailable, and typed-obligation scenarios. It verifies that
-only explicit allow decisions can approach routing while runtime and
-indeterminate handling remain `TBD-004` and `TBD-017`.
+only explicit allow decisions can approach routing. Runtime conformance also
+verifies the `ADR-004` OPA Data API adapter while indeterminate resource
+handling remains `TBD-017`.
 
 The Router Plugin gate executes registry-driven mock composition and proves that
 adding a plugin does not modify the core lifecycle. It also covers policy deny,
