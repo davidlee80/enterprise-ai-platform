@@ -30,5 +30,5 @@
   "forbidden_upper_layer_fields": ["endpoint", "secret_ref", "provider_model", "provider_key", "credential"],
   "forbidden_result_fields": ["endpoint", "secret_ref", "provider_model", "provider_key", "credential", "raw_error", "stack_trace"],
   "runtime_language_status": "ADR-001",
-  "dependency_injection_status": "TBD-002"
+  "dependency_injection_status": "ADR-002"
 }

@@ -39,6 +39,23 @@ ASPNETCORE_URLS=http://0.0.0.0:8080 dotnet run --project apps/gateway/src/Enterp
 503 until a validated Runtime Snapshot and the remaining runtime boundaries are
 composed; the bootstrap process must not receive normal model traffic.
 
+## DDD and dependency injection
+
+[`ADR-002`](../../docs/adr/ADR-002-gateway-ddd-dependency-injection.md)
+defines compile-time `Domain`, `Application`, `Infrastructure`, and `Api/Host`
+projects. Dependencies point inward; Domain is framework-free and the ASP.NET
+Host is the only composition root. The Gateway uses the built-in
+`Microsoft.Extensions.DependencyInjection` container with replaceable `TryAdd`
+registrations. This resolves composition only: plugin/adapter method signatures
+and their production implementations remain separately reviewed boundaries.
+
+| Project | Responsibility |
+|---|---|
+| `EnterpriseAiPlatform.Gateway.Domain` | Framework-free runtime concepts and invariants |
+| `EnterpriseAiPlatform.Gateway.Application` | Use cases and infrastructure ports |
+| `EnterpriseAiPlatform.Gateway.Infrastructure` | Replaceable port adapters and DI registrations |
+| `EnterpriseAiPlatform.Gateway` | ASP.NET Api/Host and the single composition root |
+
 The binding now requires an `authenticated` result from
 [`Authentication Boundary v1`](../../packages/auth/contracts/authentication-boundary.v1.json)
 before entering the request pipeline. Verified `tenant_id` comes from the

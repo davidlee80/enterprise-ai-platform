@@ -59,7 +59,9 @@ jobs:
         with:
           global-json-file: global.json
           cache: true
-          cache-dependency-path: apps/gateway/src/EnterpriseAiPlatform.Gateway/packages.lock.json
+          cache-dependency-path: |
+            apps/gateway/src/**/packages.lock.json
+            apps/gateway/tests/**/packages.lock.json
       - name: Setup Helm
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
         with:
@@ -75,6 +77,9 @@ jobs:
       - name: Verify Gateway .NET runtime
         shell: pwsh
         run: ./apps/gateway/gateway-runtime.conformance.ps1
+      - name: Verify Gateway DDD and DI
+        shell: pwsh
+        run: ./scripts/task.ps1 test-code-001
       - name: Repository tests
         shell: pwsh
         run: ./scripts/task.ps1 test

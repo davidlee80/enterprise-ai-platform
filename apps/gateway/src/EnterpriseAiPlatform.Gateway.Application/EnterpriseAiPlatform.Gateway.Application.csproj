@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>EnterpriseAiPlatform.Gateway.Application</AssemblyName>
+    <Description>Gateway application use cases and ports</Description>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>EnterpriseAiPlatform.Gateway.Application</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../EnterpriseAiPlatform.Gateway.Domain/EnterpriseAiPlatform.Gateway.Domain.csproj" />
+  </ItemGroup>
+</Project>

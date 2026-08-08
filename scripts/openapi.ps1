@@ -325,8 +325,9 @@ function Invoke-OpenApiValidation {
             [string](Get-PropertyValue $binding "path") -ne "/v1/chat/completions" -or
             [string](Get-PropertyValue $binding "runtime_handler") -ne "apps/gateway/src/EnterpriseAiPlatform.Gateway/Program.cs" -or
             [string](Get-PropertyValue $binding "runtime_handler_status") -ne "implemented-bootstrap-v1" -or
-            [string](Get-PropertyValue $binding "runtime_language_decision") -ne "docs/adr/ADR-001-gateway-dotnet-linux-runtime.md") {
-            Add-ContractFailure "OPENAPI_HANDLER_BINDING_INVALID" "apps/gateway/contracts/chat-completions.binding.v1.json" "binding must match the operation and ADR-001 bootstrap runtime handler"
+            [string](Get-PropertyValue $binding "runtime_language_decision") -ne "docs/adr/ADR-001-gateway-dotnet-linux-runtime.md" -or
+            [string](Get-PropertyValue $binding "ddd_dependency_injection_decision") -ne "docs/adr/ADR-002-gateway-ddd-dependency-injection.md") {
+            Add-ContractFailure "OPENAPI_HANDLER_BINDING_INVALID" "apps/gateway/contracts/chat-completions.binding.v1.json" "binding must match the operation and ADR-001/ADR-002 bootstrap runtime handler"
         }
     }
 

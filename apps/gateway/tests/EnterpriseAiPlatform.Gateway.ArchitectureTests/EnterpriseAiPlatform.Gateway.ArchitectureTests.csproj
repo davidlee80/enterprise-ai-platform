@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>EnterpriseAiPlatform.Gateway.ArchitectureTests</AssemblyName>
+    <Description>Executable Gateway DDD and dependency-injection conformance tests</Description>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>EnterpriseAiPlatform.Gateway.ArchitectureTests</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../src/EnterpriseAiPlatform.Gateway.Application/EnterpriseAiPlatform.Gateway.Application.csproj" />
+    <ProjectReference Include="../../src/EnterpriseAiPlatform.Gateway.Domain/EnterpriseAiPlatform.Gateway.Domain.csproj" />
+    <ProjectReference Include="../../src/EnterpriseAiPlatform.Gateway.Infrastructure/EnterpriseAiPlatform.Gateway.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

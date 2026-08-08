@@ -6,7 +6,7 @@
 - Affected requirements: `REQ-REP-001`, `REQ-BLD-001` through
   `REQ-BLD-009`, `TASK-M3-001`, `AC-BLD-001`
 - Resolved item: `TBD-001`
-- Still unresolved: `TBD-002`, `TBD-003`, `TBD-004`, `TBD-008`, `TBD-009`,
+- Still unresolved: `TBD-003`, `TBD-004`, `TBD-008`, `TBD-009`,
   `TBD-012`, `TBD-013`, `TBD-016`, `TBD-017`, `TBD-018`, `TBD-019`
 
 ## Context
@@ -42,8 +42,8 @@ changes within the .NET 10 LTS line; this ADR does not authorize floating build
 inputs.
 
 The runtime uses only the ASP.NET Core shared framework in its first increment.
-It does not introduce a third-party NuGet dependency or make the ASP.NET Core
-service container the platform-wide `TBD-002` dependency-injection standard.
+It does not introduce a third-party NuGet dependency. Gateway DDD projects and
+dependency injection are subsequently resolved by ADR-002.
 
 ## Compatibility and architecture impact
 

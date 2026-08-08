@@ -60,5 +60,6 @@ artifacts.
 
 The handler binding is stored at
 [`apps/gateway/contracts/chat-completions.binding.v1.json`](../../../apps/gateway/contracts/chat-completions.binding.v1.json).
-`ADR-001` maps it to the .NET 10 bootstrap handler; M2-001 remains the
-authoritative language-neutral API contract.
+`ADR-001` maps it to the .NET 10 bootstrap handler and `ADR-002` supplies its
+DDD/DI composition root; M2-001 remains the authoritative language-neutral API
+contract.

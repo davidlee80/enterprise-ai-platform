@@ -40,8 +40,8 @@ Run the conformance suite:
 pwsh -NoLogo -NoProfile -File ./apps/router/router-plugin.conformance.ps1
 ```
 
-The production language is selected by `ADR-001`. DI binding, plugin method
-signature, route algorithms, grey weights, and observation windows remain
-`TBD-002`, `TBD-003`, and `TBD-014`. Update
+The production language is selected by `ADR-001` and Gateway DI composition by
+`ADR-002`. Plugin method signature, route algorithms, grey weights, and
+observation windows remain `TBD-003` and `TBD-014`. Update
 `router-compatibility-baseline.v1.json` only with an
 explicitly reviewed breaking-change and migration plan.

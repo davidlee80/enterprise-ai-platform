@@ -10,6 +10,7 @@ implementation.
 | Path | Purpose |
 |---|---|
 | `apps/` | Independently buildable and deployable applications/services |
+| `apps/gateway/src/EnterpriseAiPlatform.Gateway.*` | ADR-002 Gateway Domain, Application, Infrastructure, and Api/Host projects |
 | `packages/` | Reusable technical components with no cross-domain business-table access |
 | `packages/db/migrations/` | Versioned PostgreSQL migrations and schema decision register |
 | `packages/db/outbox/` | Transactional event persistence and publisher coordination boundary |
@@ -48,6 +49,7 @@ suites. From the repository root, run:
 ./scripts/task.sh lint
 ./scripts/task.sh test
 ./scripts/task.sh test-linux
+./scripts/task.sh test-code-001
 ./scripts/task.sh test-m0-002
 ./scripts/task.sh test-m0-003
 ./scripts/task.sh test-m1-001
@@ -86,9 +88,10 @@ pwsh -NoLogo -NoProfile -File ./scripts/migration.ps1 status
 On Windows, use PowerShell 7 directly, for example
 `pwsh -NoLogo -NoProfile -File .\scripts\task.ps1 lint`. PowerShell is only the
 repository task runner. The Gateway runtime is selected by
-[`ADR-001`](docs/adr/ADR-001-gateway-dotnet-linux-runtime.md); the
-dependency-injection boundary remains `TBD-002`. Component-specific commands
-are delegated from this entrypoint.
+[`ADR-001`](docs/adr/ADR-001-gateway-dotnet-linux-runtime.md); Gateway DDD
+projects and DI composition are selected by
+[`ADR-002`](docs/adr/ADR-002-gateway-ddd-dependency-injection.md).
+Component-specific commands are delegated from this entrypoint.
 
 ## Development boundaries
 
@@ -164,8 +167,9 @@ Provider execution remains `TASK-M2-005`.
 tenant/config-scoped runtime bindings, an adapter registry, normalized results,
 compatibility baseline, and native/LiteLLM Provider mocks. LiteLLM is limited to
 protocol normalization and is not a governance source. The Gateway language is
-resolved by `ADR-001`; DI, LiteLLM SDK-versus-Proxy deployment/version and
-Secret Manager integration remain `TBD-002` and `TBD-012`.
+resolved by `ADR-001` and its DI composition by `ADR-002`; LiteLLM
+SDK-versus-Proxy deployment/version and Secret Manager integration remain
+`TBD-012`.
 
 `TASK-M2-006` adds a versioned, tenant/config-scoped Retry/Fallback attempt plan,
 structured final result, per-attempt telemetry, compatibility baseline, and

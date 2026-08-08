@@ -105,6 +105,12 @@ metadata, and probes `/healthz` and `/readyz`. The gate still reports
 `acceptance=not-met`: SBOM generation, scanning, signing, and their acceptance
 evidence remain blocked on `REQ-CICD-004` and `TASK-CICD-001`.
 
+The Gateway DDD/DI gate validates `ADR-002`, enforces the compile-time
+Domain/Application/Infrastructure/Api dependency graph, restores every project
+in locked mode, validates the built-in .NET service container, and proves the
+fail-closed Runtime Snapshot port can be replaced by a Fake without duplicate
+registration. It does not resolve the remaining plugin method signatures.
+
 The Gateway Helm gate uses Helm v3.21.3 installed by a commit-SHA-pinned setup
 action. It lints the chart, renders development/test/production overlays,
 asserts the Gateway baseline and workload-safety resources, and negatively

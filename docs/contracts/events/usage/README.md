@@ -32,9 +32,9 @@ and event must commit atomically; request completion has no synchronous business
 database write to pair with it. Production broker/buffer durability and failure
 recovery still require an explicit ADR.
 
-The Gateway language is selected by `ADR-001`; producer interface and DI remain
-`TBD-002`/ADR-needed. Broker, topic, partition key, producer buffer durability,
-overflow handling, publisher
+The Gateway language is selected by `ADR-001` and DI by `ADR-002`; the producer
+interface remains ADR-needed. Broker, topic, partition key, producer buffer
+durability, overflow handling, publisher
 retry/DLQ, Usage aggregation table/buckets/retention, pricing precision,
 currency policy, and cost authority are intentionally unresolved. The contract
 does not create the pending `usage` table or select Kafka over an equivalent

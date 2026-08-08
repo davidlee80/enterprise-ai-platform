@@ -8,7 +8,8 @@
   "event_envelope_schema": "../event-envelope.v1.schema.json",
   "upstream_contract": "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json",
   "producer_method_signature": null,
-  "producer_method_signature_status": "ADR_NEEDED/TBD-002",
+  "producer_method_signature_status": "ADR_NEEDED",
+  "dependency_injection_status": "ADR-002",
   "invariants": [
     "Request completion constructs a UsageObserved event and performs only a non-blocking enqueue before releasing the online response.",
     "Broker publication and Billing consumption run outside the online request lifecycle.",

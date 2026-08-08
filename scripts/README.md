@@ -8,6 +8,7 @@ evaluation:
 ./scripts/task.sh lint
 ./scripts/task.sh test
 ./scripts/task.sh test-linux
+./scripts/task.sh test-code-001
 ./scripts/task.sh test-m0-002
 ./scripts/task.sh test-m0-003
 ./scripts/task.sh test-m1-001
@@ -60,6 +61,13 @@ validation as regression gates.
 register, expand/backfill/contract examples, rollback policy, and CI empty-
 database test definition. `migration.ps1` uses `psql` as a client without
 selecting a third-party migration product as the platform standard.
+
+`test-code-001` validates ADR-002, the compile-time
+`Domain -> Application -> Infrastructure -> Api/Host` dependency graph, the
+framework-free Domain boundary, locked project graphs, built-in .NET DI
+container validation, fail-closed default adapter, and replaceable Fake adapter.
+It does not select the remaining Router, Policy, Provider, Retry, or Usage
+method signatures.
 
 `test-m1-002` validates the Event Envelope v1 JSON Schema, Outbox table and SQL
 coordination functions, transactional write template, duplicate-delivery

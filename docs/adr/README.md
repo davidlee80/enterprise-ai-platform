@@ -11,3 +11,9 @@ standard before review.
 
 `TASK-M0-002` creates this storage boundary only. No architecture decision is
 made by this README.
+
+Accepted Gateway decisions:
+
+- `ADR-001-gateway-dotnet-linux-runtime.md` resolves `TBD-001`.
+- `ADR-002-gateway-ddd-dependency-injection.md` resolves `TBD-002` for the
+  Gateway without setting an unimplemented service-wide standard.

@@ -2,10 +2,9 @@
 
 This package implements the `TASK-M1-004` consumption state machine and an
 executable conformance reference. `ADR-001` selects C#/.NET 10 and ASP.NET Core
-for the Gateway, but does not select the DDD directory convention or
-dependency-injection boundary (`TBD-002`). The existing PowerShell/.NET
-reference remains the executable contract until it is composed into the
-production runtime.
+for the Gateway; `ADR-002` selects its DDD projects and DI composition root. The
+existing PowerShell/.NET reference remains the executable contract until an
+approved Runtime Snapshot adapter is composed into the production runtime.
 
 ## Publication and notification contract
 

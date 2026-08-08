@@ -36,5 +36,5 @@
   "forbidden_fields": ["endpoint", "secret_ref", "provider_key", "credential"],
   "forbidden_dependencies": ["control_plane_postgresql", "litellm_governance_state"],
   "runtime_language_status": "ADR-001",
-  "dependency_injection_status": "TBD-002"
+  "dependency_injection_status": "ADR-002"
 }

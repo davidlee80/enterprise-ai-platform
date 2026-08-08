@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>EnterpriseAiPlatform.Gateway.Domain</AssemblyName>
+    <Description>Framework-free Gateway domain model</Description>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>EnterpriseAiPlatform.Gateway.Domain</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+</Project>

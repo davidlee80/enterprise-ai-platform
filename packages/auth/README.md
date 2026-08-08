@@ -58,6 +58,6 @@ pwsh -NoLogo -NoProfile -File ./packages/auth/authentication-boundary.conformanc
 ```
 
 The concrete OpenAPI Header/security scheme and Identity Provider remain
-`REQ-API-003`; DI remains `TBD-002`. `ADR-001` selects C#/.NET 10 and ASP.NET
-Core for the Gateway without selecting the authentication implementation.
-Complete public error bodies remain `TBD-008`.
+`REQ-API-003`. `ADR-001` selects C#/.NET 10 and ASP.NET Core, while `ADR-002`
+selects the Gateway composition root without selecting the authentication
+implementation. Complete public error bodies remain `TBD-008`.

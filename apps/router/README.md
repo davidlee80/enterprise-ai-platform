@@ -34,5 +34,6 @@ That adapter is now versioned at
 [`provider-adapter-boundary.v1.json`](../../docs/contracts/providers/provider-adapter-boundary.v1.json).
 
 The executable conformance suite uses mock plugins and does not select the
-production method signature (`TBD-003`), route algorithm, weight/observation
-semantics (`TBD-014`), backend language, or DI framework.
+production method signature (`TBD-003`), route algorithm, or weight/observation
+semantics (`TBD-014`). Gateway language and DI composition are recorded in
+ADR-001 and ADR-002.

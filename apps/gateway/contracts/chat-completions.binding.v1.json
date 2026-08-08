@@ -45,5 +45,6 @@
   "runtime_handler": "apps/gateway/src/EnterpriseAiPlatform.Gateway/Program.cs",
   "runtime_handler_status": "implemented-bootstrap-v1",
   "runtime_language_decision": "docs/adr/ADR-001-gateway-dotnet-linux-runtime.md",
+  "ddd_dependency_injection_decision": "docs/adr/ADR-002-gateway-ddd-dependency-injection.md",
   "notes": "Machine-readable handler binding. The bootstrap handler stays unready until production boundary implementations and a validated Runtime Snapshot are installed. LiteLLM deployment mode/version, Secret Manager, public failure mapping, and production timing policy remain explicit TBD/ADR boundaries."
 }

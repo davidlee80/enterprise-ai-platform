@@ -7,4 +7,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Version>0.1.0</Version>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../EnterpriseAiPlatform.Gateway.Application/EnterpriseAiPlatform.Gateway.Application.csproj" />
+    <ProjectReference Include="../EnterpriseAiPlatform.Gateway.Infrastructure/EnterpriseAiPlatform.Gateway.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>

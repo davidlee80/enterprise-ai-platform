@@ -10,7 +10,9 @@
 ## Current state
 
 `ADR-001` resolves the Gateway runtime as C#/.NET 10, ASP.NET Core Minimal APIs,
-Kestrel, and locked NuGet restore on Linux. The boundary is
+Kestrel, and locked NuGet restore on Linux. `ADR-002` supplies the
+Domain/Application/Infrastructure/Api project graph and built-in .NET DI
+composition. The boundary is
 `runtime-implemented-supply-chain-tbd`: the application and image can be built
 and probed, while `AC-BLD-001` remains `acceptance=not-met` until
 `REQ-CICD-004` and `TASK-CICD-001` select the repository-wide SBOM, scanner,

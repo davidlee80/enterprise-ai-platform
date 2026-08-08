@@ -10,13 +10,6 @@
       },
       "enterpriseaiplatform.gateway.domain": {
         "type": "Project"
-      },
-      "enterpriseaiplatform.gateway.infrastructure": {
-        "type": "Project",
-        "dependencies": {
-          "EnterpriseAiPlatform.Gateway.Application": "[1.0.0, )",
-          "EnterpriseAiPlatform.Gateway.Domain": "[1.0.0, )"
-        }
       }
     }
   }

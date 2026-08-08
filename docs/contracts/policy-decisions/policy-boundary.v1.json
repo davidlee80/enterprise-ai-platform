@@ -36,5 +36,5 @@
   ],
   "public_error_schema_status": "TBD-008",
   "runtime_language_status": "ADR-001",
-  "dependency_injection_status": "TBD-002"
+  "dependency_injection_status": "ADR-002"
 }

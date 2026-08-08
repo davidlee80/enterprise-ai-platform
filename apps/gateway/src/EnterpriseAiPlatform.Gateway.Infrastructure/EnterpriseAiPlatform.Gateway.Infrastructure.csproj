@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>EnterpriseAiPlatform.Gateway.Infrastructure</AssemblyName>
+    <Description>Gateway infrastructure adapters and DI registration</Description>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>EnterpriseAiPlatform.Gateway.Infrastructure</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../EnterpriseAiPlatform.Gateway.Application/EnterpriseAiPlatform.Gateway.Application.csproj" />
+    <ProjectReference Include="../EnterpriseAiPlatform.Gateway.Domain/EnterpriseAiPlatform.Gateway.Domain.csproj" />
+  </ItemGroup>
+</Project>

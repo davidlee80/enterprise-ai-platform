@@ -4,6 +4,12 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0.302-noble@sha256:72dd743782f2ae7e5476fd64
 WORKDIR /src
 
 COPY global.json Directory.Build.props Directory.Packages.props ./
+COPY apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/EnterpriseAiPlatform.Gateway.Domain.csproj apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/
+COPY apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/packages.lock.json apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/
+COPY apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/EnterpriseAiPlatform.Gateway.Application.csproj apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/
+COPY apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/packages.lock.json apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/
+COPY apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/EnterpriseAiPlatform.Gateway.Infrastructure.csproj apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/
+COPY apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/packages.lock.json apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/
 COPY apps/gateway/src/EnterpriseAiPlatform.Gateway/EnterpriseAiPlatform.Gateway.csproj apps/gateway/src/EnterpriseAiPlatform.Gateway/
 COPY apps/gateway/src/EnterpriseAiPlatform.Gateway/packages.lock.json apps/gateway/src/EnterpriseAiPlatform.Gateway/
 
@@ -14,7 +20,7 @@ RUN --mount=type=cache,id=gateway-nuget,target=/root/.nuget/packages,sharing=loc
 
 FROM restore AS publish
 ARG SOURCE_VERSION=0.1.0
-COPY apps/gateway/src/EnterpriseAiPlatform.Gateway/ apps/gateway/src/EnterpriseAiPlatform.Gateway/
+COPY apps/gateway/src/ apps/gateway/src/
 RUN --mount=type=cache,id=gateway-nuget,target=/root/.nuget/packages,sharing=locked \
     dotnet publish apps/gateway/src/EnterpriseAiPlatform.Gateway/EnterpriseAiPlatform.Gateway.csproj \
       --configuration Release \

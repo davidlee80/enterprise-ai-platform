@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("lint", "test", "test-linux", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "security", "build")]
+    [ValidateSet("lint", "test", "test-linux", "test-code-001", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "security", "build")]
     [string]$Command
 )
 
@@ -366,6 +366,7 @@ function Invoke-Test {
     Assert-FileContains "README.md" "scripts/task.sh lint" "ROOT_LINT_ENTRY_MISSING"
     Assert-FileContains "README.md" "scripts/task.sh test" "ROOT_TEST_ENTRY_MISSING"
     Assert-FileContains "README.md" "scripts/task.sh test-linux" "ROOT_LINUX_TEST_ENTRY_MISSING"
+    Assert-FileContains "README.md" "scripts/task.sh test-code-001" "ROOT_CODE_001_TEST_ENTRY_MISSING"
     Assert-FileContains "README.md" "scripts/task.sh test-m0-002" "ROOT_M0_002_TEST_ENTRY_MISSING"
     Assert-FileContains "README.md" "scripts/task.sh test-m0-003" "ROOT_M0_003_TEST_ENTRY_MISSING"
     Assert-FileContains "README.md" "scripts/task.sh test-m1-001" "ROOT_M1_001_TEST_ENTRY_MISSING"
@@ -392,6 +393,7 @@ function Invoke-Test {
     Invoke-LinuxCompatibilityTest
     Invoke-ContractDirectoryTest
     Invoke-CISkeletonTest
+    Invoke-GatewayArchitectureTest
     Invoke-MigrationTest
     Invoke-OutboxTest
     Invoke-SnapshotStoreTest
@@ -938,6 +940,7 @@ function Invoke-OpenApiContractTest {
     Assert-FileContains $openApiRunner 'OPENAPI_BREAKING_PROPERTY_REMOVAL' "OPENAPI_PROPERTY_REMOVAL_GUARD_MISSING"
     Assert-FileContains $openApiRunner 'OPENAPI_BREAKING_PROPERTY_CHANGE' "OPENAPI_PROPERTY_CHANGE_GUARD_MISSING"
     Assert-FileContains $binding '"runtime_handler_status": "implemented-bootstrap-v1"' "OPENAPI_RUNTIME_HANDLER_BINDING_MISSING"
+    Assert-FileContains $binding '"ddd_dependency_injection_decision": "docs/adr/ADR-002-gateway-ddd-dependency-injection.md"' "OPENAPI_DDD_DI_BINDING_MISSING"
     Assert-FileContains $contractReadme "TBD-007" "OPENAPI_SDK_LANGUAGE_TBD_MISSING"
     Assert-FileContains $contractReadme "TBD-008" "OPENAPI_ERROR_SCHEMA_TBD_MISSING"
     Assert-FileContains $contractReadme "breaking-change and migration plan" "OPENAPI_BREAKING_CHANGE_GUARD_MISSING"
@@ -1032,9 +1035,9 @@ function Invoke-AuthenticationBoundaryTest {
                 $null -ne $boundary.transport_adapter.header_name -or
                 $boundary.public_error_schema_status -ne "TBD-008" -or
                 $boundary.runtime_language_status -ne "ADR-001" -or
-                $boundary.dependency_injection_status -ne "TBD-002" -or
+                $boundary.dependency_injection_status -ne "ADR-002" -or
                 $boundary.secret_manager_status -ne "TBD-012") {
-                Add-Failure "AUTH_TBD_BOUNDARY_VIOLATED" $boundaryFile "Header, error, runtime, DI, and Secret Manager decisions must remain unresolved"
+                Add-Failure "AUTH_TBD_BOUNDARY_VIOLATED" $boundaryFile "Header, error, and Secret Manager remain unresolved while runtime and DI must reference their accepted ADRs"
             }
         }
         catch {
@@ -1175,6 +1178,7 @@ function Invoke-PolicyDecisionTest {
             if ($boundary.interface_version -ne 1 -or
                 $null -ne $boundary.runtime -or
                 $boundary.runtime_status -ne "TBD-004" -or
+                $boundary.dependency_injection_status -ne "ADR-002" -or
                 $null -ne $boundary.indeterminate_handling.mapping -or
                 $boundary.indeterminate_handling.status -ne "TBD-017" -or
                 $boundary.next_boundary.task -ne "TASK-M2-004" -or
@@ -1301,6 +1305,7 @@ function Invoke-RouterPluginTest {
         if ($requestSchema.properties.policy.properties.outcome.const -ne "allow" -or
             $null -ne $boundary.plugin_method_signature -or
             $boundary.plugin_method_signature_status -ne "TBD-003" -or
+            $boundary.dependency_injection_status -ne "ADR-002" -or
             $null -ne $boundary.selection_algorithm -or
             $null -ne $boundary.weight_and_observation_semantics -or
             $boundary.weight_and_observation_status -ne "TBD-014" -or
@@ -1440,11 +1445,12 @@ function Invoke-ProviderAdapterTest {
             $boundary.status -ne "implemented-v1" -or
             $null -ne $boundary.adapter_method_signature -or
             $boundary.adapter_method_signature_status -ne "ADR_NEEDED" -or
+            $boundary.dependency_injection_status -ne "ADR-002" -or
             $null -ne $boundary.secret_resolver -or
             $boundary.secret_resolver_status -ne "TBD-012" -or
             $boundary.retry_and_fallback.implementation -ne "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json" -or
             $boundary.retry_and_fallback.status -ne "implemented-v1") {
-            Add-Failure "PROVIDER_TBD_OR_SECRET_BOUNDARY_INVALID" $boundaryFile "runtime/DI and Secret Manager remain explicit, Retry/Fallback is delegated, and plaintext keys are forbidden"
+            Add-Failure "PROVIDER_TBD_OR_SECRET_BOUNDARY_INVALID" $boundaryFile "DI must reference ADR-002, Secret Manager remains explicit, Retry/Fallback is delegated, and plaintext keys are forbidden"
         }
         foreach ($dependency in @("control_plane_postgresql", "litellm_governance_state")) {
             if (@($boundary.forbidden_dependencies) -notcontains $dependency) {
@@ -1580,7 +1586,7 @@ function Invoke-RetryFallbackTest {
         if ($boundary.status -ne "implemented-v1" -or
             $null -ne $boundary.orchestrator_method_signature -or
             $boundary.orchestrator_method_signature_status -ne "ADR_NEEDED" -or
-            $boundary.dependency_injection_status -ne "TBD-002" -or
+            $boundary.dependency_injection_status -ne "ADR-002" -or
             $null -ne $boundary.global_attempt_limit_default -or
             $boundary.attempt_limit_source -ne "plan.attempt_limit" -or
             $null -ne $boundary.timing_policy.backoff_algorithm -or
@@ -1756,7 +1762,8 @@ function Invoke-UsageEventTest {
             $boundary.online_enqueue_mode -ne "non_blocking_try_enqueue" -or
             $boundary.delivery_contract -ne "at_least_once_consumer_idempotency_required" -or
             $null -ne $boundary.producer_method_signature -or
-            $boundary.producer_method_signature_status -ne "ADR_NEEDED/TBD-002" -or
+            $boundary.producer_method_signature_status -ne "ADR_NEEDED" -or
+            $boundary.dependency_injection_status -ne "ADR-002" -or
             $null -ne $boundary.broker_product -or
             $null -ne $boundary.topic_name -or
             $null -ne $boundary.partition_key -or
@@ -1824,6 +1831,93 @@ function Invoke-UsageEventTest {
     Assert-FileContains $usageTbdFile "Event-derived aggregation keys" "USAGE_EVENT_STORAGE_SCHEMA_TBD_MISSING"
     Assert-FileContains $workflow "Verify Usage Event Boundary" "CI_USAGE_EVENT_TEST_MISSING"
     Assert-FileContains $workflow "test-m2-007" "CI_USAGE_EVENT_COMMAND_MISSING"
+}
+
+function Invoke-GatewayArchitectureTest {
+    $adrFile = "docs/adr/ADR-002-gateway-ddd-dependency-injection.md"
+    $conformanceFile = "apps/gateway/gateway-architecture.conformance.ps1"
+    $bindingFile = "apps/gateway/contracts/chat-completions.binding.v1.json"
+    $usageBoundaryFile = "docs/contracts/events/usage/usage-event-boundary.v1.json"
+    $workflow = ".github/workflows/pr-gates.yml"
+    $layerProjects = @(
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/EnterpriseAiPlatform.Gateway.Domain.csproj",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/EnterpriseAiPlatform.Gateway.Application.csproj",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/EnterpriseAiPlatform.Gateway.Infrastructure.csproj",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway/EnterpriseAiPlatform.Gateway.csproj"
+    )
+    $diBoundaryFiles = @(
+        "packages/auth/contracts/authentication-boundary.v1.json",
+        "docs/contracts/policy-decisions/policy-boundary.v1.json",
+        "docs/contracts/router/router-boundary.v1.json",
+        "docs/contracts/providers/provider-adapter-boundary.v1.json",
+        "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json"
+    )
+
+    foreach ($file in @(
+        $adrFile,
+        $conformanceFile,
+        $bindingFile,
+        $usageBoundaryFile,
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/Runtime/RuntimeReadiness.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Runtime/IRuntimeReadinessSource.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Runtime/GetRuntimeReadiness.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/DependencyInjection.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/Runtime/UnavailableRuntimeReadinessSource.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway/Api/GatewayEndpoints.cs",
+        "apps/gateway/tests/EnterpriseAiPlatform.Gateway.ArchitectureTests/EnterpriseAiPlatform.Gateway.ArchitectureTests.csproj",
+        "apps/gateway/tests/EnterpriseAiPlatform.Gateway.ArchitectureTests/Program.cs"
+    ) + $layerProjects + $diBoundaryFiles) {
+        Assert-File $file
+    }
+
+    foreach ($project in $layerProjects + @("apps/gateway/tests/EnterpriseAiPlatform.Gateway.ArchitectureTests/EnterpriseAiPlatform.Gateway.ArchitectureTests.csproj")) {
+        $lockFile = (Split-Path $project -Parent).Replace("\", "/") + "/packages.lock.json"
+        Assert-File $lockFile
+    }
+
+    Assert-FileContains $adrFile "Status: Accepted" "GATEWAY_DI_ADR_NOT_ACCEPTED"
+    Assert-FileContains $adrFile 'Resolved item: `TBD-002` for the Gateway' "GATEWAY_DI_TBD_RESOLUTION_MISSING"
+    Assert-FileContains $adrFile "Microsoft.Extensions.DependencyInjection" "GATEWAY_DI_CONTAINER_DECISION_MISSING"
+    Assert-FileContains $bindingFile '"ddd_dependency_injection_decision": "docs/adr/ADR-002-gateway-ddd-dependency-injection.md"' "GATEWAY_DI_BINDING_MISSING"
+    Assert-FileContains "deploy/images/gateway/Dockerfile" "EnterpriseAiPlatform.Gateway.Domain.csproj" "GATEWAY_DOCKER_DOMAIN_PROJECT_MISSING"
+    Assert-FileContains "deploy/images/gateway/Dockerfile" "EnterpriseAiPlatform.Gateway.Infrastructure.csproj" "GATEWAY_DOCKER_INFRASTRUCTURE_PROJECT_MISSING"
+
+    try {
+        foreach ($boundaryFile in $diBoundaryFiles) {
+            $boundary = Get-Content -LiteralPath (Join-Path $repoRoot $boundaryFile) -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($boundary.dependency_injection_status -ne "ADR-002") {
+                Add-Failure "GATEWAY_DI_CONTRACT_STATUS_INVALID" $boundaryFile "Gateway runtime boundaries must reference ADR-002"
+            }
+        }
+
+        $usageBoundary = Get-Content -LiteralPath (Join-Path $repoRoot $usageBoundaryFile) -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($usageBoundary.dependency_injection_status -ne "ADR-002" -or
+            $usageBoundary.producer_method_signature_status -ne "ADR_NEEDED" -or
+            $null -ne $usageBoundary.producer_method_signature) {
+            Add-Failure "GATEWAY_USAGE_DI_OR_SIGNATURE_STATUS_INVALID" $usageBoundaryFile "DI is resolved by ADR-002 while the producer signature remains ADR-needed"
+        }
+    }
+    catch {
+        Add-Failure "GATEWAY_DI_CONTRACT_JSON_INVALID" $adrFile $_.Exception.Message
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            $success = @($output | Where-Object { $_ -like "status=pass reason_code=GATEWAY_DDD_DI_ARCHITECTURE_OK*" })
+            if ($success.Count -ne 1) {
+                Add-Failure "GATEWAY_DDD_DI_CONFORMANCE_FAILED" $conformanceFile "architecture and container success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "GATEWAY_DDD_DI_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $workflow "Verify Gateway DDD and DI" "CI_GATEWAY_DDD_DI_TEST_MISSING"
+    Assert-FileContains $workflow "test-code-001" "CI_GATEWAY_DDD_DI_COMMAND_MISSING"
 }
 
 function Invoke-ProductionImageTest {
@@ -2030,6 +2124,9 @@ switch ($Command) {
         Invoke-LinuxCompatibilityTest
         Invoke-CISkeletonTest
     }
+    "test-code-001" {
+        Invoke-GatewayArchitectureTest
+    }
     "test-m0-002" {
         Invoke-ContractDirectoryTest
     }
@@ -2092,6 +2189,7 @@ switch ($Command) {
         Invoke-UsageEventTest
     }
     "test-m3-001" {
+        Invoke-GatewayArchitectureTest
         Invoke-ProductionImageTest
     }
     "test-m3-002" {
@@ -2123,6 +2221,7 @@ $successReason = switch ($Command) {
     "lint" { "REPOSITORY_LINT_OK" }
     "test" { "REPOSITORY_CONTRACT_OK" }
     "test-linux" { "LINUX_COMPATIBILITY_STATIC_OK" }
+    "test-code-001" { "GATEWAY_DDD_DI_BOUNDARY_OK" }
     "test-m0-002" { "PUBLIC_CONTRACT_DIRECTORIES_OK" }
     "test-m0-003" { "PR_GATE_SKELETON_OK" }
     "test-m1-001" { "POSTGRESQL_MIGRATION_BASELINE_OK" }
