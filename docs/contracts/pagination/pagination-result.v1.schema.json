@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:admin-pagination:result:v1",
+  "title": "Admin list pagination result v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "operation_id",
+    "config_version",
+    "strategy",
+    "items",
+    "has_more",
+    "next_cursor",
+    "next_offset",
+    "reason_code"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "strategy": {
+      "type": "string",
+      "enum": [
+        "cursor",
+        "offset"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "has_more": {
+      "type": "boolean"
+    },
+    "next_cursor": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "next_offset": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "strategy": {
+          "const": "cursor"
+        },
+        "next_offset": {
+          "const": null
+        }
+      }
+    },
+    {
+      "properties": {
+        "strategy": {
+          "const": "offset"
+        },
+        "next_cursor": {
+          "const": null
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

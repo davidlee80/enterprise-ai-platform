@@ -77,11 +77,19 @@ Staleness is the non-negative elapsed time since the active Snapshot's
 time. The samples do not use `user_id`, `request_id`, notification ID, or hash as
 metric labels.
 
-Maximum staleness defaults to unset (`TBD-016`) and stale behavior defaults to
-unset (`TBD-017`). `New-RuntimeSnapshotConsumer` accepts explicit configuration
-ports for them and reports whether an explicitly configured threshold has been
-crossed, but this task does not invent or execute a fail-open/fail-closed request
-decision. That resource-level decision requires configuration or an ADR.
+Maximum staleness defaults to unset. The versioned
+[`TBD-016` policy](../../../docs/contracts/runtime-snapshots/runtime-staleness-policy.v1.schema.json)
+binds tenant, config version, revision, effective time, rollback target, and an
+optional positive `maximum_staleness_seconds` to the existing
+`MaximumStalenessSeconds` port. No production value is selected.
+`New-RuntimeSnapshotConsumerFromStalenessPolicy` performs tenant, config-version,
+revision, contract-status, and positive-threshold validation before constructing
+the Consumer and returns a structured reason code. It never maps the
+`on_stale_policy_ref` to request behavior.
+
+Stale behavior defaults to unset (`TBD-017`). Crossing an explicitly configured
+threshold is reported but does not execute a fail-open/fail-closed request
+decision. That resource-level action requires later configuration or an ADR.
 
 ## Failure and rollback guarantees
 

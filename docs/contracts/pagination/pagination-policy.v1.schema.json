@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:admin-pagination:policy:v1",
+  "title": "Admin list pagination policy v1",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "strategy",
+    "cursor_query_parameter",
+    "offset_query_parameter",
+    "page_size_query_parameter",
+    "default_page_size",
+    "maximum_page_size",
+    "cursor_codec_ref",
+    "consistency_strategy",
+    "decision_status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "effective_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "rollback_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "strategy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "cursor",
+        "offset",
+        null
+      ]
+    },
+    "cursor_query_parameter": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "offset_query_parameter": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "page_size_query_parameter": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "default_page_size": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "maximum_page_size": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "cursor_codec_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "consistency_strategy": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "decision_status": {
+      "const": "TBD-006"
+    }
+  },
+  "additionalProperties": false
+}

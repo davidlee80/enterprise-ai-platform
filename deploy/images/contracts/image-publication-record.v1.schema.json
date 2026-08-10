@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:images:publication-record:v1",
+  "title": "Image publication record v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "publication_scope",
+    "component",
+    "image_repository",
+    "image_tag",
+    "image_digest",
+    "source_repository",
+    "source_revision",
+    "source_version",
+    "build_id",
+    "built_at",
+    "tag_policy_revision",
+    "oci_labels",
+    "sbom_ref",
+    "provenance_ref",
+    "signature_ref"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "status": {
+      "const": "validated"
+    },
+    "publication_scope": {
+      "type": "string",
+      "enum": [
+        "conformance",
+        "release"
+      ]
+    },
+    "component": {
+      "type": "string",
+      "minLength": 1
+    },
+    "image_repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "image_tag": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "image_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "source_repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "build_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "built_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tag_policy_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "oci_labels": {
+      "type": "object",
+      "required": [
+        "org.opencontainers.image.source",
+        "org.opencontainers.image.revision",
+        "org.opencontainers.image.version"
+      ],
+      "properties": {
+        "org.opencontainers.image.source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "org.opencontainers.image.revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "org.opencontainers.image.version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "sbom_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "provenance_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "signature_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

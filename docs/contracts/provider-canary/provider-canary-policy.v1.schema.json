@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:provider-canary:policy:v1",
+  "title": "Provider canary policy v1",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "config_version",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "model_alias",
+    "baseline_provider_ids",
+    "canary_provider_ids",
+    "stages",
+    "allocation_key_ref",
+    "allocation_algorithm_ref",
+    "signal_set_ref",
+    "automatic_promotion_enabled",
+    "automatic_rollback_enabled",
+    "decision_status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "effective_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "rollback_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "model_alias": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseline_provider_ids": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "canary_provider_ids": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "stages": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "stage_id",
+          "provider_weights",
+          "observation_window",
+          "minimum_sample_size",
+          "promotion_criteria_ref",
+          "rollback_criteria_ref"
+        ],
+        "properties": {
+          "stage_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_weights": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "observation_window": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minimum_sample_size": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "promotion_criteria_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rollback_criteria_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "allocation_key_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "allocation_algorithm_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "signal_set_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "automatic_promotion_enabled": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "automatic_rollback_enabled": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "decision_status": {
+      "const": "TBD-014"
+    }
+  },
+  "additionalProperties": false
+}

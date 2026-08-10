@@ -1,0 +1,43 @@
+{
+  "baseline_version": 1,
+  "target_policy_schema_id": "urn:enterprise-ai-platform:ops:slo-target-policy:v1",
+  "required_sli_ids": [
+    "request_success_ratio",
+    "request_latency_p95",
+    "request_latency_p99",
+    "time_to_first_token",
+    "provider_success_ratio",
+    "config_publish_success_ratio",
+    "config_propagation_latency"
+  ],
+  "required_policy_fields": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "targets",
+    "decision_status"
+  ],
+  "required_unresolved_fields": [
+    "target_configuration.active_policy_ref",
+    "data_source.binding_ref",
+    "alerting.target_policy_ref",
+    "alerting.burn_rate_windows",
+    "release_gate.target_policy_ref",
+    "release_gate.failure_thresholds"
+  ],
+  "forbidden_metric_labels": [
+    "request_id",
+    "trace_id",
+    "user_id"
+  ]
+}

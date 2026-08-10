@@ -1,0 +1,8 @@
+{
+  "baseline_version": 1,
+  "settings_schema_id": "urn:enterprise-ai-platform:deployment:production-environment-settings:v1",
+  "required_setting_fields": ["id", "name", "status", "version", "created_at", "updated_at", "created_by", "updated_by", "tenant_id", "revision", "effective_at", "rollback_revision", "content_hash", "domain", "namespace", "certificate_issuer", "storage_class", "decision_status"],
+  "required_unresolved_fields": ["active_settings_ref", "domain", "namespace", "certificate_issuer", "storage_class"],
+  "required_helm_values": ["production.domain", "production.namespace", "production.certificateIssuer", "production.storageClass"],
+  "required_terraform_variables": ["production_domain", "production_namespace", "production_certificate_issuer", "production_storage_class"]
+}

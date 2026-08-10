@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:deployment:production-environment-settings:v1",
+  "title": "Production environment settings v1",
+  "type": "object",
+  "required": ["id", "name", "status", "version", "created_at", "updated_at", "created_by", "updated_by", "tenant_id", "revision", "effective_at", "rollback_revision", "content_hash", "domain", "namespace", "certificate_issuer", "storage_class", "decision_status"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "minLength": 1 },
+    "version": { "type": "integer", "minimum": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string", "minLength": 1 },
+    "updated_by": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": ["string", "null"], "minLength": 1 },
+    "revision": { "type": "integer", "minimum": 1 },
+    "effective_at": { "type": ["string", "null"], "format": "date-time" },
+    "rollback_revision": { "type": ["integer", "null"], "minimum": 1 },
+    "content_hash": { "type": ["string", "null"], "minLength": 1 },
+    "domain": { "type": ["string", "null"], "minLength": 1 },
+    "namespace": { "type": ["string", "null"], "minLength": 1 },
+    "certificate_issuer": { "type": ["string", "null"], "minLength": 1 },
+    "storage_class": { "type": ["string", "null"], "minLength": 1 },
+    "decision_status": { "const": "TBD-019" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,77 @@
+{
+  "catalog_version": 1,
+  "name": "enterprise_ai_platform_sli_catalog",
+  "status": "logical-indicators-data-source-unresolved",
+  "indicators": [
+    {
+      "id": "request_success_ratio",
+      "kind": "availability",
+      "unit": "ratio",
+      "description": "Successful online requests divided by eligible online requests.",
+      "source_binding": null,
+      "target_status": "TBD-010"
+    },
+    {
+      "id": "request_latency_p95",
+      "kind": "latency",
+      "unit": "duration",
+      "percentile": "p95",
+      "description": "End-to-end request latency p95.",
+      "source_binding": null,
+      "target_status": "TBD-010"
+    },
+    {
+      "id": "request_latency_p99",
+      "kind": "latency",
+      "unit": "duration",
+      "percentile": "p99",
+      "description": "End-to-end request latency p99.",
+      "source_binding": null,
+      "target_status": "TBD-010"
+    },
+    {
+      "id": "time_to_first_token",
+      "kind": "streaming_latency",
+      "unit": "duration",
+      "description": "Time from accepted request to first streamed token.",
+      "source_binding": null,
+      "target_status": "TBD-010"
+    },
+    {
+      "id": "provider_success_ratio",
+      "kind": "provider_availability",
+      "unit": "ratio",
+      "description": "Successful Provider attempts divided by eligible Provider attempts.",
+      "source_binding": null,
+      "target_status": "TBD-010"
+    },
+    {
+      "id": "config_publish_success_ratio",
+      "kind": "control_plane_reliability",
+      "unit": "ratio",
+      "description": "Successful configuration publications divided by attempted publications.",
+      "source_binding": null,
+      "target_status": "TBD-010"
+    },
+    {
+      "id": "config_propagation_latency",
+      "kind": "configuration_freshness",
+      "unit": "duration",
+      "description": "Elapsed time from published revision to active Data Plane version.",
+      "source_binding": null,
+      "target_status": "TBD-010"
+    }
+  ],
+  "controlled_dimensions": [
+    "service",
+    "provider",
+    "model_alias",
+    "tenant_id"
+  ],
+  "forbidden_metric_labels": [
+    "request_id",
+    "trace_id",
+    "user_id"
+  ],
+  "data_source_status": "TBD-010"
+}

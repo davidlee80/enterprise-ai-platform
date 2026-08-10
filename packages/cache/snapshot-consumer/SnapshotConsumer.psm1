@@ -184,6 +184,64 @@ function New-RuntimeSnapshotConsumer {
     }
 }
 
+function New-RuntimeSnapshotConsumerFromStalenessPolicy {
+    [CmdletBinding()]
+    param(
+        [AllowNull()]
+        [object]$Policy,
+        [Parameter(Mandatory = $true)]
+        [string]$TenantId,
+        [Parameter(Mandatory = $true)]
+        [object]$ConfigVersion
+    )
+
+    $configVersionText = [string]$ConfigVersion
+    if ([string]::IsNullOrWhiteSpace($TenantId) -or $TenantId -match '[{}]') {
+        return New-ConsumerResult $false "STALENESS_POLICY_TENANT_INVALID" $TenantId $configVersionText
+    }
+    if (-not (Test-PositiveVersion $ConfigVersion)) {
+        return New-ConsumerResult $false "STALENESS_POLICY_CONFIG_VERSION_INVALID" $TenantId $configVersionText
+    }
+    if ($null -eq $Policy) {
+        return New-ConsumerResult $true "STALENESS_THRESHOLD_UNCONFIGURED" $TenantId $configVersionText @{
+            consumer = New-RuntimeSnapshotConsumer
+            policy_revision = $null
+        }
+    }
+
+    $policyTenant = Get-ObjectProperty $Policy "tenant_id"
+    $policyConfigVersion = Get-ObjectProperty $Policy "config_version"
+    $policyRevision = Get-ObjectProperty $Policy "revision"
+    $maximumStaleness = Get-ObjectProperty $Policy "maximum_staleness_seconds"
+    $decisionStatus = [string](Get-ObjectProperty $Policy "decision_status")
+
+    if ($null -ne $policyTenant -and [string]$policyTenant -ne $TenantId) {
+        return New-ConsumerResult $false "STALENESS_POLICY_TENANT_MISMATCH" $TenantId $configVersionText
+    }
+    if ($policyConfigVersion -is [string] -or -not (Test-PositiveVersion $policyConfigVersion) -or
+        [string]$policyConfigVersion -ne $configVersionText) {
+        return New-ConsumerResult $false "STALENESS_POLICY_CONFIG_VERSION_MISMATCH" $TenantId $configVersionText
+    }
+    if ($policyRevision -is [string] -or -not (Test-PositiveVersion $policyRevision)) {
+        return New-ConsumerResult $false "STALENESS_POLICY_REVISION_INVALID" $TenantId $configVersionText
+    }
+    if ($decisionStatus -ne "TBD-016") {
+        return New-ConsumerResult $false "STALENESS_POLICY_CONTRACT_INVALID" $TenantId $configVersionText
+    }
+
+    try {
+        $consumer = New-RuntimeSnapshotConsumer -MaximumStalenessSeconds $maximumStaleness
+    }
+    catch {
+        return New-ConsumerResult $false "STALENESS_POLICY_THRESHOLD_INVALID" $TenantId $configVersionText
+    }
+    $reasonCode = if ($null -eq $maximumStaleness) { "STALENESS_THRESHOLD_UNCONFIGURED" } else { "STALENESS_THRESHOLD_CONFIGURED" }
+    return New-ConsumerResult $true $reasonCode $TenantId $configVersionText @{
+        consumer = $consumer
+        policy_revision = [string]$policyRevision
+    }
+}
+
 function Get-TenantSlot {
     param(
         [object]$Consumer,
@@ -491,6 +549,7 @@ function Get-RuntimeSnapshotMetrics {
 
 Export-ModuleMember -Function @(
     "New-RuntimeSnapshotConsumer",
+    "New-RuntimeSnapshotConsumerFromStalenessPolicy",
     "Get-RuntimeSnapshotLease",
     "Invoke-RuntimeSnapshotNotification",
     "Sync-RuntimeSnapshotCurrent",

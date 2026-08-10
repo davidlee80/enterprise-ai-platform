@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:operations:approval-request:v1",
+  "title": "Production approval request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "approval_request_id", "change_ref",
+    "requested_by_ref", "requested_at", "evidence_pack_ref",
+    "required_gate_checks", "approval_context_ref"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "approval_request_id": { "type": "string", "minLength": 1 },
+    "change_ref": { "type": "string", "minLength": 1 },
+    "requested_by_ref": { "type": "string", "minLength": 1 },
+    "requested_at": { "type": "string", "format": "date-time" },
+    "evidence_pack_ref": { "type": "string", "minLength": 1 },
+    "required_gate_checks": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 7,
+      "items": {
+        "enum": [
+          "functional", "security", "migration", "capacity",
+          "observability", "runbook", "rollback"
+        ]
+      }
+    },
+    "approval_context_ref": { "type": ["string", "null"] }
+  }
+}

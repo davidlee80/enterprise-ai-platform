@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:operations:approval-decision:v1",
+  "title": "Production approval decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "approval_request_id", "outcome", "reason_code",
+    "approval_system_ref", "decided_by_refs", "decided_at", "evidence_ref"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "approval_request_id": { "type": "string", "minLength": 1 },
+    "outcome": {
+      "enum": ["pending", "approved", "rejected", "indeterminate"]
+    },
+    "reason_code": {
+      "enum": [
+        "APPROVAL_PENDING", "APPROVAL_GRANTED", "APPROVAL_REJECTED",
+        "APPROVAL_SYSTEM_UNCONFIGURED", "APPROVAL_SYSTEM_UNAVAILABLE",
+        "APPROVAL_EVIDENCE_INCOMPLETE", "APPROVAL_AUTHORITY_INVALID"
+      ]
+    },
+    "approval_system_ref": { "type": ["string", "null"] },
+    "decided_by_refs": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      ]
+    },
+    "decided_at": { "type": ["string", "null"], "format": "date-time" },
+    "evidence_ref": { "type": ["string", "null"] }
+  }
+}

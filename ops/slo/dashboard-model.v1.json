@@ -1,0 +1,62 @@
+{
+  "dashboard_version": 1,
+  "name": "enterprise_ai_platform_slo_dashboard",
+  "status": "target-aware-targets-unconfigured",
+  "catalog_ref": "ops/slo/sli-catalog.v1.json",
+  "data_source_ref": null,
+  "target_policy_ref": null,
+  "panels": [
+    {
+      "title": "Request success ratio",
+      "sli_id": "request_success_ratio",
+      "source_binding": "catalog.indicators.request_success_ratio.source_binding",
+      "target_binding": "targets.request_success_ratio.objective",
+      "target_status": "TBD-010"
+    },
+    {
+      "title": "Request latency p95",
+      "sli_id": "request_latency_p95",
+      "source_binding": "catalog.indicators.request_latency_p95.source_binding",
+      "target_binding": "targets.request_latency_p95.objective",
+      "target_status": "TBD-010"
+    },
+    {
+      "title": "Request latency p99",
+      "sli_id": "request_latency_p99",
+      "source_binding": "catalog.indicators.request_latency_p99.source_binding",
+      "target_binding": "targets.request_latency_p99.objective",
+      "target_status": "TBD-010"
+    },
+    {
+      "title": "Time to first token",
+      "sli_id": "time_to_first_token",
+      "source_binding": "catalog.indicators.time_to_first_token.source_binding",
+      "target_binding": "targets.time_to_first_token.objective",
+      "target_status": "TBD-010"
+    },
+    {
+      "title": "Provider success ratio",
+      "sli_id": "provider_success_ratio",
+      "source_binding": "catalog.indicators.provider_success_ratio.source_binding",
+      "target_binding": "targets.provider_success_ratio.objective",
+      "target_status": "TBD-010"
+    },
+    {
+      "title": "Configuration publish success ratio",
+      "sli_id": "config_publish_success_ratio",
+      "source_binding": "catalog.indicators.config_publish_success_ratio.source_binding",
+      "target_binding": "targets.config_publish_success_ratio.objective",
+      "target_status": "TBD-010"
+    },
+    {
+      "title": "Configuration propagation latency",
+      "sli_id": "config_propagation_latency",
+      "source_binding": "catalog.indicators.config_propagation_latency.source_binding",
+      "target_binding": "targets.config_propagation_latency.objective",
+      "target_status": "TBD-010"
+    }
+  ],
+  "alert_target_source": null,
+  "release_gate_target_source": null,
+  "decision_status": "TBD-010"
+}

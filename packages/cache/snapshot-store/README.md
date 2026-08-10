@@ -69,10 +69,11 @@ Stream, consumer fetch/validation, atomic in-memory swap, staleness metrics, and
 last-in-memory fallback are implemented by `TASK-M1-004` without adding a
 Control Plane database dependency.
 
-Maximum Snapshot staleness (`TBD-016`) and resource-specific fail-open or
-fail-closed behavior (`TBD-017`) remain configuration/ADR decisions. This store
-does not hard-code either behavior and does not define a production Redis
-version, topology, durability, authentication, or eviction policy.
+Maximum Snapshot staleness has a versioned `TBD-016` configuration contract, but
+its production value remains null. Resource-specific fail-open or fail-closed
+behavior remains `TBD-017`. This store hard-codes neither and does not define a
+production Redis version, topology, durability, authentication, or eviction
+policy.
 
 ## Test
 

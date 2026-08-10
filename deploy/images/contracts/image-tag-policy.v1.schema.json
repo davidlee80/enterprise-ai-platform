@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:images:tag-policy:v1",
+  "title": "Image tag policy v1",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "component",
+    "tag_format",
+    "tag_components",
+    "normalization_rules",
+    "mutable_alias_policy",
+    "branch_policy",
+    "prerelease_policy",
+    "promotion_policy",
+    "decision_status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "effective_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "rollback_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "component": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tag_format": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "tag_components": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "normalization_rules": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "mutable_alias_policy": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "branch_policy": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "prerelease_policy": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "promotion_policy": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "decision_status": {
+      "const": "TBD-013"
+    }
+  },
+  "additionalProperties": false
+}

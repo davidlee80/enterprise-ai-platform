@@ -1,0 +1,59 @@
+{
+  "boundary_version": 1,
+  "name": "operations_coordination_boundary",
+  "status": "interfaces-ready-systems-unconfigured",
+  "requirements": [
+    "REQ-GEN-005", "REQ-GEN-014", "REQ-OPS-001", "REQ-OPS-004",
+    "REQ-OPS-006", "REQ-OPS-007", "REQ-OPS-008", "REQ-OPS-009",
+    "TBD-020"
+  ],
+  "on_call_binding_schema": "ops/coordination/on-call-binding.v1.schema.json",
+  "approval_request_schema": "ops/coordination/approval-request.v1.schema.json",
+  "approval_decision_schema": "ops/coordination/approval-decision.v1.schema.json",
+  "evidence_pack_schema": "ops/coordination/go-live-evidence-pack.v1.schema.json",
+  "current_on_call_binding": {
+    "provider_adapter_ref": null,
+    "schedule_ref": null,
+    "escalation_policy_ref": null,
+    "contact_target_ref": null
+  },
+  "current_approval_binding": {
+    "approval_system_ref": null,
+    "security_approval_role_refs": null,
+    "required_approver_count": null,
+    "two_person_enforcement": null,
+    "outage_procedure_ref": null
+  },
+  "go_live_gate": {
+    "required_checks": [
+      "functional", "security", "migration", "capacity",
+      "observability", "runbook", "rollback"
+    ],
+    "security_approval_required": true,
+    "evidence_pack_required": true,
+    "unconfigured_approval_system_blocks_promotion": true,
+    "unavailable_approval_system_blocks_promotion": true,
+    "implicit_self_approval_allowed": false
+  },
+  "runtime_boundary": {
+    "online_data_plane_dependency_allowed": false,
+    "approval_lookup_on_request_path_allowed": false,
+    "on_call_lookup_on_request_path_allowed": false,
+    "control_plane_postgresql_query_from_data_plane_allowed": false
+  },
+  "audit_safety": {
+    "structured_decisions_required": true,
+    "decision_evidence_required": true,
+    "direct_contact_details_allowed": false,
+    "credentials_allowed": false,
+    "free_form_evidence_allowed": false,
+    "audit_persistence_blocks_online_requests": false
+  },
+  "configuration_lifecycle": {
+    "versioned": true,
+    "revision_required": true,
+    "rollback_required": true,
+    "prior_compatible_revision_retained": true
+  },
+  "decision_status": "TBD-020"
+}

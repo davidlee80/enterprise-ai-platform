@@ -1,0 +1,25 @@
+{
+  "catalog_version": 1,
+  "status": "metadata-ready-owner-names-unconfigured",
+  "requirements": ["REQ-REP-004", "REQ-RM-006", "TBD-018"],
+  "record_schema": "ops/ownership/ownership-record.v1.schema.json",
+  "components": [
+    { "component_id": "gateway", "component_kind": "application", "component_path": "apps/gateway", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "iam", "component_kind": "application", "component_path": "apps/iam", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "billing", "component_kind": "application", "component_path": "apps/billing", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "provider", "component_kind": "application", "component_path": "apps/provider", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "policy", "component_kind": "application", "component_path": "apps/policy", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "router", "component_kind": "application", "component_path": "apps/router", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "audit", "component_kind": "application", "component_path": "apps/audit", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "sdk", "component_kind": "shared_package", "component_path": "packages/sdk", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "common", "component_kind": "shared_package", "component_path": "packages/common", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "auth", "component_kind": "shared_package", "component_path": "packages/auth", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "telemetry", "component_kind": "shared_package", "component_path": "packages/telemetry", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "db", "component_kind": "shared_package", "component_path": "packages/db", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null },
+    { "component_id": "cache", "component_kind": "shared_package", "component_path": "packages/cache", "owner_ref": null, "owner_status": "TBD-018", "slo_ref": "ops/slo/README.md", "runbook_ref": "ops/runbooks/README.md", "upgrade_window_ref": null, "data_retention_responsibility_ref": null }
+  ],
+  "assignment_source": null,
+  "organization_names": null,
+  "team_topology": null,
+  "decision_status": "TBD-018"
+}

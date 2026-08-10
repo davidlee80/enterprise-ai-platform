@@ -1,0 +1,36 @@
+{
+  "baseline_version": 1,
+  "required_policy_fields": [
+    "policy_version",
+    "name",
+    "status",
+    "requirements",
+    "threshold_percent",
+    "metric",
+    "aggregation",
+    "collector",
+    "report_format",
+    "threshold_input",
+    "observed_input",
+    "behavior",
+    "activation_guard",
+    "rollback_rule",
+    "decision_status"
+  ],
+  "required_unresolved_fields": [
+    "threshold_percent",
+    "metric",
+    "aggregation",
+    "collector",
+    "report_format"
+  ],
+  "threshold_input_name": "COVERAGE_MINIMUM_PERCENT",
+  "observed_input_name": "COVERAGE_OBSERVED_PERCENT",
+  "required_behaviors": {
+    "unconfigured": "report-not-enforced",
+    "threshold_without_observation": "fail",
+    "invalid_numeric_input": "fail",
+    "observed_below_threshold": "fail",
+    "observed_at_or_above_threshold": "pass"
+  }
+}

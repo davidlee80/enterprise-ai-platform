@@ -23,9 +23,161 @@ same Ubuntu runner.
 
 The bootstrap security command is deliberately narrow. It is machine-verifiable
 evidence for this task, not the final dependency/image/Secret scanning standard.
-The production scanner and policy thresholds remain TBD under `REQ-CICD-002`,
-`REQ-CICD-004`, and `TBD-009`; a later task must replace or augment this check
-without silently treating its current patterns as complete coverage.
+The production scanner and its policy thresholds remain TBD under
+`REQ-CICD-004`; a later task must
+replace or augment this check without silently treating its current patterns as
+complete security coverage.
+
+## Configurable coverage gate
+
+`TBD-009` is implemented as a parameterized CI gate without a production
+percentage. The versioned policy and compatibility baseline are
+`test-coverage-gate.v1.json` and
+`test-coverage-gate-compatibility-baseline.v1.json`.
+
+The workflow maps repository variable `COVERAGE_MINIMUM_PERCENT` into the gate.
+A future reviewed collector exports `COVERAGE_OBSERVED_PERCENT` before the gate
+step. Behavior is explicit:
+
+- no configured threshold: pass the bootstrap check with
+  `COVERAGE_THRESHOLD_TBD_NOT_ENFORCED` and `enforcement=not-active`;
+- threshold configured but observation missing/invalid: fail;
+- observation below the configured threshold: fail;
+- observation at or above the threshold: pass.
+
+Threshold, line/branch metric, aggregation, collector, and report format all
+remain null. The conformance suite's `80` values are test-only boundary fixtures,
+not a recommended or production threshold. Activating enforcement requires a
+reviewed ADR/CI policy and a versioned collector configuration. Rollback restores
+the policy and collector together.
+
+## Configurable SLO Dashboard gate
+
+`TBD-010` is implemented as a target-aware Dashboard boundary without production
+commitments. The gate validates the logical SLI catalog, versioned target-policy
+schema, Dashboard bindings, compatibility baseline, rollback lifecycle, and
+telemetry safety. It requires request success, p95/p99 latency, time to first
+token, Provider success, configuration publish success, and propagation latency
+panels while keeping their data-source and target references unconfigured.
+
+Numeric objectives, measurement windows, error-budget and burn-rate behavior,
+alert thresholds, data-source/query bindings, and release-gate failure thresholds
+remain `TBD-010`. Activating any of them requires a reviewed, versioned SLO
+policy and matching alert/gate configuration; rollback restores the prior set as
+one revision.
+
+## Cloud provider neutrality gate
+
+`TBD-011` is implemented as a static provider-neutrality gate plus a versioned
+selection schema. It verifies that provider, locations, workload identity,
+remote state, and the network/Kubernetes/PostgreSQL/Redis/Kafka/object-storage/
+KMS/DNS adapters remain unselected. It also protects the shared capability
+contracts and dev/stage/prod composition from premature provider coupling.
+
+The gate runs without Terraform CLI and rejects provider/resource/data/backend
+blocks, `required_providers`, non-local module sources, vendor identifiers,
+plaintext credential assignments, and committed state or provider lock files.
+Selecting a provider requires a reviewed ADR and versioned provider, adapter,
+identity, location, and backend set with a compatible rollback revision.
+
+## Secret Manager abstraction gate
+
+`TBD-012` is implemented as opaque `secret_ref` schemas, a versioned product-
+neutral binding, safe resolution decisions, and an executable in-memory
+resolver. The gate verifies tenant/config isolation, structured Audit enqueue
+outcomes, structured resolution reasons, in-process-only credential delivery,
+Provider/KMS linkage, break-glass separation, configuration rollback, and
+non-blocking asynchronous Audit emission.
+
+Secret Manager product/adapter, authentication, endpoint reference, reference
+syntax, rotation schedule and overlap/revocation behavior, credential caching,
+lease renewal, and break-glass approval tooling remain null. CI fails if these
+are prematurely selected or if a decision/audit artifact exposes `secret_ref`,
+credential material, endpoint, raw error, or stack trace.
+
+## Image traceability gate
+
+`TBD-013` is implemented as a versioned Tag-policy entry point plus an immutable
+publication record. The gate requires source repository, source revision,
+source/release version, build identity, matching OCI labels, and a lowercase
+SHA-256 image digest. It rejects missing/placeholder revisions, invalid digests,
+and label/record mismatches.
+
+The exact Tag template, components, normalization, mutable-alias rules, branch
+and prerelease behavior, and promotion policy remain null. Digest-only release
+evidence is valid; a production release Tag remains blocked until it references
+a reviewed Tag-policy revision. Rollback selects the previously verified digest
+and matching publication record instead of rebuilding a Tag.
+
+## Provider canary configurability gate
+
+`TBD-014` is implemented as versioned policy, observation, decision, boundary,
+and compatibility contracts linked to the Router. The gate exercises explicit
+hold, promote, and rollback decisions; tenant/config/revision/model isolation;
+incomplete windows, insufficient samples, unavailable signals, missing criteria;
+and the rule that canary configuration cannot restore a hard-filtered Provider.
+
+Production weights, windows, samples, signals, promotion/rollback thresholds,
+allocation key/algorithm, and automatic progression remain null. Fixture values
+in the conformance script are test-only. The gate also requires published
+snapshot consumption, asynchronous non-blocking observation, structured reasons,
+safe metric labels, a revision/rollback target, and preservation of the last
+valid snapshot on publication failure.
+
+## Deprecation window configurability gate
+
+`TBD-015` is implemented as versioned policy, lifecycle-evaluation, boundary,
+and compatibility contracts covering APIs, model aliases, configuration fields,
+and capabilities. The gate verifies start/end ordering, pre-window, active, and
+elapsed states, tenant/config/revision/resource isolation, global-policy support,
+structured reasons, asynchronous notification, rollback, and OpenAPI linkage.
+
+Production duration and syntax, scheduling rules, notification channels,
+post-window enforcement, and exception policy remain null. Fixture timestamps
+are test-only. No `/v1` operation may be marked deprecated without a reviewed
+policy; removal before the explicit window end remains forbidden.
+
+## Runtime Snapshot staleness configurability gate
+
+`TBD-016` is implemented as a versioned staleness-policy schema, Runtime
+Snapshot extension, boundary, compatibility baseline, and executable binding to
+the existing nullable `MaximumStalenessSeconds` Consumer port. The gate verifies
+tenant/config/revision isolation, positive configured inputs, null defaults,
+raw staleness/propagation metrics, rollback metadata, and Redis-failure retention
+of the last valid in-memory Snapshot.
+
+The production maximum and measurement-clock reference remain null. Numeric
+values in conformance tests are fixtures only. Threshold crossing is observable
+but does not change request availability; resource-specific fail-open or
+fail-closed behavior remains `TBD-017`.
+
+## Ownership metadata placeholder gate
+
+`TBD-018` is implemented as a versioned catalog, closed record schema, boundary,
+compatibility baseline, and executable inventory check for all seven applications
+and six shared packages. The gate requires Owner, SLO, Runbook, upgrade-window,
+and data-retention metadata fields and rejects missing, duplicate, or unknown
+components. Organization names, owner references, and team topology remain null;
+the placeholder cannot satisfy production ownership readiness.
+
+## Production environment variable gate
+
+`TBD-019` is implemented as a versioned settings schema and boundary plus
+explicit Helm and production Terraform inputs for domain, Namespace,
+certificate issuer, and StorageClass. The gate rejects committed production
+values, partial settings, Secret fields, cloud-vendor coupling, or missing
+rollback metadata. Helm values remain empty and Terraform defaults remain null;
+all conformance values are fixtures only.
+
+## On-call and approval interface gate
+
+`TBD-020` is implemented as closed on-call binding and production-approval
+request/decision schemas, a product-neutral boundary, compatibility baseline,
+and executable fail-closed decision checks. The gate requires all seven go-live
+checks and structured evidence references, rejects direct contacts, credentials,
+free-form evidence, or online Data Plane coupling, and verifies rollback guards.
+Concrete products, schedules, escalation/contact targets, roles, approver count,
+separation-of-duty behavior, and outage procedure remain unconfigured.
 
 The test job applies all current migrations to an isolated, empty PostgreSQL
 18.4 CI service and verifies the resulting table set. This version is a CI
@@ -59,6 +211,32 @@ references, validates request/response/stream fixtures and required HTTP status
 semantics, checks the Gateway operation binding, and compares the document with
 the committed v1 compatibility baseline. The SDK plan verifies the same source
 and hash without choosing a generator or language while `TBD-007` is unresolved.
+
+The admin idempotency gate validates the OpenAPI-linked `TBD-005` extension
+point, versioned request/decision/policy schemas, compatibility baseline,
+tenant-scoped mock behavior, structured reasons, outbox audit boundary,
+rollback metadata, and raw-key non-disclosure. It fails if a Header, TTL,
+storage profile, replay/conflict mapping, or store-failure strategy is hard-coded
+before an ADR/configuration decision.
+
+The admin pagination gate validates the OpenAPI-linked `TBD-006` review
+boundary, versioned query/result/policy schemas, compatibility baseline,
+tenant-first filtering, cursor and offset candidate continuity, structured
+invalid-position handling, and rollback metadata. It fails if a production
+strategy, query parameter name, page-size value, cursor policy, or consistency
+behavior is selected before API design review.
+
+The SDK generation gate validates the OpenAPI-linked `TBD-007` pipeline
+boundary and compatibility baseline, checks the source version and SHA-256
+digest, executes validation/planning, and proves generation, generated-client
+testing, and publishing remain blocked. It fails if a language, generator,
+output layout, or registry is selected before review.
+
+The public HTTP error gate validates the OpenAPI-linked `TBD-008` status-only
+boundary and compatibility baseline. It protects the required
+`400/401/403/429/502` meanings, requires structured internal context, checks
+non-disclosure, and fails if a public body/content mapping or `402` semantics are
+published before API review.
 
 The authentication-boundary gate executes framework-neutral Bearer/API Key
 conformance scenarios. It verifies that only authenticated decisions carry a

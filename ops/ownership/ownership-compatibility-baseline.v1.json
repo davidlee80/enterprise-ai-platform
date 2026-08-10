@@ -1,0 +1,8 @@
+{
+  "baseline_version": 1,
+  "record_schema_id": "urn:enterprise-ai-platform:operations:ownership-record:v1",
+  "required_component_ids": ["gateway", "iam", "billing", "provider", "policy", "router", "audit", "sdk", "common", "auth", "telemetry", "db", "cache"],
+  "required_record_fields": ["component_id", "component_kind", "component_path", "owner_ref", "owner_status", "slo_ref", "runbook_ref", "upgrade_window_ref", "data_retention_responsibility_ref"],
+  "required_unresolved_catalog_fields": ["assignment_source", "organization_names", "team_topology"],
+  "required_placeholder_status": "TBD-018"
+}

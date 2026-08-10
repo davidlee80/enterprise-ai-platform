@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:admin-pagination:query:v1",
+  "title": "Admin list pagination query v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "operation_id",
+    "config_version",
+    "strategy",
+    "page_size",
+    "cursor",
+    "offset"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Verified tenant identity. Null is allowed only for an explicitly authorized global resource."
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "strategy": {
+      "type": "string",
+      "enum": [
+        "cursor",
+        "offset"
+      ],
+      "description": "Normalized strategy selected by a published policy after TBD-006 review; this is not an HTTP parameter name."
+    },
+    "page_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "cursor": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "offset": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "strategy": {
+          "const": "cursor"
+        },
+        "offset": {
+          "const": null
+        }
+      }
+    },
+    {
+      "properties": {
+        "strategy": {
+          "const": "offset"
+        },
+        "cursor": {
+          "const": null
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

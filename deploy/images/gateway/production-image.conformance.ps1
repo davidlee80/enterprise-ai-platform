@@ -71,6 +71,9 @@ foreach ($label in $expectedLabels) {
         Add-ConformanceFailure "PRODUCTION_IMAGE_TRACEABILITY_LABEL_MISSING" $label "required OCI traceability label is absent"
     }
 }
+if ($boundary.traceability.contract -ne "deploy/images/contracts/image-traceability-boundary.v1.json") {
+    Add-ConformanceFailure "IMAGE_TRACEABILITY_CONTRACT_MISSING" $boundaryRelativePath "Gateway image must bind the repository-wide traceability contract"
+}
 if ($null -ne $boundary.traceability.image_tag_format -or $boundary.traceability.image_tag_format_status -ne "TBD-013") {
     Add-ConformanceFailure "IMAGE_TAG_TBD_OVERRIDDEN" $boundaryRelativePath "the exact image tag format must remain unresolved under TBD-013"
 }

@@ -1,0 +1,34 @@
+{
+  "policy_version": 1,
+  "name": "pull_request_test_coverage_gate",
+  "status": "threshold-unresolved",
+  "requirements": [
+    "REQ-CICD-002",
+    "REQ-TST-001",
+    "REQ-TST-010",
+    "TBD-009"
+  ],
+  "threshold_percent": null,
+  "metric": null,
+  "aggregation": null,
+  "collector": null,
+  "report_format": null,
+  "threshold_input": {
+    "kind": "ci-variable",
+    "name": "COVERAGE_MINIMUM_PERCENT"
+  },
+  "observed_input": {
+    "kind": "environment",
+    "name": "COVERAGE_OBSERVED_PERCENT"
+  },
+  "behavior": {
+    "unconfigured": "report-not-enforced",
+    "threshold_without_observation": "fail",
+    "invalid_numeric_input": "fail",
+    "observed_below_threshold": "fail",
+    "observed_at_or_above_threshold": "pass"
+  },
+  "activation_guard": "A reviewed ADR/CI policy must select threshold, metric, aggregation, collector, and report format before enforcement is activated.",
+  "rollback_rule": "Restore the prior versioned coverage policy and collector configuration together; never retain a threshold whose metric/report producer has been removed.",
+  "decision_status": "TBD-009"
+}

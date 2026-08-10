@@ -1,0 +1,68 @@
+{
+  "baseline_version": 1,
+  "tag_policy_schema_id": "urn:enterprise-ai-platform:images:tag-policy:v1",
+  "publication_record_schema_id": "urn:enterprise-ai-platform:images:publication-record:v1",
+  "required_tag_policy_fields": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "component",
+    "tag_format",
+    "tag_components",
+    "normalization_rules",
+    "mutable_alias_policy",
+    "branch_policy",
+    "prerelease_policy",
+    "promotion_policy",
+    "decision_status"
+  ],
+  "required_publication_fields": [
+    "schema_version",
+    "status",
+    "publication_scope",
+    "component",
+    "image_repository",
+    "image_tag",
+    "image_digest",
+    "source_repository",
+    "source_revision",
+    "source_version",
+    "build_id",
+    "built_at",
+    "tag_policy_revision",
+    "oci_labels",
+    "sbom_ref",
+    "provenance_ref",
+    "signature_ref"
+  ],
+  "required_oci_labels": [
+    "org.opencontainers.image.source",
+    "org.opencontainers.image.revision",
+    "org.opencontainers.image.version"
+  ],
+  "required_unresolved_policy_fields": [
+    "tag_format",
+    "tag_components",
+    "normalization_rules",
+    "mutable_alias_policy",
+    "branch_policy",
+    "prerelease_policy",
+    "promotion_policy",
+    "active_policy_revision"
+  ],
+  "forbidden_placeholder_revisions": [
+    "uncommitted",
+    "unknown",
+    "tbd"
+  ]
+}

@@ -83,12 +83,59 @@ jobs:
       - name: Repository tests
         shell: pwsh
         run: ./scripts/task.ps1 test
+      - name: Verify Configurable Coverage Gate
+        shell: pwsh
+        env:
+          COVERAGE_MINIMUM_PERCENT: ${{ vars.COVERAGE_MINIMUM_PERCENT }}
+        run: ./scripts/task.ps1 test-tbd-009
+      - name: Verify Configurable SLO Dashboard
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-010
+      - name: Verify Cloud Provider Neutrality
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-011
+      - name: Verify Secret Manager Abstraction
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-012
+      - name: Verify Image Traceability
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-013
+      - name: Verify Provider Canary Configurability
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-014
+      - name: Verify Deprecation Window Configurability
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-015
+      - name: Verify Runtime Snapshot Staleness Configurability
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-016
+      - name: Verify Ownership Metadata Placeholders
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-018
+      - name: Verify Production Environment Variables
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-019
+      - name: Verify On-call and Approval Interfaces
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-020
       - name: Verify Data Plane Snapshot Consumer
         shell: pwsh
         run: ./scripts/task.ps1 test-m1-004
       - name: Verify OpenAPI 3.1 Contract
         shell: pwsh
         run: ./scripts/task.ps1 test-m2-001
+      - name: Verify Admin Idempotency Contract
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-005
+      - name: Verify Admin Pagination Contract
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-006
+      - name: Verify SDK Generation Pipeline
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-007
+      - name: Verify HTTP Error Status Semantics
+        shell: pwsh
+        run: ./scripts/task.ps1 test-tbd-008
       - name: Verify Authentication Boundary
         shell: pwsh
         run: ./scripts/task.ps1 test-m2-002

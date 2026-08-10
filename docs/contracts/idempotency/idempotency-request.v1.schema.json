@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:admin-idempotency:request:v1",
+  "title": "Admin write idempotency request v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "authenticated_subject_id",
+    "operation_id",
+    "resource_id",
+    "idempotency_key",
+    "request_fingerprint",
+    "config_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Verified tenant identity. Null is allowed only for an explicitly authorized global resource."
+    },
+    "authenticated_subject_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resource_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Normalized value obtained from the transport binding selected after TBD-005. It is sensitive operational data and must not be logged."
+    },
+    "request_fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable digest of the authenticated operation semantics; the digest algorithm remains an implementation/ADR decision."
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
+}

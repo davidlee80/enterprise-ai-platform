@@ -1,0 +1,58 @@
+{
+  "boundary_version": 1,
+  "name": "platform_sli_slo_dashboard_boundary",
+  "status": "dashboard-ready-targets-unconfigured",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-005",
+    "REQ-GEN-015",
+    "REQ-TST-006",
+    "REQ-TST-010",
+    "REQ-OPS-001",
+    "REQ-OPS-005",
+    "TASK-M5-001",
+    "TBD-010"
+  ],
+  "sli_catalog": "ops/slo/sli-catalog.v1.json",
+  "target_policy_schema": "ops/slo/slo-target-policy.v1.schema.json",
+  "dashboard_model": "ops/slo/dashboard-model.v1.json",
+  "target_configuration": {
+    "active_policy_ref": null,
+    "status": "TBD-010"
+  },
+  "data_source": {
+    "binding_ref": null,
+    "status": "TBD-010"
+  },
+  "alerting": {
+    "target_policy_ref": null,
+    "burn_rate_windows": null,
+    "status": "TBD-010"
+  },
+  "release_gate": {
+    "target_policy_ref": null,
+    "failure_thresholds": null,
+    "status": "TBD-010"
+  },
+  "configuration_lifecycle": {
+    "stages": [
+      "Draft",
+      "Validate",
+      "Publish",
+      "Observe",
+      "Rollback"
+    ],
+    "versioned": true,
+    "rollback_required": true,
+    "publish_guard": "Every target, window, data-source binding, alert rule, and release-gate threshold requires reviewed SLO policy before activation."
+  },
+  "telemetry_safety": {
+    "tenant_id_controlled_dimension_only": true,
+    "request_id_metric_label_forbidden": true,
+    "trace_id_metric_label_forbidden": true,
+    "user_id_metric_label_forbidden": true,
+    "prompt_response_body_forbidden": true,
+    "provider_secret_forbidden": true
+  },
+  "decision_status": "TBD-010"
+}

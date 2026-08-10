@@ -9,6 +9,7 @@
   "registry_schema": "provider-adapter-registry.v1.schema.json",
   "adapter_method_signature": null,
   "adapter_method_signature_status": "ADR_NEEDED",
+  "secret_resolver_contract": "docs/contracts/secrets/secret-manager-boundary.v1.json",
   "secret_resolver": null,
   "secret_resolver_status": "TBD-012",
   "invariants": [

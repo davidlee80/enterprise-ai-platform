@@ -157,6 +157,7 @@ Assert-Condition ($boundary.plugin_method_signature_status -eq "ADR-003") "ROUTE
 Assert-Condition ($boundary.plugin_method_signature -eq "ValueTask<RouterPluginResult> RouteAsync(RouterPluginContext context, CancellationToken cancellationToken)") "ROUTER_METHOD_SIGNATURE_INVALID"
 Assert-Condition ($null -eq $boundary.selection_algorithm) "ROUTER_ALGORITHM_PREMATURELY_SELECTED"
 Assert-Condition ($null -eq $boundary.weight_and_observation_semantics -and $boundary.weight_and_observation_status -eq "TBD-014") "ROUTER_WEIGHT_SEMANTICS_PREMATURELY_SELECTED"
+Assert-Condition ($boundary.weight_and_observation_contract -eq "docs/contracts/provider-canary/provider-canary-boundary.v1.json") "ROUTER_PROVIDER_CANARY_CONTRACT_MISSING"
 
 $baseRequest = [PSCustomObject]@{
     schema_version = 1

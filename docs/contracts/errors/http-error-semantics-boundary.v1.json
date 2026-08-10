@@ -1,0 +1,84 @@
+{
+  "contract_version": 1,
+  "name": "public_http_error_semantics",
+  "scope": "data_plane_v1",
+  "status": "http-status-semantics-only",
+  "requirements": [
+    "REQ-GEN-005",
+    "REQ-GEN-014",
+    "REQ-API-004",
+    "REQ-API-008",
+    "REQ-API-010",
+    "REQ-TST-002",
+    "TBD-008"
+  ],
+  "source_contract": "docs/contracts/openapi/openapi.yaml",
+  "source_contract_version": "1.0.0",
+  "required_http_semantics": [
+    {
+      "status": 400,
+      "meaning": "Invalid request"
+    },
+    {
+      "status": 401,
+      "meaning": "Authentication failed"
+    },
+    {
+      "status": 403,
+      "meaning": "Policy or model denied"
+    },
+    {
+      "status": 429,
+      "meaning": "Rate or quota exceeded"
+    },
+    {
+      "status": 502,
+      "meaning": "Provider failure after fallback exhaustion"
+    }
+  ],
+  "public_body": {
+    "schema": null,
+    "media_type": null,
+    "error_code_field": null,
+    "message_field": null,
+    "correlation_fields": null,
+    "status": "TBD-008"
+  },
+  "status_402": {
+    "enabled": null,
+    "meaning": null,
+    "status": "TBD-008"
+  },
+  "internal_decision_context": {
+    "structured_reason_code_required": true,
+    "required_fields": [
+      "request_id",
+      "trace_id",
+      "tenant_id",
+      "config_version",
+      "decision_or_reason_code",
+      "provider_or_model",
+      "retry_fallback_cache_status"
+    ],
+    "public_error_code_mapping": null,
+    "mapping_status": "TBD-008"
+  },
+  "security": {
+    "forbidden_public_data": [
+      "provider_credentials",
+      "secret_ref",
+      "internal_endpoint",
+      "policy_source",
+      "stack_trace",
+      "raw_provider_error",
+      "other_tenant_data"
+    ],
+    "prompt_response_body_logging_default": false
+  },
+  "compatibility": {
+    "status_removal_or_meaning_change_is_breaking": true,
+    "new_public_body_requires_reviewed_version_and_migration": true,
+    "rollback_rule": "Retain the prior OpenAPI and HTTP-semantics contract version; do not attach a new body schema to an old API version during rollback."
+  },
+  "runtime_implementation_status": "status-semantics-published-body-unresolved"
+}

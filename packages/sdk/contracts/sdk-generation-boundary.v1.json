@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "pipeline_contract_version": 1,
+  "source_contract": "docs/contracts/openapi/openapi.yaml",
+  "source_contract_version": "1.0.0",
+  "input_hash_algorithm": "SHA256",
+  "language_set": null,
+  "generator": null,
+  "generator_version": null,
+  "output_root": null,
+  "package_registry": null,
+  "stages": [
+    {
+      "name": "contract-validation",
+      "enabled": true,
+      "status": "ready",
+      "blocked_by": null
+    },
+    {
+      "name": "compatibility-check",
+      "enabled": true,
+      "status": "ready",
+      "blocked_by": null
+    },
+    {
+      "name": "generation-plan",
+      "enabled": true,
+      "status": "ready",
+      "blocked_by": null
+    },
+    {
+      "name": "client-generation",
+      "enabled": false,
+      "status": "blocked",
+      "blocked_by": "TBD-007"
+    },
+    {
+      "name": "generated-client-test",
+      "enabled": false,
+      "status": "blocked",
+      "blocked_by": "TBD-007"
+    },
+    {
+      "name": "package-publish",
+      "enabled": false,
+      "status": "blocked",
+      "blocked_by": "TBD-007"
+    }
+  ],
+  "compatibility_required": true,
+  "rollback_rule": "Keep the prior generated package version and its exact OpenAPI input digest available; rollback must never regenerate from a changed contract under the old package version.",
+  "decision_status": "TBD-007"
+}

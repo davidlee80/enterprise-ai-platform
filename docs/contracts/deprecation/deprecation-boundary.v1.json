@@ -1,0 +1,96 @@
+{
+  "boundary_version": 1,
+  "name": "deprecation_window_configurability_boundary",
+  "status": "workflow-ready-window-duration-unconfigured",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-005",
+    "REQ-GEN-015",
+    "REQ-REL-002",
+    "REQ-REL-006",
+    "REQ-REL-007",
+    "REQ-REL-008",
+    "REQ-TST-010",
+    "TBD-015"
+  ],
+  "policy_schema": "docs/contracts/deprecation/deprecation-policy.v1.schema.json",
+  "evaluation_schema": "docs/contracts/deprecation/deprecation-evaluation.v1.schema.json",
+  "supported_resource_kinds": [
+    "api",
+    "model_alias",
+    "config_field",
+    "capability"
+  ],
+  "current_policy": {
+    "active_policy_ref": null,
+    "window_duration": null,
+    "duration_format": null,
+    "announcement_rule": null,
+    "window_start_rule": null,
+    "window_end_rule": null,
+    "notification_policy_ref": null,
+    "enforcement_after_window_ref": null,
+    "exception_policy_ref": null
+  },
+  "publication_guard": {
+    "explicit_window_start_required": true,
+    "explicit_window_end_required": true,
+    "window_end_must_follow_start": true,
+    "window_boundary_semantics": "start-inclusive-end-exclusive",
+    "announcement_must_not_follow_start": true,
+    "removal_before_window_end_allowed": false,
+    "silent_breaking_change_allowed": false,
+    "publish_without_reviewed_policy_allowed": false,
+    "unconfigured_behavior": "no-deprecation-scheduled",
+    "window_elapsed_without_enforcement_ref": "hold-for-review"
+  },
+  "runtime_boundary": {
+    "consumes_published_snapshot": true,
+    "control_plane_postgresql_query_allowed": false,
+    "tenant_match_required": true,
+    "config_version_match_required": true,
+    "policy_revision_match_required": true,
+    "resource_match_required": true,
+    "evaluation_changes_resource_availability": false
+  },
+  "notification": {
+    "asynchronous_non_blocking": true,
+    "request_path_waits_for_delivery": false,
+    "usage_billing_audit_analytics_persistence_blocks_requests": false,
+    "delivery_channel_selection": null,
+    "delivery_retry_policy_ref": null
+  },
+  "configuration_lifecycle": {
+    "stages": [
+      "Draft",
+      "Validate",
+      "Publish",
+      "Announce",
+      "Observe",
+      "WindowElapsed",
+      "Enforce",
+      "Rollback"
+    ],
+    "versioned": true,
+    "revision_required": true,
+    "rollback_target_required": true,
+    "prior_contract_retained_until_window_end": true,
+    "last_valid_snapshot_preserved_on_publish_failure": true
+  },
+  "change_evidence": {
+    "who_fields": ["created_by", "updated_by"],
+    "revision_field": "revision",
+    "when_fields": ["updated_at", "effective_at", "announcement_at", "window_starts_at", "window_ends_at"],
+    "impact_scope_fields": ["tenant_id", "resource_kind", "resource_ref"],
+    "rollback_revision_field": "rollback_revision"
+  },
+  "telemetry": {
+    "structured_evaluation_required": true,
+    "metric_labels": ["tenant_id", "config_version", "policy_revision", "resource_kind", "state", "reason_code"],
+    "high_cardinality_labels_forbidden": ["evaluation_id", "resource_ref", "request_id", "trace_id", "user_id"],
+    "prompt_body_forbidden": true,
+    "response_body_forbidden": true,
+    "secret_material_forbidden": true
+  },
+  "decision_status": "TBD-015"
+}

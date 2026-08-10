@@ -3,8 +3,18 @@
   "info": {
     "title": "Enterprise AI Platform API",
     "version": "1.0.0",
-    "description": "OpenAI-compatible Data Plane API baseline. Error bodies and the final API-key header remain unresolved and are intentionally not invented by this contract."
+    "description": "OpenAI-compatible Data Plane API baseline. Error bodies, the final API-key header, management idempotency semantics, and the management pagination strategy remain unresolved and are intentionally not invented by this contract."
   },
+  "x-admin-idempotency-contract": "../idempotency/idempotency-boundary.v1.json",
+  "x-admin-idempotency-tbd": "TBD-005: management write Header name, TTL, storage, replay, conflict, and store-failure strategies require a reviewed ADR/configuration decision.",
+  "x-admin-pagination-contract": "../pagination/pagination-boundary.v1.json",
+  "x-admin-pagination-tbd": "TBD-006: cursor versus offset, transport parameter names, page-size policy, cursor policy, and consistency behavior require API design review.",
+  "x-sdk-generation-contract": "../../../packages/sdk/contracts/sdk-generation-boundary.v1.json",
+  "x-sdk-language-tbd": "TBD-007: SDK language set, generator product/version, output layout, and package registry remain unresolved; only validation, compatibility, and planning stages are enabled.",
+  "x-http-error-semantics-contract": "../errors/http-error-semantics-boundary.v1.json",
+  "x-http-error-schema-tbd": "TBD-008: only required HTTP status meanings are published; public body schema, field names, internal-code mapping, correlation fields, media type, and 402 semantics remain unresolved.",
+  "x-deprecation-contract": "../deprecation/deprecation-boundary.v1.json",
+  "x-deprecation-window-tbd": "TBD-015: deprecation duration, scheduling rules, notification channels, post-window enforcement, and exception policy require reviewed configuration; no operation is currently scheduled for deprecation.",
   "paths": {
     "/v1/chat/completions": {
       "post": {

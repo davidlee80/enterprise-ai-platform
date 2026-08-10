@@ -21,7 +21,11 @@ Candidate metadata is limited to opaque `provider_id`, region, priority, weight,
 and enabled state. It never includes Provider endpoint, `secret_ref`, plaintext
 key, or credential material. Weight is represented because it exists in the
 confirmed data baseline, but its grey-release and observation semantics remain
-`TBD-014`; this task does not define a weighted selection algorithm.
+`TBD-014`; this task does not define a weighted selection algorithm. The
+configurable, versioned canary entry point is
+[`provider-canary-boundary.v1.json`](../provider-canary/provider-canary-boundary.v1.json).
+Its production weights, windows, samples, thresholds, signals, and allocation
+algorithm remain unconfigured.
 
 Only Policy Decision `allow` can enter routing. A `force_region` obligation is
 enforced before plugin composition; other obligations are forwarded unchanged.

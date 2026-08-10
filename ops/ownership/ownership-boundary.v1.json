@@ -1,0 +1,35 @@
+{
+  "boundary_version": 1,
+  "name": "component_ownership_metadata_boundary",
+  "status": "metadata-ready-owner-names-unconfigured",
+  "requirements": ["REQ-REP-004", "REQ-RM-006", "TBD-018"],
+  "catalog": "ops/ownership/ownership-catalog.v1.json",
+  "record_schema": "ops/ownership/ownership-record.v1.schema.json",
+  "required_component_kinds": ["application", "shared_package"],
+  "required_metadata_fields": [
+    "owner_ref",
+    "slo_ref",
+    "runbook_ref",
+    "upgrade_window_ref",
+    "data_retention_responsibility_ref"
+  ],
+  "current_assignment": {
+    "assignment_source": null,
+    "organization_names": null,
+    "team_topology": null
+  },
+  "validation": {
+    "every_application_required": true,
+    "every_shared_package_required": true,
+    "duplicate_component_allowed": false,
+    "unknown_component_allowed": false,
+    "owner_name_required_before_production": true,
+    "placeholder_is_production_assignment": false
+  },
+  "lifecycle": {
+    "stages": ["Placeholder", "Review", "Assign", "Publish", "Replace"],
+    "versioned": true,
+    "replacement_preserves_prior_catalog": true
+  },
+  "decision_status": "TBD-018"
+}

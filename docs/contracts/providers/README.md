@@ -16,7 +16,9 @@ orchestration; Provider adapters never retry independently.
 configuration. Its endpoint, Provider model, and `secret_ref` fields are
 write-only and must never appear in upper-layer inputs, results, logs, metrics,
 traces, or public errors. The Secret Resolver implementation and product remain
-`TBD-012`. The online Data Plane must not synchronously query Control Plane PostgreSQL;
+`TBD-012`; the stable [`secret_ref` resolution contract`](../secrets/README.md)
+defines tenant/config checks, safe decisions, audit-before-delivery, and
+non-serializable in-process credential delivery. The online Data Plane must not synchronously query Control Plane PostgreSQL;
 it consumes only the published, versioned runtime binding.
 
 LiteLLM is an optional registered runtime adapter for request/response/stream and

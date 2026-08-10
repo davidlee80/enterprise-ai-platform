@@ -1,0 +1,50 @@
+{
+  "baseline_version": 1,
+  "policy_schema_id": "urn:enterprise-ai-platform:runtime-snapshot:staleness-policy:v1",
+  "required_policy_fields": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "config_version",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "maximum_staleness_seconds",
+    "measurement_clock_ref",
+    "on_stale_policy_ref",
+    "decision_status"
+  ],
+  "required_unresolved_policy_fields": [
+    "active_policy_ref",
+    "maximum_staleness_seconds",
+    "measurement_clock_ref"
+  ],
+  "required_metric_fields": [
+    "tenant_id",
+    "active_config_version",
+    "staleness_seconds",
+    "propagation_latency_seconds",
+    "maximum_staleness_seconds",
+    "over_maximum_staleness",
+    "on_stale",
+    "reason_code"
+  ],
+  "forbidden_metric_fields": [
+    "request_id",
+    "trace_id",
+    "user_id",
+    "notification_id",
+    "content_hash",
+    "prompt",
+    "response_body",
+    "secret_ref",
+    "credential"
+  ]
+}

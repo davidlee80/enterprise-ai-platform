@@ -88,6 +88,107 @@ tests, compatibility-baseline check, language-neutral Gateway binding check, and
 SDK generation-input plan. The contract does not select a server framework, SDK
 language, custom API-key Header, or complete error body.
 
+`test-tbd-005` validates the versioned management-write idempotency extension
+point, compatibility baseline, OpenAPI linkage, tenant-scoped mock behavior,
+structured decisions, audit/outbox boundary, config version/rollback fields,
+and key non-disclosure. It also rejects any prematurely selected Header, TTL,
+storage, replay/conflict response, or store-failure strategy.
+
+`test-tbd-006` validates the versioned management-list pagination review
+boundary, compatibility baseline, OpenAPI linkage, tenant-first filtering,
+cursor and offset candidate continuity, structured invalid-position handling,
+and configuration rollback metadata. It rejects any prematurely selected
+strategy, query parameter name, page-size value, cursor policy, or consistency
+behavior.
+
+`test-tbd-007` validates the versioned SDK pipeline contract, compatibility
+baseline, OpenAPI linkage/version/digest, ready validation/planning stages,
+blocked generation/test/publish stages, and rollback rule. It rejects any SDK
+language, generator/version, output directory, or package registry selected
+before review.
+
+`test-tbd-008` validates the versioned public HTTP error status boundary,
+OpenAPI/compatibility synchronization, structured internal-context requirement,
+and non-disclosure rules. It rejects any public body schema/content, field/code
+mapping, media type, or `402` meaning published before API review.
+
+`test-tbd-009` validates the versioned coverage-gate policy and compatibility
+baseline, exercises comparison/invalid-input behavior with test-only fixtures,
+and executes the real CI gate. `COVERAGE_MINIMUM_PERCENT` is deliberately unset
+until review; once set, the gate fails unless `COVERAGE_OBSERVED_PERCENT` is
+present and at or above the configured threshold.
+
+`test-tbd-010` validates the versioned logical SLI catalog, target-policy
+configuration schema, vendor-neutral Dashboard model, compatibility baseline,
+rollback lifecycle, and telemetry-label safety. It fails if a production SLO,
+data-source binding, alert/burn-rate rule, or release-gate threshold is selected
+before the `TBD-010` review.
+
+`test-tbd-011` validates the versioned cloud-provider selection schema,
+provider-neutral boundary, compatibility baseline, local-module-only topology,
+rollback lifecycle, and credential/state safety without requiring Terraform CLI.
+It fails if a provider, location, adapter, identity, remote backend, vendor token,
+provider implementation block, or remote module source is selected before the
+`TBD-011` review.
+
+`test-tbd-012` validates the opaque `secret_ref`, resolution request/decision,
+versioned Secret Manager binding, compatibility baseline, Provider/KMS linkage,
+and an in-memory resolver conformance suite. It covers normal delivery, tenant
+and config isolation, missing/denied/unavailable secrets, audit failure, invalid
+rotation state, break-glass isolation, delivery failure, rollback guards, and
+secret-free decisions without selecting a product or reference format. Audit
+enqueue rejection is observed without blocking an otherwise authorized delivery.
+
+`test-tbd-013` validates the versioned Image Tag policy schema, immutable image
+publication record, compatibility baseline, Gateway OCI-label linkage, explicit
+build metadata, digest identity, and rollback guard. It exercises digest-only
+release evidence, test-only Tags, label mismatch, placeholder revision, invalid
+digest, and release-Tag blocking while the production Tag format is unresolved.
+
+`test-tbd-014` validates the versioned Provider canary policy, observation, and
+decision schemas, compatibility baseline, Router linkage, asynchronous
+observation boundary, structured hold/promote/rollback reasons, tenant and
+configuration isolation, hard-filter precedence, and revision rollback. Exact
+weights, windows, samples, signals, thresholds, allocation behavior, and
+automatic progression remain unconfigured; script values are test-only fixtures.
+
+`test-tbd-015` validates the versioned deprecation policy and evaluation schemas,
+compatibility baseline, API/model-alias/config-field/capability coverage,
+OpenAPI linkage, explicit window ordering, lifecycle states, tenant/config/
+revision/resource isolation, asynchronous notification, and rollback. Window
+duration/syntax, scheduling, notification channels, enforcement, and exception
+behavior remain unconfigured; timestamps are test-only fixtures.
+
+`test-tbd-016` validates the versioned Runtime Snapshot staleness policy,
+compatibility baseline, optional Snapshot linkage, existing Consumer binding,
+tenant/config/revision isolation, positive configured inputs, null production
+default, raw staleness metrics, Redis-failure fallback, and rollback guards.
+The production maximum remains unset and threshold-exceeded behavior remains
+`TBD-017`; numeric values are test-only fixtures.
+
+`test-tbd-018` validates the versioned Ownership Catalog and record schema for
+all applications and shared packages, required operational metadata links,
+component completeness/uniqueness, and production-assignment guards. Concrete
+organization names, owner references, and team topology remain unconfigured.
+
+`test-tbd-019` validates the production-environment settings schema, Helm values
+and schema, Terraform root variables, compatibility baseline, complete-setting
+guard, provider neutrality, and rollback lifecycle. Domain, Namespace,
+certificate issuer, and StorageClass remain empty/null in the repository.
+
+`test-tbd-020` validates the product-neutral on-call and approval schemas,
+required go-live checks, structured evidence, unconfigured/unavailable
+fail-closed promotion behavior, online Data Plane independence, sensitive-field
+guards, and revision rollback. All concrete coordination systems and bindings
+remain unconfigured.
+
+Coverage-gate commands are also available directly:
+
+```powershell
+pwsh -NoLogo -NoProfile -File ./scripts/coverage-gate.ps1 validate
+pwsh -NoLogo -NoProfile -File ./scripts/coverage-gate.ps1 self-test
+```
+
 `test-m2-002` executes the Bearer/API Key authentication-boundary conformance
 suite and validates the versioned request/decision schemas, verified tenant
 principal, structured denial reasons, credential non-disclosure, Gateway

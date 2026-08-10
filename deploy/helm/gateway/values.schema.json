@@ -11,7 +11,8 @@
     "resources",
     "strategy",
     "podDisruptionBudget",
-    "topologySpreadConstraints"
+    "topologySpreadConstraints",
+    "production"
   ],
   "properties": {
     "environment": {
@@ -124,7 +125,18 @@
     },
     "nodeSelector": { "type": "object" },
     "tolerations": { "type": "array" },
-    "affinity": { "type": "object" }
+    "affinity": { "type": "object" },
+    "production": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["domain", "namespace", "certificateIssuer", "storageClass"],
+      "properties": {
+        "domain": { "type": "string" },
+        "namespace": { "type": "string" },
+        "certificateIssuer": { "type": "string" },
+        "storageClass": { "type": "string" }
+      }
+    }
   },
   "definitions": {
     "probe": {

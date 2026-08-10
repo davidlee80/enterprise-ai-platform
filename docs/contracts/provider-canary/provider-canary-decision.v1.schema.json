@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:provider-canary:decision:v1",
+  "title": "Provider canary decision v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "decision_id",
+    "observation_id",
+    "decided_at",
+    "tenant_id",
+    "config_version",
+    "policy_revision",
+    "stage_id",
+    "model_alias",
+    "provider_ids",
+    "outcome",
+    "reason_code",
+    "next_stage_id",
+    "rollback_revision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "policy_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stage_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_alias": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "hold",
+        "promote",
+        "rollback",
+        "indeterminate"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "CANARY_HOLD",
+        "CANARY_PROMOTE",
+        "CANARY_ROLLBACK",
+        "CANARY_POLICY_UNCONFIGURED",
+        "CANARY_TENANT_MISMATCH",
+        "CANARY_CONFIG_VERSION_MISMATCH",
+        "CANARY_POLICY_REVISION_MISMATCH",
+        "CANARY_MODEL_ALIAS_MISMATCH",
+        "CANARY_STAGE_INVALID",
+        "CANARY_OBSERVATION_WINDOW_INCOMPLETE",
+        "CANARY_SAMPLE_INSUFFICIENT",
+        "CANARY_SIGNAL_UNAVAILABLE",
+        "CANARY_CRITERIA_UNCONFIGURED"
+      ]
+    },
+    "next_stage_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "rollback_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
+}

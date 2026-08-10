@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:iac:cloud-provider-selection:v1",
+  "title": "Cloud provider selection v1",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "environment",
+    "provider_id",
+    "provider_source",
+    "provider_version_constraint",
+    "deployment_locations",
+    "workload_identity_ref",
+    "remote_state_backend_ref",
+    "capability_adapter_refs",
+    "decision_status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "effective_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "rollback_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "dev",
+        "stage",
+        "prod"
+      ]
+    },
+    "provider_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "provider_source": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "provider_version_constraint": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "deployment_locations": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "workload_identity_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "remote_state_backend_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "capability_adapter_refs": {
+      "type": "object",
+      "required": [
+        "network",
+        "kubernetes",
+        "postgres",
+        "redis",
+        "kafka",
+        "object_storage",
+        "kms",
+        "dns"
+      ],
+      "properties": {
+        "network": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "kubernetes": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "postgres": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "redis": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "kafka": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "object_storage": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "kms": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "dns": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "decision_status": {
+      "const": "TBD-011"
+    }
+  },
+  "additionalProperties": false
+}

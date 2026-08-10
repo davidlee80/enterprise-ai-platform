@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:provider-canary:observation:v1",
+  "title": "Provider canary observation v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "observation_id",
+    "tenant_id",
+    "config_version",
+    "policy_revision",
+    "stage_id",
+    "model_alias",
+    "provider_ids",
+    "window_started_at",
+    "observed_at",
+    "window_complete",
+    "sample_count",
+    "signals_available",
+    "signal_values"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "observation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "policy_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stage_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_alias": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "window_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "window_complete": {
+      "type": "boolean"
+    },
+    "sample_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "signals_available": {
+      "type": "boolean"
+    },
+    "signal_values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    }
+  },
+  "additionalProperties": false
+}

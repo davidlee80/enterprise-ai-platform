@@ -33,6 +33,53 @@ JSON error body, internal error-code enumeration, and `402` semantics remain
 `TBD-008`; this task does not invent them. Descriptions expose no Provider key,
 internal endpoint, policy source, or stack trace.
 
+The document-level `x-http-error-semantics-contract` extension links the
+versioned [`HTTP error status boundary`](../errors/README.md). Its compatibility
+baseline protects the required `400/401/403/429/502` meanings. Public body
+schema/media type, field names, public-code mapping, correlation fields, and
+`402` semantics remain null under `TBD-008`.
+
+## Management idempotency extension point
+
+The document-level `x-admin-idempotency-contract` extension links the versioned
+[`Admin write idempotency contract`](../idempotency/README.md). Management
+routes are not fabricated in the Data Plane `/v1` baseline, but every future
+create, patch, publish, and rollback operation must bind to that contract.
+Header name, TTL, storage, replay/conflict mapping, and store-failure behavior
+remain null and traceable to `TBD-005`; the extension is not a production
+default.
+
+## Management pagination review boundary
+
+The document-level `x-admin-pagination-contract` extension links the versioned
+[`Admin list pagination contract`](../pagination/README.md). It preserves cursor
+and offset as review candidates without selecting either one or publishing HTTP
+query parameter names. Strategy, page-size policy, cursor encoding/expiry, and
+consistency behavior remain null and traceable to `TBD-006` until API design
+review. Management list paths will be added only by their owning API task.
+
+## SDK generation pipeline
+
+The document-level `x-sdk-generation-contract` extension links the versioned
+[`SDK generation boundary`](../../../packages/sdk/README.md). The authoritative
+OpenAPI document is validated, compatibility-checked, and hashed as pipeline
+input. Language set, generator/version, output layout, and package registry
+remain null under `TBD-007`; generation, generated-client tests, and publishing
+stay disabled until review.
+
+## Deprecation workflow
+
+The document-level `x-deprecation-contract` extension links the versioned
+[`Deprecation boundary`](../deprecation/README.md). No operation in this baseline
+is currently marked deprecated. A future API deprecation requires an explicit
+reviewed policy, start and end timestamps, migration/replacement evidence, and
+retention through the configured window.
+
+Window duration and syntax, scheduling rules, notification channels, post-window
+enforcement, and exception behavior remain null under `TBD-015`. A breaking
+change still requires a new API version and migration path; the deprecation
+workflow does not weaken `/v1` compatibility.
+
 ## Validation and compatibility
 
 Run from the repository root:

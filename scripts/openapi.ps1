@@ -15,6 +15,16 @@ $baselinePath = Join-Path $repoRoot "docs/contracts/openapi/compatibility-baseli
 $bindingPath = Join-Path $repoRoot "apps/gateway/contracts/chat-completions.binding.v1.json"
 $authenticationBoundaryRelativePath = "packages/auth/contracts/authentication-boundary.v1.json"
 $authenticationBoundaryPath = Join-Path $repoRoot $authenticationBoundaryRelativePath
+$idempotencyBoundaryRelativePath = "docs/contracts/idempotency/idempotency-boundary.v1.json"
+$idempotencyBoundaryPath = Join-Path $repoRoot $idempotencyBoundaryRelativePath
+$paginationBoundaryRelativePath = "docs/contracts/pagination/pagination-boundary.v1.json"
+$paginationBoundaryPath = Join-Path $repoRoot $paginationBoundaryRelativePath
+$sdkBoundaryRelativePath = "packages/sdk/contracts/sdk-generation-boundary.v1.json"
+$sdkBoundaryPath = Join-Path $repoRoot $sdkBoundaryRelativePath
+$errorBoundaryRelativePath = "docs/contracts/errors/http-error-semantics-boundary.v1.json"
+$errorBoundaryPath = Join-Path $repoRoot $errorBoundaryRelativePath
+$deprecationBoundaryRelativePath = "docs/contracts/deprecation/deprecation-boundary.v1.json"
+$deprecationBoundaryPath = Join-Path $repoRoot $deprecationBoundaryRelativePath
 $fixtureRoot = Join-Path $repoRoot "docs/contracts/openapi/fixtures"
 $script:Failures = @()
 
@@ -187,6 +197,80 @@ function Invoke-OpenApiValidation {
     if ($null -ne (Get-PropertyValue $document "servers")) {
         Add-ContractFailure "OPENAPI_PRODUCTION_SERVER_UNRESOLVED" $contractRelativePath "production domain is TBD-019 and must not be invented"
     }
+    if ([string](Get-PropertyValue $document "x-admin-idempotency-contract") -ne "../idempotency/idempotency-boundary.v1.json") {
+        Add-ContractFailure "OPENAPI_IDEMPOTENCY_CONTRACT_MISSING" $contractRelativePath "management writes must reference the TBD-005 idempotency extension point"
+    }
+    if ([string](Get-PropertyValue $document "x-admin-idempotency-tbd") -notmatch 'TBD-005') {
+        Add-ContractFailure "OPENAPI_IDEMPOTENCY_TBD_GUARD_MISSING" $contractRelativePath "Header/TTL and replay semantics must remain traceable to TBD-005"
+    }
+    $idempotencyBoundary = Read-JsonDocument $idempotencyBoundaryPath $idempotencyBoundaryRelativePath "OPENAPI_IDEMPOTENCY_CONTRACT_INVALID"
+    if ($null -ne $idempotencyBoundary) {
+        if ([string](Get-PropertyValue $idempotencyBoundary "status") -ne "contract-extension-point" -or
+            [string](Get-PropertyValue (Get-PropertyValue $idempotencyBoundary "transport") "status") -ne "TBD-005" -or
+            $null -ne (Get-PropertyValue (Get-PropertyValue $idempotencyBoundary "transport") "header_name") -or
+            $null -ne (Get-PropertyValue (Get-PropertyValue $idempotencyBoundary "retention") "ttl_seconds")) {
+            Add-ContractFailure "OPENAPI_IDEMPOTENCY_BOUNDARY_INVALID" $idempotencyBoundaryRelativePath "TBD-005 must remain an unresolved contract extension point"
+        }
+    }
+    if ([string](Get-PropertyValue $document "x-admin-pagination-contract") -ne "../pagination/pagination-boundary.v1.json") {
+        Add-ContractFailure "OPENAPI_PAGINATION_CONTRACT_MISSING" $contractRelativePath "management list operations must reference the TBD-006 pagination review boundary"
+    }
+    if ([string](Get-PropertyValue $document "x-admin-pagination-tbd") -notmatch 'TBD-006') {
+        Add-ContractFailure "OPENAPI_PAGINATION_TBD_GUARD_MISSING" $contractRelativePath "cursor/offset selection must remain traceable to TBD-006"
+    }
+    $paginationBoundary = Read-JsonDocument $paginationBoundaryPath $paginationBoundaryRelativePath "OPENAPI_PAGINATION_CONTRACT_INVALID"
+    if ($null -ne $paginationBoundary) {
+        if ([string](Get-PropertyValue $paginationBoundary "status") -ne "api-design-review-required" -or
+            [string](Get-PropertyValue (Get-PropertyValue $paginationBoundary "strategy_selection") "status") -ne "TBD-006" -or
+            $null -ne (Get-PropertyValue (Get-PropertyValue $paginationBoundary "strategy_selection") "selected")) {
+            Add-ContractFailure "OPENAPI_PAGINATION_BOUNDARY_INVALID" $paginationBoundaryRelativePath "TBD-006 must remain unresolved until API design review"
+        }
+    }
+    if ([string](Get-PropertyValue $document "x-sdk-generation-contract") -ne "../../../packages/sdk/contracts/sdk-generation-boundary.v1.json") {
+        Add-ContractFailure "OPENAPI_SDK_PIPELINE_CONTRACT_MISSING" $contractRelativePath "OpenAPI must reference the TBD-007 SDK generation pipeline boundary"
+    }
+    if ([string](Get-PropertyValue $document "x-sdk-language-tbd") -notmatch 'TBD-007') {
+        Add-ContractFailure "OPENAPI_SDK_LANGUAGE_TBD_GUARD_MISSING" $contractRelativePath "SDK language/generator selection must remain traceable to TBD-007"
+    }
+    $sdkBoundary = Read-JsonDocument $sdkBoundaryPath $sdkBoundaryRelativePath "OPENAPI_SDK_PIPELINE_CONTRACT_INVALID"
+    if ($null -ne $sdkBoundary) {
+        if ([string](Get-PropertyValue $sdkBoundary "decision_status") -ne "TBD-007" -or
+            $null -ne (Get-PropertyValue $sdkBoundary "language_set") -or
+            $null -ne (Get-PropertyValue $sdkBoundary "generator") -or
+            [string](Get-PropertyValue $sdkBoundary "source_contract_version") -ne [string](Get-PropertyValue $info "version")) {
+            Add-ContractFailure "OPENAPI_SDK_PIPELINE_BOUNDARY_INVALID" $sdkBoundaryRelativePath "TBD-007 must remain unresolved and synchronized with info.version"
+        }
+    }
+    if ([string](Get-PropertyValue $document "x-http-error-semantics-contract") -ne "../errors/http-error-semantics-boundary.v1.json") {
+        Add-ContractFailure "OPENAPI_ERROR_SEMANTICS_CONTRACT_MISSING" $contractRelativePath "OpenAPI must reference the TBD-008 HTTP status-semantics boundary"
+    }
+    if ([string](Get-PropertyValue $document "x-http-error-schema-tbd") -notmatch 'TBD-008') {
+        Add-ContractFailure "OPENAPI_ERROR_SCHEMA_TBD_GUARD_MISSING" $contractRelativePath "public error body and 402 semantics must remain traceable to TBD-008"
+    }
+    $errorBoundary = Read-JsonDocument $errorBoundaryPath $errorBoundaryRelativePath "OPENAPI_ERROR_SEMANTICS_CONTRACT_INVALID"
+    if ($null -ne $errorBoundary) {
+        if ([string](Get-PropertyValue $errorBoundary "status") -ne "http-status-semantics-only" -or
+            [string](Get-PropertyValue $errorBoundary "source_contract_version") -ne [string](Get-PropertyValue $info "version") -or
+            [string](Get-PropertyValue (Get-PropertyValue $errorBoundary "public_body") "status") -ne "TBD-008" -or
+            $null -ne (Get-PropertyValue (Get-PropertyValue $errorBoundary "public_body") "schema") -or
+            $null -ne (Get-PropertyValue (Get-PropertyValue $errorBoundary "status_402") "enabled")) {
+            Add-ContractFailure "OPENAPI_ERROR_SEMANTICS_BOUNDARY_INVALID" $errorBoundaryRelativePath "TBD-008 must publish only the required HTTP status meanings"
+        }
+    }
+    if ([string](Get-PropertyValue $document "x-deprecation-contract") -ne "../deprecation/deprecation-boundary.v1.json") {
+        Add-ContractFailure "OPENAPI_DEPRECATION_CONTRACT_MISSING" $contractRelativePath "OpenAPI must reference the TBD-015 deprecation workflow boundary"
+    }
+    if ([string](Get-PropertyValue $document "x-deprecation-window-tbd") -notmatch 'TBD-015') {
+        Add-ContractFailure "OPENAPI_DEPRECATION_TBD_GUARD_MISSING" $contractRelativePath "deprecation duration and enforcement must remain traceable to TBD-015"
+    }
+    $deprecationBoundary = Read-JsonDocument $deprecationBoundaryPath $deprecationBoundaryRelativePath "OPENAPI_DEPRECATION_CONTRACT_INVALID"
+    if ($null -ne $deprecationBoundary) {
+        if ([string](Get-PropertyValue $deprecationBoundary "decision_status") -ne "TBD-015" -or
+            $null -ne (Get-PropertyValue (Get-PropertyValue $deprecationBoundary "current_policy") "window_duration") -or
+            (Get-PropertyValue (Get-PropertyValue $deprecationBoundary "publication_guard") "removal_before_window_end_allowed") -ne $false) {
+            Add-ContractFailure "OPENAPI_DEPRECATION_BOUNDARY_INVALID" $deprecationBoundaryRelativePath "TBD-015 must preserve an unconfigured duration and forbid removal before an explicit window end"
+        }
+    }
 
     $paths = Get-PropertyValue $document "paths"
     $pathItem = Get-PropertyValue $paths "/v1/chat/completions"
@@ -197,6 +281,9 @@ function Invoke-OpenApiValidation {
     }
     if ([string](Get-PropertyValue $operation "operationId") -ne "createChatCompletion") {
         Add-ContractFailure "OPENAPI_OPERATION_ID_INVALID" $contractRelativePath "operationId must remain createChatCompletion"
+    }
+    if ($null -ne (Get-PropertyValue $operation "deprecated")) {
+        Add-ContractFailure "OPENAPI_OPERATION_PREMATURELY_DEPRECATED" $contractRelativePath "no reviewed TBD-015 policy currently schedules this operation for deprecation"
     }
 
     $securityNames = @()

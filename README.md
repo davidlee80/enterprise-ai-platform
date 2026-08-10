@@ -17,6 +17,7 @@ implementation.
 | `packages/cache/snapshot-store/` | Versioned Redis Runtime Snapshot publication and rollback boundary |
 | `packages/cache/snapshot-consumer/` | Data Plane Snapshot notification, validation, atomic swap, and staleness boundary |
 | `packages/auth/contracts/` | Versioned Bearer/API Key authentication boundary and principal contract |
+| `packages/sdk/contracts/` | Versioned SDK generation pipeline plan and compatibility baseline |
 | `deploy/helm/` | Helm charts and values |
 | `deploy/images/` | Production image readiness boundaries and approved component Dockerfiles |
 | `deploy/kubernetes/` | Native Kubernetes resources and environment overlays |
@@ -25,8 +26,13 @@ implementation.
 | `docs/` | Architecture, interface, ADR, and development documentation |
 | `docs/contracts/` | Versioned public API, event, runtime, and policy contracts |
 | `docs/contracts/openapi/openapi.yaml` | Authoritative OpenAPI 3.1 `/v1` contract |
+| `docs/contracts/idempotency/` | Versioned, transport-neutral management write idempotency extension point |
+| `docs/contracts/pagination/` | Versioned management list pagination candidates and API review boundary |
+| `docs/contracts/errors/` | Versioned public HTTP error status semantics without an invented body schema |
 | `docs/contracts/policy-decisions/` | Versioned Policy Evaluation and structured decision contracts |
 | `docs/contracts/router/` | Versioned Router Plugin registry, result, and decision contracts |
+| `docs/contracts/provider-canary/` | Versioned Provider canary policy, observation, and decision contracts |
+| `docs/contracts/deprecation/` | Versioned deprecation policy, lifecycle evaluation, and compatibility contracts |
 | `docs/contracts/providers/` | Versioned Provider Adapter, runtime config, registry, and LiteLLM boundary contracts |
 | `docs/contracts/retry-fallback/` | Versioned attempt plan, orchestration result, and telemetry contracts |
 | `docs/contracts/events/usage/` | Versioned asynchronous Usage event and idempotent processing contracts |
@@ -132,8 +138,10 @@ provided by `TASK-M1-004`.
 `TASK-M1-004` adds versioned tenant notification streams and a Data Plane
 consumer conformance implementation. Candidates are fetched by immutable
 version, validated, and atomically exchanged in memory; fetch failure retains
-the last validated Snapshot. Raw staleness/version telemetry is emitted without
-inventing `TBD-016` or `TBD-017` policy defaults.
+the last validated Snapshot. Raw staleness/version telemetry is emitted, and
+`TBD-016` now has a versioned policy entry point bound to the existing nullable
+`MaximumStalenessSeconds` port. Its production value remains unset, and
+threshold-exceeded request behavior remains `TBD-017`.
 
 `TASK-M2-001` publishes the OpenAPI 3.1 contract for
 `POST /v1/chat/completions`, versioned compatibility baseline, contract fixtures,
@@ -141,6 +149,108 @@ language-neutral Gateway handler binding, and SDK generation-input entrypoint.
 Authentication implementation, a custom API-key Header, complete error bodies,
 and SDK language remain explicit TBD items. `ADR-001` now supplies the Gateway
 server runtime without changing the M2-001 API contract.
+
+`TBD-005` is represented by a versioned management-write idempotency contract
+extension point. It normalizes tenant/config/audit context and structured
+decisions while deliberately leaving Header name, TTL, storage, response replay,
+conflict mapping, and store-failure behavior unresolved until ADR/configuration
+review. No management endpoint or production default is invented by this task.
+
+`TBD-006` is represented by a versioned management-list pagination review
+boundary. Cursor and offset remain equal candidates; no production strategy,
+query parameter names, page-size values, cursor encoding, or consistency model
+is selected before API design review. The candidate conformance suite verifies
+tenant filtering and continuity without publishing management routes.
+
+`TBD-007` is represented by a versioned SDK generation pipeline boundary.
+OpenAPI validation, compatibility checking, input hashing, and planning are
+enabled; client generation, generated-client testing, and package publishing are
+blocked. No SDK language, generator/version, output layout, or registry has been
+selected.
+
+`TBD-008` is represented by a versioned HTTP status-semantics boundary. The
+required `400/401/403/429/502` meanings are compatibility-protected while the
+public JSON body, field names, code mapping, media type, correlation fields, and
+`402` behavior remain unresolved. Structured internal reasons and error
+non-disclosure remain mandatory.
+
+`TBD-009` is represented by a configurable PR coverage gate. The production
+threshold, metric, aggregation, collector, and report format remain unset. CI
+reads `COVERAGE_MINIMUM_PERCENT`; when configured it requires
+`COVERAGE_OBSERVED_PERCENT` and enforces the comparison, while an unset threshold
+is reported explicitly as not active rather than treated as a coverage pass.
+
+`TBD-010` is represented by a vendor-neutral, target-aware SLI/SLO Dashboard
+model and a versioned target-policy configuration schema. Logical indicators
+cover request success, p95/p99 latency, time to first token, Provider success,
+configuration publish success, and propagation latency. Production objectives,
+measurement windows, data-source bindings, alert/burn-rate rules, and release-
+gate thresholds remain unconfigured until a reviewed SLO policy publishes them.
+
+`TBD-011` is represented by a versioned cloud-provider selection boundary and a
+provider-neutral Terraform gate. Provider identity/source/version, deployment
+locations, workload identity, remote state, and all eight capability-adapter
+references remain null. The core topology accepts only repository-local modules
+and rejects provider/resource/data/backend blocks, `required_providers`, remote
+module sources, state files, and vendor identifiers until a reviewed ADR. Future
+configuration may publish one or more provider bindings without changing the
+shared capability contracts.
+
+`TBD-012` is represented by versioned, tenant/config-scoped opaque `secret_ref`
+contracts and a product-neutral Secret Resolver boundary. Secret material is
+delivered only in process after tenant, config-version, authorization, and
+rotation checks, and never appears in decisions, persistence, logs, telemetry,
+errors, or Terraform state. Audit enqueue outcome is structured but asynchronous
+and non-blocking. Product/adapter, authentication, reference format, rotation
+schedule, caching, lease renewal, and break-glass tooling remain unset.
+
+`TBD-013` is represented by a versioned Image Tag policy entry point and an
+immutable publication-record contract. The exact Tag template, components,
+normalization, mutable aliases, branch/prerelease behavior, and promotion rules
+remain unset. Every releasable image record must bind source repository,
+revision, source/release version, OCI labels, build identity, and immutable
+digest; production deployment and rollback use the verified digest rather than
+treating a Tag as artifact identity.
+
+`TBD-014` is represented by versioned Provider canary policy, observation, and
+decision contracts linked from the Router. Exact weights, observation windows,
+sample sizes, signals, promotion/rollback thresholds, allocation key/algorithm,
+and automatic progression remain unset. The Data Plane consumes a published,
+tenant-scoped revision; hard region/compliance filters precede future weighting,
+observations are asynchronous, unconfigured or incomplete evaluations hold, and
+rollback targets a previously validated revision.
+
+`TBD-015` is represented by versioned deprecation policy and evaluation
+contracts covering APIs, model aliases, configuration fields, and capabilities.
+A scheduled policy requires explicit window start/end timestamps and retains the
+prior contract through the configured end. Duration syntax/value, scheduling
+rules, notification channels, post-window enforcement, and exception behavior
+remain unset; no current `/v1` operation is marked deprecated.
+
+`TBD-016` is represented by a versioned, tenant/config-scoped Runtime Snapshot
+staleness policy. It preserves raw staleness and propagation metrics, requires a
+positive value only when explicitly configured, and keeps the default threshold
+null. Production maximum seconds and measurement-clock binding remain unset;
+crossing a configured threshold does not select a fail-open/fail-closed action.
+
+`TBD-018` is represented by a versioned Ownership Catalog covering every
+application and shared package. Required Owner, SLO, Runbook, upgrade-window,
+and data-retention fields are machine-verifiable, while organization names,
+owner references, and team topology remain unset. Placeholders are explicitly
+invalid as production assignments.
+
+`TBD-019` is represented by a versioned production-environment settings schema
+and explicit Helm/Terraform inputs for domain, Namespace, certificate issuer,
+and StorageClass. Repository Helm values stay empty and Terraform defaults stay
+null; test fixtures are never production settings. Publishing and rollback use
+reviewed settings revisions without selecting a cloud or deployment product.
+
+`TBD-020` is represented by versioned, product-neutral on-call binding and
+production-approval request/decision contracts. Production promotion requires
+the complete go-live evidence pack and fails closed while the approval system
+is unconfigured or unavailable. Product, schedule, escalation, contact-target,
+role, approver-count, separation-of-duty, and outage-procedure bindings remain
+unset; coordination lookups are forbidden on the online Data Plane path.
 
 `TASK-M2-002` adds a language-neutral Bearer/API Key authentication boundary.
 Credential transport is normalized before verification, verified principal data

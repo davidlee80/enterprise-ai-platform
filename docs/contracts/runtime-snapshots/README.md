@@ -37,5 +37,13 @@ machine, atomic in-memory replacement, last-memory failure behavior, and
 staleness metrics. Any failed publication or candidate validation leaves the
 last valid snapshot selected.
 
-Maximum staleness and fail-open/fail-closed behavior remain `TBD-016` and
-`TBD-017`. No retention, expiry, or outage policy is set by this contract.
+[`runtime-staleness-policy.v1.schema.json`](runtime-staleness-policy.v1.schema.json)
+provides the versioned `TBD-016` configuration entry point. When included as the
+optional `staleness_policy`, its tenant and `config_version` must match the
+Snapshot. The production maximum remains null; only positive seconds are valid
+after review. The executable boundary and compatibility baseline preserve raw
+measurement, rollback, and telemetry-label safety.
+
+Threshold-exceeded fail-open/fail-closed behavior remains `TBD-017`. Measuring
+that a threshold was crossed does not itself change request availability. No
+retention, expiry, or Redis outage policy is set by this contract.

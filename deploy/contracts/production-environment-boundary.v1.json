@@ -1,0 +1,39 @@
+{
+  "boundary_version": 1,
+  "name": "production_environment_input_boundary",
+  "status": "variables-ready-production-values-unconfigured",
+  "requirements": ["REQ-HELM-005", "REQ-HELM-006", "REQ-GEN-003", "REQ-REL-006", "TBD-019"],
+  "settings_schema": "deploy/contracts/production-environment-settings.v1.schema.json",
+  "current_settings": { "active_settings_ref": null, "domain": null, "namespace": null, "certificate_issuer": null, "storage_class": null },
+  "helm_binding": {
+    "values_file": "deploy/helm/gateway/values-prod.yaml",
+    "namespace_release_argument": "--namespace",
+    "domain_value": "production.domain",
+    "namespace_value": "production.namespace",
+    "certificate_issuer_value": "production.certificateIssuer",
+    "storage_class_value": "production.storageClass",
+    "values_must_remain_empty_in_repository": true
+  },
+  "terraform_binding": {
+    "root_module": "deploy/terraform/environments/prod",
+    "domain_variable": "production_domain",
+    "namespace_variable": "production_namespace",
+    "certificate_issuer_variable": "production_certificate_issuer",
+    "storage_class_variable": "production_storage_class",
+    "defaults_must_remain_null_in_repository": true
+  },
+  "publication_guard": {
+    "reviewed_settings_required_for_production": true,
+    "fixture_values_are_production_values": false,
+    "secret_values_allowed": false,
+    "namespace_domain_or_storage_default_allowed": false
+  },
+  "configuration_lifecycle": {
+    "stages": ["Draft", "Validate", "Plan", "Publish", "Observe", "Rollback"],
+    "versioned": true,
+    "revision_required": true,
+    "rollback_target_required": true,
+    "rollback_reuses_prior_reviewed_settings": true
+  },
+  "decision_status": "TBD-019"
+}

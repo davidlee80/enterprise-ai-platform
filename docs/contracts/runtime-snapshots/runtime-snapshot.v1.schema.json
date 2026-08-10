@@ -49,6 +49,10 @@
     "retry_fallback_plan": {
       "$ref": "urn:enterprise-ai-platform:retry-fallback:plan:v1",
       "description": "Optional additive TASK-M2-006 attempt plan; when used it must match this Snapshot tenant_id and config_version."
+    },
+    "staleness_policy": {
+      "$ref": "urn:enterprise-ai-platform:runtime-snapshot:staleness-policy:v1",
+      "description": "Optional additive TBD-016 policy; when used it must match this Snapshot tenant_id and config_version. Its on-stale behavior remains TBD-017."
     }
   },
   "additionalProperties": true

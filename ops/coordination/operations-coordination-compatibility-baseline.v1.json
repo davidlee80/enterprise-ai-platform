@@ -1,0 +1,47 @@
+{
+  "baseline_version": 1,
+  "on_call_schema_id": "urn:enterprise-ai-platform:operations:on-call-binding:v1",
+  "approval_request_schema_id": "urn:enterprise-ai-platform:operations:approval-request:v1",
+  "approval_decision_schema_id": "urn:enterprise-ai-platform:operations:approval-decision:v1",
+  "evidence_pack_schema_id": "urn:enterprise-ai-platform:operations:go-live-evidence-pack:v1",
+  "required_on_call_fields": [
+    "id", "name", "status", "version", "created_at", "updated_at",
+    "created_by", "updated_by", "tenant_id", "revision", "effective_at",
+    "rollback_revision", "content_hash", "component_ref", "owner_ref",
+    "provider_adapter_ref", "schedule_ref", "escalation_policy_ref",
+    "contact_target_ref", "decision_status"
+  ],
+  "required_approval_request_fields": [
+    "schema_version", "approval_request_id", "change_ref",
+    "requested_by_ref", "requested_at", "evidence_pack_ref",
+    "required_gate_checks", "approval_context_ref"
+  ],
+  "required_approval_decision_fields": [
+    "schema_version", "approval_request_id", "outcome", "reason_code",
+    "approval_system_ref", "decided_by_refs", "decided_at", "evidence_ref"
+  ],
+  "required_evidence_pack_fields": [
+    "schema_version", "evidence_pack_id", "change_ref", "test_results_ref",
+    "security_scan_ref", "security_approval_ref", "configuration_version_ref",
+    "deployment_record_ref", "migration_result_ref", "slo_smoke_result_ref",
+    "capacity_result_ref", "observability_result_ref", "runbook_ref",
+    "rollback_plan_ref", "created_at"
+  ],
+  "required_gate_checks": [
+    "functional", "security", "migration", "capacity",
+    "observability", "runbook", "rollback"
+  ],
+  "unresolved_on_call_fields": [
+    "provider_adapter_ref", "schedule_ref", "escalation_policy_ref",
+    "contact_target_ref"
+  ],
+  "unresolved_approval_fields": [
+    "approval_system_ref", "security_approval_role_refs",
+    "required_approver_count", "two_person_enforcement",
+    "outage_procedure_ref"
+  ],
+  "forbidden_artifact_fields": [
+    "email", "phone", "token", "password", "credential", "secret",
+    "evidence_body", "raw_error", "stack_trace"
+  ]
+}

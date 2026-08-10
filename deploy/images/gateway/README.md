@@ -28,6 +28,9 @@ The runtime boundary provides:
 - port `8080`, `/healthz`, and `/readyz` runtime contracts;
 - source/revision/version OCI traceability labels while the exact tag format
   remains `TBD-013`;
+- mandatory explicit build arguments for source URL, committed revision, and
+  source/release version, with no placeholder defaults;
+- linkage to the repository-wide immutable image publication-record contract;
 - an Ubuntu CI build, metadata inspection, and container probe test;
 - no credential-shaped `ARG`, `ENV`, copied Secret, or Secret-bearing layer.
 

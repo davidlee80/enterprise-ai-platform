@@ -16,6 +16,12 @@ provides enqueue/publish/consume outcomes and backlog projections. Event,
 usage-record, request, trace, and user identifiers are correlation attributes,
 not Prometheus labels. Token/cost observations remain body-free and versioned.
 
+The [`logical SLI catalog`](../../ops/slo/sli-catalog.v1.json) and
+[`target-aware Dashboard model`](../../ops/slo/dashboard-model.v1.json) consume
+these safe telemetry boundaries. Their metric/query source bindings and all SLO
+targets remain null under `TBD-010`; this package does not select an
+observability vendor or metric naming convention.
+
 This package must not contain domain repositories or directly read/write another
 domain's business tables.
 
@@ -24,7 +30,7 @@ domain's business tables.
 | Field | Value |
 |---|---|
 | Owner | `TBD-018` |
-| SLO | [Placeholder](../../ops/slo/README.md) |
+| SLO | [Configurable SLI/SLO Dashboard boundary](../../ops/slo/README.md) |
 | Runbook | [Placeholder](../../ops/runbooks/README.md) |
 | Upgrade window | `TBD; assign with the component owner` |
 | Data retention responsibility | `Not applicable at bootstrap; re-evaluate if persistence is introduced` |

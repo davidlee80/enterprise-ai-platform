@@ -19,7 +19,13 @@ RUN --mount=type=cache,id=gateway-nuget,target=/root/.nuget/packages,sharing=loc
       --nologo
 
 FROM restore AS publish
-ARG SOURCE_VERSION=0.1.0
+ARG SOURCE_URL
+ARG SOURCE_REVISION
+ARG SOURCE_VERSION
+RUN test -n "$SOURCE_URL" \
+    && test -n "$SOURCE_REVISION" \
+    && test "$SOURCE_REVISION" != "uncommitted" \
+    && test -n "$SOURCE_VERSION"
 COPY apps/gateway/src/ apps/gateway/src/
 RUN --mount=type=cache,id=gateway-nuget,target=/root/.nuget/packages,sharing=locked \
     dotnet publish apps/gateway/src/EnterpriseAiPlatform.Gateway/EnterpriseAiPlatform.Gateway.csproj \
@@ -31,9 +37,9 @@ RUN --mount=type=cache,id=gateway-nuget,target=/root/.nuget/packages,sharing=loc
       --nologo
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0.10-noble-chiseled-extra@sha256:f9bd6be9b5ab75b8196bff0f0972580edaea7fa8ca04e6ef530950e33caee5b0 AS runtime
-ARG SOURCE_URL="https://github.com/davidlee80/enterprise-ai-platform"
-ARG SOURCE_REVISION="uncommitted"
-ARG SOURCE_VERSION="0.1.0"
+ARG SOURCE_URL
+ARG SOURCE_REVISION
+ARG SOURCE_VERSION
 LABEL org.opencontainers.image.source="${SOURCE_URL}" \
       org.opencontainers.image.revision="${SOURCE_REVISION}" \
       org.opencontainers.image.version="${SOURCE_VERSION}"

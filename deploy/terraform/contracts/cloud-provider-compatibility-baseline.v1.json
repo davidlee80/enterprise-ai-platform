@@ -1,0 +1,72 @@
+{
+  "baseline_version": 1,
+  "selection_schema_id": "urn:enterprise-ai-platform:iac:cloud-provider-selection:v1",
+  "required_capabilities": [
+    "network",
+    "kubernetes",
+    "postgres",
+    "redis",
+    "kafka",
+    "object_storage",
+    "kms",
+    "dns"
+  ],
+  "required_environments": [
+    "dev",
+    "stage",
+    "prod"
+  ],
+  "required_selection_fields": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "environment",
+    "provider_id",
+    "provider_source",
+    "provider_version_constraint",
+    "deployment_locations",
+    "workload_identity_ref",
+    "remote_state_backend_ref",
+    "capability_adapter_refs",
+    "decision_status"
+  ],
+  "required_unresolved_fields": [
+    "current_selection.provider_id",
+    "current_selection.provider_source",
+    "current_selection.provider_version_constraint",
+    "current_selection.deployment_locations",
+    "current_selection.workload_identity_ref",
+    "current_selection.remote_state_backend_ref"
+  ],
+  "forbidden_terraform_blocks": [
+    "provider",
+    "resource",
+    "data",
+    "backend",
+    "required_providers"
+  ],
+  "forbidden_vendor_tokens": [
+    "aws",
+    "azure",
+    "azurerm",
+    "gcp",
+    "google",
+    "oci",
+    "alicloud",
+    "huaweicloud",
+    "tencentcloud",
+    "ibm",
+    "digitalocean",
+    "cloudflare"
+  ]
+}

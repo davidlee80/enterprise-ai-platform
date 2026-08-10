@@ -56,6 +56,9 @@ these commands are operator validation guidance rather than a CI direct-deploy
 path.
 
 Namespace, production domain, certificate issuer, and storage class remain
-`TBD-019`; this Gateway-only chart does not invent them. Control Plane, Runtime,
-observability, and dependency charts remain outstanding portions of
-`REQ-HELM-001`.
+`TBD-019`. They are explicit empty `production.*` values and must be supplied by
+a reviewed environment configuration; the Helm release namespace must use the
+same reviewed Namespace through `--namespace`. This Gateway-only chart has no
+Ingress or PVC and therefore does not fabricate consumers for domain, issuer, or
+StorageClass. Control Plane, Runtime, observability, and dependency charts remain
+outstanding portions of `REQ-HELM-001`.

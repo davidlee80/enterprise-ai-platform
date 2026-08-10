@@ -81,3 +81,8 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+production:
+  domain: ""
+  namespace: ""
+  certificateIssuer: ""
+  storageClass: ""

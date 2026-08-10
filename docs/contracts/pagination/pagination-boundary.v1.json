@@ -1,0 +1,78 @@
+{
+  "interface_version": 1,
+  "name": "admin_list_pagination",
+  "scope": "control_plane_admin_list_operations",
+  "status": "api-design-review-required",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-004",
+    "REQ-GEN-005",
+    "REQ-API-006",
+    "REQ-API-008",
+    "REQ-API-010",
+    "REQ-TST-002",
+    "TBD-006"
+  ],
+  "query_schema": "pagination-query.v1.schema.json",
+  "result_schema": "pagination-result.v1.schema.json",
+  "policy_schema": "pagination-policy.v1.schema.json",
+  "strategy_selection": {
+    "selected": null,
+    "candidates": [
+      "cursor",
+      "offset"
+    ],
+    "status": "TBD-006"
+  },
+  "transport_binding": {
+    "cursor_query_parameter": null,
+    "offset_query_parameter": null,
+    "page_size_query_parameter": null,
+    "status": "TBD-006"
+  },
+  "page_size_policy": {
+    "default_page_size": null,
+    "maximum_page_size": null,
+    "status": "TBD-006"
+  },
+  "cursor_policy": {
+    "codec_ref": null,
+    "expiry_seconds": null,
+    "status": "TBD-006"
+  },
+  "consistency": {
+    "strategy": null,
+    "status": "TBD-006",
+    "rule": "Each list operation must document deterministic ordering and mutation behavior before its transport contract is published."
+  },
+  "tenant_isolation": {
+    "filter_before_pagination": true,
+    "cross_tenant_position_reuse_forbidden": true,
+    "global_resource_rule": "A null tenant_id is valid only after authentication and resource-level authorization establish an explicitly global resource."
+  },
+  "configuration_lifecycle": {
+    "stages": [
+      "Draft",
+      "Validate",
+      "Publish",
+      "Observe",
+      "Rollback"
+    ],
+    "versioned": true,
+    "rollback_required": true,
+    "publish_guard": "strategy, active transport parameter names, page-size limits, consistency behavior, and cursor policy when applicable require API design review before activation."
+  },
+  "observability": {
+    "structured_reason_code_required": true,
+    "request_id_prometheus_label_forbidden": true,
+    "user_id_prometheus_label_forbidden": true,
+    "cursor_value_prometheus_label_forbidden": true
+  },
+  "security": {
+    "position_must_be_tenant_bound": true,
+    "cursor_must_not_expose_secrets": true,
+    "cursor_must_not_expose_internal_endpoints": true
+  },
+  "runtime_implementation_status": "not-selected-before-api-design-review",
+  "public_error_schema_status": "TBD-008"
+}

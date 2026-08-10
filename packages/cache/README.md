@@ -12,7 +12,8 @@ The [Data Plane Snapshot Consumer](snapshot-consumer/README.md) consumes
 tenant-scoped version notifications, validates complete immutable Snapshots,
 atomically exchanges the active in-memory reference, retains the last validated
 version during fetch failures, and emits version/staleness telemetry for
-`TASK-M1-004`.
+`TASK-M1-004`. The nullable, versioned maximum-staleness policy is defined under
+`TBD-016`; threshold-exceeded request behavior remains `TBD-017`.
 
 This package must not contain domain repositories or directly read/write another
 domain's business tables.

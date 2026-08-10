@@ -150,7 +150,8 @@ foreach ($schema in @($requestSchema, $resultSchema, $configSchema, $registrySch
     Assert-Condition ($schema.'$schema' -eq "https://json-schema.org/draft/2020-12/schema") "PROVIDER_SCHEMA_DRAFT_INVALID"
     Assert-Condition ($schema.additionalProperties -eq $false) "PROVIDER_SCHEMA_UNVERSIONED_EXTENSION_ALLOWED"
 }
-Assert-Condition ($null -eq $boundary.secret_resolver -and $boundary.secret_resolver_status -eq "TBD-012") "PROVIDER_SECRET_MANAGER_PREMATURELY_SELECTED"
+Assert-Condition ($boundary.secret_resolver_contract -eq "docs/contracts/secrets/secret-manager-boundary.v1.json" -and
+    $null -eq $boundary.secret_resolver -and $boundary.secret_resolver_status -eq "TBD-012") "PROVIDER_SECRET_MANAGER_PREMATURELY_SELECTED"
 Assert-Condition ($boundary.retry_and_fallback.implementation -eq "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json" -and $boundary.retry_and_fallback.status -eq "implemented-v1") "PROVIDER_RETRY_BOUNDARY_MISSING"
 Assert-Condition ($null -eq $litellmBoundary.deployment_mode -and $null -eq $litellmBoundary.version) "LITELLM_RUNTIME_TBD_PREMATURELY_SELECTED"
 Assert-Condition ($litellmBoundary.retry_fallback_mode -eq "platform_orchestrator" -and $litellmBoundary.retry_fallback_status -eq "implemented-v1") "LITELLM_RETRY_GOVERNANCE_BOUNDARY_INVALID"

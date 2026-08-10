@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("lint", "test", "test-linux", "test-code-001", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "security", "build")]
+    [ValidateSet("lint", "test", "test-linux", "test-code-001", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "test-tbd-005", "test-tbd-006", "test-tbd-007", "test-tbd-008", "test-tbd-009", "test-tbd-010", "test-tbd-011", "test-tbd-012", "test-tbd-013", "test-tbd-014", "test-tbd-015", "test-tbd-016", "test-tbd-018", "test-tbd-019", "test-tbd-020", "security", "build")]
     [string]$Command
 )
 
@@ -105,10 +105,21 @@ function Get-ManagedReadmes {
         "README.md",
         ".github/workflows/pr-gates.yml",
         "deploy/README.md",
+        "deploy/contracts/README.md",
+        "deploy/contracts/production-environment-settings.v1.schema.json",
+        "deploy/contracts/production-environment-boundary.v1.json",
+        "deploy/contracts/production-environment-compatibility-baseline.v1.json",
+        "deploy/production-environment.conformance.ps1",
         "deploy/images/README.md",
         "deploy/images/gateway/README.md",
         "deploy/images/gateway/production-image-boundary.v1.json",
         "deploy/images/gateway/production-image.conformance.ps1",
+        "deploy/images/contracts/README.md",
+        "deploy/images/contracts/image-tag-policy.v1.schema.json",
+        "deploy/images/contracts/image-publication-record.v1.schema.json",
+        "deploy/images/contracts/image-traceability-boundary.v1.json",
+        "deploy/images/contracts/image-traceability-compatibility-baseline.v1.json",
+        "deploy/images/image-traceability.conformance.ps1",
         "deploy/helm/README.md",
         "deploy/helm/gateway/README.md",
         "deploy/helm/gateway/Chart.yaml",
@@ -142,6 +153,10 @@ function Get-ManagedReadmes {
         "docs/contracts/runtime-snapshots/README.md",
         "docs/contracts/runtime-snapshots/runtime-snapshot.v1.schema.json",
         "docs/contracts/runtime-snapshots/snapshot-notification.v1.schema.json",
+        "docs/contracts/runtime-snapshots/runtime-staleness-policy.v1.schema.json",
+        "docs/contracts/runtime-snapshots/runtime-staleness-boundary.v1.json",
+        "docs/contracts/runtime-snapshots/runtime-staleness-compatibility-baseline.v1.json",
+        "docs/contracts/runtime-snapshots/runtime-staleness.conformance.ps1",
         "docs/contracts/policy-decisions/README.md",
         "docs/contracts/policy-decisions/policy-evaluation-request.v1.schema.json",
         "docs/contracts/policy-decisions/policy-decision.v1.schema.json",
@@ -154,6 +169,19 @@ function Get-ManagedReadmes {
         "docs/contracts/router/router-registry.v1.schema.json",
         "docs/contracts/router/router-boundary.v1.json",
         "docs/contracts/router/router-compatibility-baseline.v1.json",
+        "docs/contracts/provider-canary/README.md",
+        "docs/contracts/provider-canary/provider-canary-policy.v1.schema.json",
+        "docs/contracts/provider-canary/provider-canary-observation.v1.schema.json",
+        "docs/contracts/provider-canary/provider-canary-decision.v1.schema.json",
+        "docs/contracts/provider-canary/provider-canary-boundary.v1.json",
+        "docs/contracts/provider-canary/provider-canary-compatibility-baseline.v1.json",
+        "docs/contracts/provider-canary/provider-canary.conformance.ps1",
+        "docs/contracts/deprecation/README.md",
+        "docs/contracts/deprecation/deprecation-policy.v1.schema.json",
+        "docs/contracts/deprecation/deprecation-evaluation.v1.schema.json",
+        "docs/contracts/deprecation/deprecation-boundary.v1.json",
+        "docs/contracts/deprecation/deprecation-compatibility-baseline.v1.json",
+        "docs/contracts/deprecation/deprecation.conformance.ps1",
         "docs/contracts/providers/README.md",
         "docs/contracts/providers/provider-invocation-request.v1.schema.json",
         "docs/contracts/providers/provider-invocation-result.v1.schema.json",
@@ -169,6 +197,14 @@ function Get-ManagedReadmes {
         "docs/contracts/retry-fallback/retry-fallback-telemetry.v1.schema.json",
         "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json",
         "docs/contracts/retry-fallback/retry-fallback-compatibility-baseline.v1.json",
+        "docs/contracts/secrets/README.md",
+        "docs/contracts/secrets/secret-reference.v1.schema.json",
+        "docs/contracts/secrets/secret-resolution-request.v1.schema.json",
+        "docs/contracts/secrets/secret-resolution-decision.v1.schema.json",
+        "docs/contracts/secrets/secret-manager-binding.v1.schema.json",
+        "docs/contracts/secrets/secret-manager-boundary.v1.json",
+        "docs/contracts/secrets/secret-manager-compatibility-baseline.v1.json",
+        "docs/contracts/secrets/secret-manager.conformance.ps1",
         "docs/adr/README.md",
         "docs/ci/README.md",
         "packages/db/migrations/README.md",
@@ -205,8 +241,27 @@ function Get-ManagedReadmes {
         "apps/billing/usage-event.conformance.ps1",
         "docs/contracts/events/event-envelope.v1.schema.json",
         "ops/README.md",
+        "ops/coordination/README.md",
+        "ops/coordination/on-call-binding.v1.schema.json",
+        "ops/coordination/approval-request.v1.schema.json",
+        "ops/coordination/approval-decision.v1.schema.json",
+        "ops/coordination/go-live-evidence-pack.v1.schema.json",
+        "ops/coordination/operations-coordination-boundary.v1.json",
+        "ops/coordination/operations-coordination-compatibility-baseline.v1.json",
+        "ops/coordination/operations-coordination.conformance.ps1",
         "ops/ownership/README.md",
+        "ops/ownership/ownership-record.v1.schema.json",
+        "ops/ownership/ownership-catalog.v1.json",
+        "ops/ownership/ownership-boundary.v1.json",
+        "ops/ownership/ownership-compatibility-baseline.v1.json",
+        "ops/ownership/ownership.conformance.ps1",
         "ops/slo/README.md",
+        "ops/slo/sli-catalog.v1.json",
+        "ops/slo/slo-target-policy.v1.schema.json",
+        "ops/slo/dashboard-model.v1.json",
+        "ops/slo/slo-boundary.v1.json",
+        "ops/slo/slo-compatibility-baseline.v1.json",
+        "ops/slo/slo-dashboard.conformance.ps1",
         "ops/runbooks/README.md",
         "scripts/README.md",
         "scripts/openapi.ps1"
@@ -419,8 +474,11 @@ function Invoke-ContractDirectoryTest {
         "docs/contracts/runtime-snapshots",
         "docs/contracts/policy-decisions",
         "docs/contracts/router",
+        "docs/contracts/provider-canary",
+        "docs/contracts/deprecation",
         "docs/contracts/providers",
         "docs/contracts/retry-fallback",
+        "docs/contracts/secrets",
         "docs/adr"
     )
 
@@ -433,10 +491,14 @@ function Invoke-ContractDirectoryTest {
     Assert-FileContains "docs/contracts/README.md" "Event schemas" "CONTRACT_INDEX_EVENT_MISSING"
     Assert-FileContains "docs/contracts/README.md" "Usage Event schemas" "CONTRACT_INDEX_USAGE_EVENT_MISSING"
     Assert-FileContains "docs/contracts/README.md" "Runtime Snapshot schemas" "CONTRACT_INDEX_SNAPSHOT_MISSING"
+    Assert-FileContains "docs/contracts/README.md" "Runtime Snapshot staleness policy" "CONTRACT_INDEX_STALENESS_POLICY_MISSING"
     Assert-FileContains "docs/contracts/README.md" "Policy Decision schemas" "CONTRACT_INDEX_POLICY_MISSING"
     Assert-FileContains "docs/contracts/README.md" "Router Plugin schemas" "CONTRACT_INDEX_ROUTER_MISSING"
+    Assert-FileContains "docs/contracts/README.md" "Provider canary schemas" "CONTRACT_INDEX_PROVIDER_CANARY_MISSING"
+    Assert-FileContains "docs/contracts/README.md" "Deprecation schemas" "CONTRACT_INDEX_DEPRECATION_MISSING"
     Assert-FileContains "docs/contracts/README.md" "Provider Adapter schemas" "CONTRACT_INDEX_PROVIDER_MISSING"
     Assert-FileContains "docs/contracts/README.md" "Retry/Fallback schemas" "CONTRACT_INDEX_RETRY_FALLBACK_MISSING"
+    Assert-FileContains "docs/contracts/README.md" "Secret reference schemas" "CONTRACT_INDEX_SECRET_MISSING"
     Assert-FileContains "docs/contracts/README.md" "Architecture decisions" "CONTRACT_INDEX_ADR_MISSING"
     Assert-FileContains "docs/contracts/README.md" "does not publish a contract" "PLACEHOLDER_AUTHORITY_UNCLEAR"
 
@@ -948,6 +1010,745 @@ function Invoke-OpenApiContractTest {
 
     Assert-FileContains $workflow "Verify OpenAPI 3.1 Contract" "CI_OPENAPI_TEST_MISSING"
     Assert-FileContains $workflow "test-m2-001" "CI_OPENAPI_COMMAND_MISSING"
+}
+
+function Invoke-AdminIdempotencyContractTest {
+    $contractRoot = "docs/contracts/idempotency"
+    $boundaryFile = "$contractRoot/idempotency-boundary.v1.json"
+    $conformanceFile = "$contractRoot/idempotency-boundary.conformance.ps1"
+    $openApiFile = "docs/contracts/openapi/openapi.yaml"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        "$contractRoot/idempotency-request.v1.schema.json",
+        "$contractRoot/idempotency-decision.v1.schema.json",
+        "$contractRoot/idempotency-policy.v1.schema.json",
+        "$contractRoot/idempotency-compatibility-baseline.v1.json",
+        $boundaryFile,
+        $conformanceFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=ADMIN_IDEMPOTENCY_CONTRACT_OK*" }).Count -ne 1) {
+                Add-Failure "IDEMPOTENCY_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "IDEMPOTENCY_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $boundaryFile '"header_name": null' "IDEMPOTENCY_HEADER_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"ttl_seconds": null' "IDEMPOTENCY_TTL_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"cross_tenant_lookup_forbidden": true' "IDEMPOTENCY_TENANT_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"delivery": "transactional_outbox"' "IDEMPOTENCY_AUDIT_OUTBOX_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_required": true' "IDEMPOTENCY_ROLLBACK_MISSING"
+    Assert-FileContains $openApiFile '"x-admin-idempotency-contract": "../idempotency/idempotency-boundary.v1.json"' "OPENAPI_IDEMPOTENCY_LINK_MISSING"
+    Assert-FileContains $openApiFile "TBD-005" "OPENAPI_IDEMPOTENCY_TBD_MISSING"
+    Assert-FileContains $workflow "Verify Admin Idempotency Contract" "CI_IDEMPOTENCY_TEST_MISSING"
+    Assert-FileContains $workflow "test-tbd-005" "CI_IDEMPOTENCY_COMMAND_MISSING"
+}
+
+function Invoke-AdminPaginationContractTest {
+    $contractRoot = "docs/contracts/pagination"
+    $boundaryFile = "$contractRoot/pagination-boundary.v1.json"
+    $conformanceFile = "$contractRoot/pagination-boundary.conformance.ps1"
+    $openApiFile = "docs/contracts/openapi/openapi.yaml"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        "$contractRoot/pagination-query.v1.schema.json",
+        "$contractRoot/pagination-result.v1.schema.json",
+        "$contractRoot/pagination-policy.v1.schema.json",
+        "$contractRoot/pagination-compatibility-baseline.v1.json",
+        $boundaryFile,
+        $conformanceFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=ADMIN_PAGINATION_CONTRACT_OK*" }).Count -ne 1) {
+                Add-Failure "PAGINATION_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "PAGINATION_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $boundaryFile '"selected": null' "PAGINATION_STRATEGY_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"cursor_query_parameter": null' "PAGINATION_CURSOR_PARAMETER_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"offset_query_parameter": null' "PAGINATION_OFFSET_PARAMETER_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"filter_before_pagination": true' "PAGINATION_TENANT_FILTER_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_required": true' "PAGINATION_ROLLBACK_MISSING"
+    Assert-FileContains $openApiFile '"x-admin-pagination-contract": "../pagination/pagination-boundary.v1.json"' "OPENAPI_PAGINATION_LINK_MISSING"
+    Assert-FileContains $openApiFile "TBD-006" "OPENAPI_PAGINATION_TBD_MISSING"
+    Assert-FileContains $workflow "Verify Admin Pagination Contract" "CI_PAGINATION_TEST_MISSING"
+    Assert-FileContains $workflow "test-tbd-006" "CI_PAGINATION_COMMAND_MISSING"
+}
+
+function Invoke-SdkGenerationPipelineTest {
+    $contractRoot = "packages/sdk/contracts"
+    $boundaryFile = "$contractRoot/sdk-generation-boundary.v1.json"
+    $conformanceFile = "packages/sdk/sdk-generation.conformance.ps1"
+    $generatorFile = "packages/sdk/generate.ps1"
+    $openApiFile = "docs/contracts/openapi/openapi.yaml"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "packages/sdk/README.md",
+        "$contractRoot/sdk-generation-plan.v1.schema.json",
+        "$contractRoot/sdk-generation-compatibility-baseline.v1.json",
+        $boundaryFile,
+        $conformanceFile,
+        $generatorFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=SDK_GENERATION_PIPELINE_OK*" }).Count -ne 1) {
+                Add-Failure "SDK_PIPELINE_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "SDK_PIPELINE_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $boundaryFile '"language_set": null' "SDK_LANGUAGE_SET_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"generator": null' "SDK_GENERATOR_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"name": "client-generation"' "SDK_GENERATION_STAGE_MISSING"
+    Assert-FileContains $boundaryFile '"name": "package-publish"' "SDK_PUBLISH_STAGE_MISSING"
+    Assert-FileContains $boundaryFile '"blocked_by": "TBD-007"' "SDK_PIPELINE_BLOCK_GUARD_MISSING"
+    Assert-FileContains $openApiFile '"x-sdk-generation-contract": "../../../packages/sdk/contracts/sdk-generation-boundary.v1.json"' "OPENAPI_SDK_PIPELINE_LINK_MISSING"
+    Assert-FileContains $openApiFile "TBD-007" "OPENAPI_SDK_PIPELINE_TBD_MISSING"
+    Assert-FileContains $workflow "Verify SDK Generation Pipeline" "CI_SDK_PIPELINE_TEST_MISSING"
+    Assert-FileContains $workflow "test-tbd-007" "CI_SDK_PIPELINE_COMMAND_MISSING"
+}
+
+function Invoke-HttpErrorSemanticsTest {
+    $contractRoot = "docs/contracts/errors"
+    $boundaryFile = "$contractRoot/http-error-semantics-boundary.v1.json"
+    $baselineFile = "$contractRoot/http-error-semantics-compatibility-baseline.v1.json"
+    $conformanceFile = "$contractRoot/http-error-semantics.conformance.ps1"
+    $openApiFile = "docs/contracts/openapi/openapi.yaml"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=HTTP_ERROR_STATUS_SEMANTICS_OK*" }).Count -ne 1) {
+                Add-Failure "HTTP_ERROR_SEMANTICS_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "HTTP_ERROR_SEMANTICS_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $boundaryFile '"status": "http-status-semantics-only"' "HTTP_ERROR_STATUS_ONLY_BOUNDARY_MISSING"
+    Assert-FileContains $boundaryFile '"schema": null' "HTTP_ERROR_BODY_SCHEMA_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"enabled": null' "HTTP_402_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"structured_reason_code_required": true' "HTTP_ERROR_REASON_CODE_GUARD_MISSING"
+    Assert-FileContains $openApiFile '"x-http-error-semantics-contract": "../errors/http-error-semantics-boundary.v1.json"' "OPENAPI_HTTP_ERROR_LINK_MISSING"
+    Assert-FileContains $openApiFile "TBD-008" "OPENAPI_HTTP_ERROR_TBD_MISSING"
+    Assert-FileContains $workflow "Verify HTTP Error Status Semantics" "CI_HTTP_ERROR_TEST_MISSING"
+    Assert-FileContains $workflow "test-tbd-008" "CI_HTTP_ERROR_COMMAND_MISSING"
+}
+
+function Invoke-ConfigurableCoverageGateTest {
+    $policyFile = "docs/ci/test-coverage-gate.v1.json"
+    $baselineFile = "docs/ci/test-coverage-gate-compatibility-baseline.v1.json"
+    $gateFile = "scripts/coverage-gate.ps1"
+    $conformanceFile = "scripts/coverage-gate.conformance.ps1"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @($policyFile, $baselineFile, $gateFile, $conformanceFile)) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=CONFIGURABLE_COVERAGE_GATE_OK*" }).Count -ne 1) {
+                Add-Failure "COVERAGE_GATE_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "COVERAGE_GATE_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    $gatePath = Join-Path $repoRoot $gateFile
+    if (Test-Path -LiteralPath $gatePath -PathType Leaf) {
+        try {
+            $gateOutput = @(& $gatePath validate)
+            foreach ($line in $gateOutput) { Write-Output $line }
+            if (@($gateOutput | Where-Object { $_ -like "status=pass command=validate reason_code=COVERAGE_*" }).Count -ne 1) {
+                Add-Failure "COVERAGE_GATE_VALIDATION_FAILED" $gateFile "configured or TBD gate did not emit pass evidence"
+            }
+        }
+        catch {
+            Add-Failure "COVERAGE_GATE_VALIDATION_FAILED" $gateFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $policyFile '"threshold_percent": null' "COVERAGE_THRESHOLD_TBD_MISSING"
+    Assert-FileContains $policyFile '"metric": null' "COVERAGE_METRIC_TBD_MISSING"
+    Assert-FileContains $policyFile '"collector": null' "COVERAGE_COLLECTOR_TBD_MISSING"
+    Assert-FileContains $policyFile '"decision_status": "TBD-009"' "COVERAGE_DECISION_TBD_MISSING"
+    Assert-FileContains $workflow "Verify Configurable Coverage Gate" "CI_COVERAGE_GATE_MISSING"
+    Assert-FileContains $workflow 'COVERAGE_MINIMUM_PERCENT: ${{ vars.COVERAGE_MINIMUM_PERCENT }}' "CI_COVERAGE_THRESHOLD_PARAMETER_MISSING"
+    Assert-FileContains $workflow "test-tbd-009" "CI_COVERAGE_GATE_COMMAND_MISSING"
+}
+
+function Invoke-ConfigurableSloDashboardTest {
+    $sloRoot = "ops/slo"
+    $catalogFile = "$sloRoot/sli-catalog.v1.json"
+    $policySchemaFile = "$sloRoot/slo-target-policy.v1.schema.json"
+    $dashboardFile = "$sloRoot/dashboard-model.v1.json"
+    $boundaryFile = "$sloRoot/slo-boundary.v1.json"
+    $baselineFile = "$sloRoot/slo-compatibility-baseline.v1.json"
+    $conformanceFile = "$sloRoot/slo-dashboard.conformance.ps1"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$sloRoot/README.md",
+        $catalogFile,
+        $policySchemaFile,
+        $dashboardFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=CONFIGURABLE_SLO_DASHBOARD_OK*" }).Count -ne 1) {
+                Add-Failure "SLO_DASHBOARD_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "SLO_DASHBOARD_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $catalogFile '"source_binding": null' "SLI_SOURCE_BINDING_TBD_MISSING"
+    Assert-FileContains $catalogFile '"data_source_status": "TBD-010"' "SLI_DATA_SOURCE_TBD_MISSING"
+    Assert-FileContains $dashboardFile '"status": "target-aware-targets-unconfigured"' "SLO_DASHBOARD_CONFIGURABLE_STATUS_MISSING"
+    Assert-FileContains $dashboardFile '"target_policy_ref": null' "SLO_DASHBOARD_TARGET_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"status": "dashboard-ready-targets-unconfigured"' "SLO_BOUNDARY_CONFIGURABLE_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"active_policy_ref": null' "SLO_ACTIVE_POLICY_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"binding_ref": null' "SLO_DATA_SOURCE_BINDING_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"failure_thresholds": null' "SLO_RELEASE_THRESHOLD_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_required": true' "SLO_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $policySchemaFile '"const": "TBD-010"' "SLO_POLICY_DECISION_TBD_MISSING"
+    Assert-FileContains $workflow "Verify Configurable SLO Dashboard" "CI_SLO_DASHBOARD_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-010" "CI_SLO_DASHBOARD_COMMAND_MISSING"
+}
+
+function Invoke-CloudProviderNeutralityTest {
+    $terraformRoot = "deploy/terraform"
+    $contractRoot = "$terraformRoot/contracts"
+    $schemaFile = "$contractRoot/cloud-provider-selection.v1.schema.json"
+    $boundaryFile = "$contractRoot/cloud-provider-boundary.v1.json"
+    $baselineFile = "$contractRoot/cloud-provider-compatibility-baseline.v1.json"
+    $conformanceFile = "$terraformRoot/cloud-provider-neutrality.conformance.ps1"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        $schemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=CLOUD_PROVIDER_NEUTRALITY_OK*" }).Count -ne 1) {
+                Add-Failure "CLOUD_PROVIDER_NEUTRALITY_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "CLOUD_PROVIDER_NEUTRALITY_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $boundaryFile '"status": "provider-selection-unresolved"' "CLOUD_PROVIDER_UNRESOLVED_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"provider_id": null' "CLOUD_PROVIDER_SELECTION_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"remote_state_backend_ref": null' "CLOUD_PROVIDER_BACKEND_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"single_provider_architecture_required": false' "CLOUD_PROVIDER_SINGLE_CLOUD_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"provider_plan_enabled": false' "CLOUD_PROVIDER_PLAN_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"provider_apply_enabled": false' "CLOUD_PROVIDER_APPLY_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_required": true' "CLOUD_PROVIDER_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $schemaFile '"const": "TBD-011"' "CLOUD_PROVIDER_SCHEMA_TBD_MISSING"
+    Assert-FileContains $workflow "Verify Cloud Provider Neutrality" "CI_CLOUD_PROVIDER_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-011" "CI_CLOUD_PROVIDER_COMMAND_MISSING"
+}
+
+function Invoke-SecretManagerAbstractionTest {
+    $contractRoot = "docs/contracts/secrets"
+    $referenceSchemaFile = "$contractRoot/secret-reference.v1.schema.json"
+    $requestSchemaFile = "$contractRoot/secret-resolution-request.v1.schema.json"
+    $decisionSchemaFile = "$contractRoot/secret-resolution-decision.v1.schema.json"
+    $bindingSchemaFile = "$contractRoot/secret-manager-binding.v1.schema.json"
+    $boundaryFile = "$contractRoot/secret-manager-boundary.v1.json"
+    $baselineFile = "$contractRoot/secret-manager-compatibility-baseline.v1.json"
+    $conformanceFile = "$contractRoot/secret-manager.conformance.ps1"
+    $providerBoundaryFile = "docs/contracts/providers/provider-adapter-boundary.v1.json"
+    $kmsModuleFile = "deploy/terraform/modules/kms/main.tf"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        $referenceSchemaFile,
+        $requestSchemaFile,
+        $decisionSchemaFile,
+        $bindingSchemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile,
+        $providerBoundaryFile,
+        $kmsModuleFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=SECRET_MANAGER_ABSTRACTION_OK*" }).Count -ne 1) {
+                Add-Failure "SECRET_MANAGER_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "SECRET_MANAGER_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $referenceSchemaFile '"writeOnly": true' "SECRET_REFERENCE_WRITE_ONLY_GUARD_MISSING"
+    Assert-FileContains $bindingSchemaFile '"const": "TBD-012"' "SECRET_MANAGER_SCHEMA_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"status": "reference-ready-product-unselected"' "SECRET_MANAGER_UNRESOLVED_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"product_id": null' "SECRET_MANAGER_PRODUCT_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"reference_format": null' "SECRET_REFERENCE_FORMAT_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"rotation_schedule": null' "SECRET_ROTATION_SCHEDULE_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"asynchronous_audit_event_required": true' "SECRET_ASYNC_AUDIT_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"audit_persistence_blocks_delivery": false' "SECRET_AUDIT_NON_BLOCKING_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"credential_delivery": "in-process-non-serializable"' "SECRET_NON_SERIALIZABLE_DELIVERY_MISSING"
+    Assert-FileContains $boundaryFile '"single_product_required": false' "SECRET_MANAGER_SINGLE_PRODUCT_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"normal_resolver_bypass_allowed": false' "SECRET_BREAK_GLASS_BYPASS_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_required": true' "SECRET_MANAGER_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"control_plane_postgresql_query_allowed": false' "SECRET_CP_DP_GUARD_MISSING"
+    Assert-FileContains $providerBoundaryFile '"secret_resolver_contract": "docs/contracts/secrets/secret-manager-boundary.v1.json"' "PROVIDER_SECRET_RESOLVER_CONTRACT_MISSING"
+    Assert-FileContains $kmsModuleFile 'secret_manager_status          = "TBD-012"' "TERRAFORM_SECRET_MANAGER_TBD_MISSING"
+    Assert-FileContains $workflow "Verify Secret Manager Abstraction" "CI_SECRET_MANAGER_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-012" "CI_SECRET_MANAGER_COMMAND_MISSING"
+}
+
+function Invoke-ImageTraceabilityTest {
+    $imagesRoot = "deploy/images"
+    $contractRoot = "$imagesRoot/contracts"
+    $tagPolicySchemaFile = "$contractRoot/image-tag-policy.v1.schema.json"
+    $publicationSchemaFile = "$contractRoot/image-publication-record.v1.schema.json"
+    $boundaryFile = "$contractRoot/image-traceability-boundary.v1.json"
+    $baselineFile = "$contractRoot/image-traceability-compatibility-baseline.v1.json"
+    $conformanceFile = "$imagesRoot/image-traceability.conformance.ps1"
+    $gatewayBoundaryFile = "$imagesRoot/gateway/production-image-boundary.v1.json"
+    $gatewayConformanceFile = "$imagesRoot/gateway/production-image.conformance.ps1"
+    $dockerfile = "$imagesRoot/gateway/Dockerfile"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        $tagPolicySchemaFile,
+        $publicationSchemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile,
+        $gatewayBoundaryFile,
+        $gatewayConformanceFile,
+        $dockerfile
+    )) {
+        Assert-File $file
+    }
+
+    foreach ($test in @(
+        [PSCustomObject]@{ File = $conformanceFile; Pattern = "status=pass reason_code=IMAGE_TRACEABILITY_CONTRACT_OK*"; Reason = "IMAGE_TRACEABILITY_CONFORMANCE_FAILED" },
+        [PSCustomObject]@{ File = $gatewayConformanceFile; Pattern = "status=pass reason_code=PRODUCTION_IMAGE_RUNTIME_STATIC_OK*"; Reason = "IMAGE_GATEWAY_TRACEABILITY_REGRESSION" }
+    )) {
+        $testPath = Join-Path $repoRoot $test.File
+        if (Test-Path -LiteralPath $testPath -PathType Leaf) {
+            try {
+                $output = @(& $testPath)
+                foreach ($line in $output) { Write-Output $line }
+                if (@($output | Where-Object { $_ -like $test.Pattern }).Count -ne 1) {
+                    Add-Failure $test.Reason $test.File "success evidence was not emitted"
+                }
+            }
+            catch {
+                Add-Failure $test.Reason $test.File $_.Exception.Message
+            }
+        }
+    }
+
+    Assert-FileContains $tagPolicySchemaFile '"const": "TBD-013"' "IMAGE_TAG_POLICY_SCHEMA_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"status": "traceability-ready-tag-format-unconfigured"' "IMAGE_TRACEABILITY_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"tag_format": null' "IMAGE_TAG_FORMAT_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"production_tag_publication_enabled": false' "IMAGE_TAG_PUBLICATION_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"production_identity": "image-digest"' "IMAGE_DIGEST_IDENTITY_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_required": true' "IMAGE_TRACEABILITY_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $gatewayBoundaryFile '"contract": "deploy/images/contracts/image-traceability-boundary.v1.json"' "GATEWAY_IMAGE_TRACEABILITY_LINK_MISSING"
+    Assert-FileContains $dockerfile 'ARG SOURCE_REVISION' "IMAGE_SOURCE_REVISION_ARGUMENT_MISSING"
+    Assert-FileContains $dockerfile 'test "$SOURCE_REVISION" != "uncommitted"' "IMAGE_SOURCE_REVISION_PLACEHOLDER_GUARD_MISSING"
+    Assert-FileContains $workflow "Verify Image Traceability" "CI_IMAGE_TRACEABILITY_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-013" "CI_IMAGE_TRACEABILITY_COMMAND_MISSING"
+}
+
+function Invoke-ProviderCanaryTest {
+    $contractRoot = "docs/contracts/provider-canary"
+    $policySchemaFile = "$contractRoot/provider-canary-policy.v1.schema.json"
+    $observationSchemaFile = "$contractRoot/provider-canary-observation.v1.schema.json"
+    $decisionSchemaFile = "$contractRoot/provider-canary-decision.v1.schema.json"
+    $boundaryFile = "$contractRoot/provider-canary-boundary.v1.json"
+    $baselineFile = "$contractRoot/provider-canary-compatibility-baseline.v1.json"
+    $conformanceFile = "$contractRoot/provider-canary.conformance.ps1"
+    $routerBoundaryFile = "docs/contracts/router/router-boundary.v1.json"
+    $routerConformanceFile = "apps/router/router-plugin.conformance.ps1"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        $policySchemaFile,
+        $observationSchemaFile,
+        $decisionSchemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile,
+        $routerBoundaryFile,
+        $routerConformanceFile
+    )) {
+        Assert-File $file
+    }
+
+    foreach ($test in @(
+        [PSCustomObject]@{ File = $conformanceFile; Pattern = "status=pass reason_code=PROVIDER_CANARY_CONFIGURABILITY_OK*"; Reason = "PROVIDER_CANARY_CONFORMANCE_FAILED" },
+        [PSCustomObject]@{ File = $routerConformanceFile; Pattern = "status=pass reason_code=ROUTER_PLUGIN_CONFORMANCE_OK*"; Reason = "PROVIDER_CANARY_ROUTER_REGRESSION" }
+    )) {
+        $testPath = Join-Path $repoRoot $test.File
+        if (Test-Path -LiteralPath $testPath -PathType Leaf) {
+            try {
+                $output = @(& $testPath)
+                foreach ($line in $output) { Write-Output $line }
+                if (@($output | Where-Object { $_ -like $test.Pattern }).Count -ne 1) {
+                    Add-Failure $test.Reason $test.File "success evidence was not emitted"
+                }
+            }
+            catch {
+                Add-Failure $test.Reason $test.File $_.Exception.Message
+            }
+        }
+    }
+
+    Assert-FileContains $policySchemaFile '"config_version"' "PROVIDER_CANARY_CONFIG_VERSION_MISSING"
+    Assert-FileContains $policySchemaFile '"const": "TBD-014"' "PROVIDER_CANARY_SCHEMA_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"status": "canary-interface-ready-policy-unconfigured"' "PROVIDER_CANARY_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"stages": null' "PROVIDER_CANARY_STAGES_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"observation_windows": null' "PROVIDER_CANARY_WINDOW_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"promotion_thresholds": null' "PROVIDER_CANARY_THRESHOLD_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"allocation_algorithm_ref": null' "PROVIDER_CANARY_ALLOCATION_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"hard_policy_filters_precede_weighting": true' "PROVIDER_CANARY_POLICY_PRECEDENCE_MISSING"
+    Assert-FileContains $boundaryFile '"control_plane_postgresql_query_allowed": false' "PROVIDER_CANARY_CP_DP_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"asynchronous_non_blocking": true' "PROVIDER_CANARY_ASYNC_OBSERVATION_MISSING"
+    Assert-FileContains $boundaryFile '"unconfigured_behavior": "hold"' "PROVIDER_CANARY_UNCONFIGURED_HOLD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_target_required": true' "PROVIDER_CANARY_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $routerBoundaryFile '"weight_and_observation_contract": "docs/contracts/provider-canary/provider-canary-boundary.v1.json"' "ROUTER_PROVIDER_CANARY_LINK_MISSING"
+    Assert-FileContains $workflow "Verify Provider Canary Configurability" "CI_PROVIDER_CANARY_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-014" "CI_PROVIDER_CANARY_COMMAND_MISSING"
+}
+
+function Invoke-DeprecationWindowTest {
+    $contractRoot = "docs/contracts/deprecation"
+    $policySchemaFile = "$contractRoot/deprecation-policy.v1.schema.json"
+    $evaluationSchemaFile = "$contractRoot/deprecation-evaluation.v1.schema.json"
+    $boundaryFile = "$contractRoot/deprecation-boundary.v1.json"
+    $baselineFile = "$contractRoot/deprecation-compatibility-baseline.v1.json"
+    $conformanceFile = "$contractRoot/deprecation.conformance.ps1"
+    $openApiFile = "docs/contracts/openapi/openapi.yaml"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        $policySchemaFile,
+        $evaluationSchemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile,
+        $openApiFile
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=DEPRECATION_WINDOW_CONFIGURABILITY_OK*" }).Count -ne 1) {
+                Add-Failure "DEPRECATION_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "DEPRECATION_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $policySchemaFile '"const": "TBD-015"' "DEPRECATION_SCHEMA_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"status": "workflow-ready-window-duration-unconfigured"' "DEPRECATION_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"window_duration": null' "DEPRECATION_DURATION_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"duration_format": null' "DEPRECATION_DURATION_FORMAT_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"removal_before_window_end_allowed": false' "DEPRECATION_EARLY_REMOVAL_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"window_elapsed_without_enforcement_ref": "hold-for-review"' "DEPRECATION_UNCONFIGURED_ENFORCEMENT_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"control_plane_postgresql_query_allowed": false' "DEPRECATION_CP_DP_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"asynchronous_non_blocking": true' "DEPRECATION_ASYNC_NOTIFICATION_MISSING"
+    Assert-FileContains $boundaryFile '"prior_contract_retained_until_window_end": true' "DEPRECATION_COMPATIBILITY_RETENTION_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_target_required": true' "DEPRECATION_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $openApiFile '"x-deprecation-contract": "../deprecation/deprecation-boundary.v1.json"' "OPENAPI_DEPRECATION_LINK_MISSING"
+    Assert-FileContains $openApiFile '"x-deprecation-window-tbd"' "OPENAPI_DEPRECATION_TBD_MISSING"
+    Assert-FileNotContains $openApiFile '"deprecated": true' "OPENAPI_OPERATION_PREMATURELY_DEPRECATED"
+    Assert-FileContains $workflow "Verify Deprecation Window Configurability" "CI_DEPRECATION_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-015" "CI_DEPRECATION_COMMAND_MISSING"
+}
+
+function Invoke-RuntimeStalenessTest {
+    $contractRoot = "docs/contracts/runtime-snapshots"
+    $snapshotSchemaFile = "$contractRoot/runtime-snapshot.v1.schema.json"
+    $policySchemaFile = "$contractRoot/runtime-staleness-policy.v1.schema.json"
+    $boundaryFile = "$contractRoot/runtime-staleness-boundary.v1.json"
+    $baselineFile = "$contractRoot/runtime-staleness-compatibility-baseline.v1.json"
+    $conformanceFile = "$contractRoot/runtime-staleness.conformance.ps1"
+    $consumerModule = "packages/cache/snapshot-consumer/SnapshotConsumer.psm1"
+    $consumerConformance = "packages/cache/snapshot-consumer/snapshot-consumer.conformance.ps1"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @(
+        "$contractRoot/README.md",
+        $snapshotSchemaFile,
+        $policySchemaFile,
+        $boundaryFile,
+        $baselineFile,
+        $conformanceFile,
+        $consumerModule,
+        $consumerConformance
+    )) {
+        Assert-File $file
+    }
+
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=RUNTIME_STALENESS_CONFIGURABILITY_OK*" }).Count -ne 1) {
+                Add-Failure "RUNTIME_STALENESS_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "RUNTIME_STALENESS_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $policySchemaFile '"const": "TBD-016"' "RUNTIME_STALENESS_SCHEMA_TBD_MISSING"
+    Assert-FileContains $policySchemaFile '"maximum_staleness_seconds"' "RUNTIME_STALENESS_POLICY_THRESHOLD_MISSING"
+    Assert-FileContains $snapshotSchemaFile '"$ref": "urn:enterprise-ai-platform:runtime-snapshot:staleness-policy:v1"' "RUNTIME_SNAPSHOT_STALENESS_POLICY_LINK_MISSING"
+    Assert-FileContains $boundaryFile '"status": "policy-interface-ready-threshold-unconfigured"' "RUNTIME_STALENESS_STATUS_MISSING"
+    Assert-FileContains $boundaryFile '"maximum_staleness_seconds": null' "RUNTIME_STALENESS_THRESHOLD_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"default_value": null' "RUNTIME_STALENESS_DEFAULT_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"unconfigured_threshold_behavior": "measure-only-no-threshold-decision"' "RUNTIME_STALENESS_UNCONFIGURED_BEHAVIOR_MISSING"
+    Assert-FileContains $boundaryFile '"control_plane_postgresql_query_allowed": false' "RUNTIME_STALENESS_CP_DP_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"request_action": null' "RUNTIME_STALENESS_FAILURE_ACTION_PREMATURELY_SELECTED"
+    Assert-FileContains $boundaryFile '"status": "TBD-017"' "RUNTIME_STALENESS_FAILURE_POLICY_TBD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_target_required": true' "RUNTIME_STALENESS_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $consumerModule '[object]$MaximumStalenessSeconds = $null' "RUNTIME_STALENESS_CONSUMER_NULL_DEFAULT_MISSING"
+    Assert-FileContains $consumerModule "New-RuntimeSnapshotConsumerFromStalenessPolicy" "RUNTIME_STALENESS_POLICY_BINDING_MISSING"
+    foreach ($reasonCode in @(
+        "STALENESS_THRESHOLD_UNCONFIGURED",
+        "STALENESS_THRESHOLD_CONFIGURED",
+        "STALENESS_POLICY_TENANT_INVALID",
+        "STALENESS_POLICY_TENANT_MISMATCH",
+        "STALENESS_POLICY_CONFIG_VERSION_MISMATCH",
+        "STALENESS_POLICY_REVISION_INVALID",
+        "STALENESS_POLICY_THRESHOLD_INVALID"
+    )) {
+        Assert-FileContains $consumerModule $reasonCode "RUNTIME_STALENESS_POLICY_REASON_CODE_MISSING"
+    }
+    Assert-FileContains $workflow "Verify Runtime Snapshot Staleness Configurability" "CI_RUNTIME_STALENESS_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-016" "CI_RUNTIME_STALENESS_COMMAND_MISSING"
+}
+
+function Invoke-OwnershipMetadataTest {
+    $ownershipRoot = "ops/ownership"
+    $schemaFile = "$ownershipRoot/ownership-record.v1.schema.json"
+    $catalogFile = "$ownershipRoot/ownership-catalog.v1.json"
+    $boundaryFile = "$ownershipRoot/ownership-boundary.v1.json"
+    $baselineFile = "$ownershipRoot/ownership-compatibility-baseline.v1.json"
+    $conformanceFile = "$ownershipRoot/ownership.conformance.ps1"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @("$ownershipRoot/README.md", $schemaFile, $catalogFile, $boundaryFile, $baselineFile, $conformanceFile)) {
+        Assert-File $file
+    }
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=OWNERSHIP_METADATA_PLACEHOLDER_OK*" }).Count -ne 1) {
+                Add-Failure "OWNERSHIP_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "OWNERSHIP_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $catalogFile '"organization_names": null' "OWNERSHIP_ORGANIZATION_PREMATURELY_SELECTED"
+    Assert-FileContains $catalogFile '"team_topology": null' "OWNERSHIP_TEAM_TOPOLOGY_PREMATURELY_SELECTED"
+    Assert-FileContains $catalogFile '"decision_status": "TBD-018"' "OWNERSHIP_TBD_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"owner_name_required_before_production": true' "OWNERSHIP_PRODUCTION_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"placeholder_is_production_assignment": false' "OWNERSHIP_PLACEHOLDER_PRODUCTION_GUARD_MISSING"
+    Assert-FileContains $workflow "Verify Ownership Metadata Placeholders" "CI_OWNERSHIP_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-018" "CI_OWNERSHIP_COMMAND_MISSING"
+}
+
+function Invoke-ProductionEnvironmentVariablesTest {
+    $contractRoot = "deploy/contracts"
+    $schemaFile = "$contractRoot/production-environment-settings.v1.schema.json"
+    $boundaryFile = "$contractRoot/production-environment-boundary.v1.json"
+    $baselineFile = "$contractRoot/production-environment-compatibility-baseline.v1.json"
+    $conformanceFile = "deploy/production-environment.conformance.ps1"
+    $helmValues = "deploy/helm/gateway/values-prod.yaml"
+    $helmSchema = "deploy/helm/gateway/values.schema.json"
+    $terraformProd = "deploy/terraform/environments/prod/main.tf"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @("$contractRoot/README.md", $schemaFile, $boundaryFile, $baselineFile, $conformanceFile, $helmValues, $helmSchema, $terraformProd)) {
+        Assert-File $file
+    }
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=PRODUCTION_ENVIRONMENT_VARIABLES_OK*" }).Count -ne 1) {
+                Add-Failure "PRODUCTION_ENVIRONMENT_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "PRODUCTION_ENVIRONMENT_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    Assert-FileContains $schemaFile '"const": "TBD-019"' "PRODUCTION_ENVIRONMENT_SCHEMA_TBD_MISSING"
+    foreach ($setting in @("domain", "namespace", "certificate_issuer", "storage_class")) {
+        Assert-FileContains $boundaryFile ('"' + $setting + '": null') "PRODUCTION_ENVIRONMENT_VALUE_PREMATURELY_SELECTED"
+    }
+    Assert-FileContains $boundaryFile '"values_must_remain_empty_in_repository": true' "HELM_PRODUCTION_VALUE_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"defaults_must_remain_null_in_repository": true' "TERRAFORM_PRODUCTION_VALUE_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_target_required": true' "PRODUCTION_ENVIRONMENT_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $helmValues 'namespace: ""' "HELM_PRODUCTION_NAMESPACE_VARIABLE_MISSING"
+    Assert-FileContains $helmValues 'domain: ""' "HELM_PRODUCTION_DOMAIN_VARIABLE_MISSING"
+    Assert-FileContains $helmValues 'certificateIssuer: ""' "HELM_PRODUCTION_CERTIFICATE_ISSUER_VARIABLE_MISSING"
+    Assert-FileContains $helmValues 'storageClass: ""' "HELM_PRODUCTION_STORAGE_CLASS_VARIABLE_MISSING"
+    foreach ($variableName in @("production_domain", "production_namespace", "production_certificate_issuer", "production_storage_class")) {
+        Assert-FileContains $terraformProd ('variable "' + $variableName + '"') "TERRAFORM_PRODUCTION_ENVIRONMENT_VARIABLE_MISSING"
+    }
+    Assert-FileContains $workflow "Verify Production Environment Variables" "CI_PRODUCTION_ENVIRONMENT_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-019" "CI_PRODUCTION_ENVIRONMENT_COMMAND_MISSING"
+}
+
+function Invoke-OperationsCoordinationTest {
+    $coordinationRoot = "ops/coordination"
+    $onCallSchema = "$coordinationRoot/on-call-binding.v1.schema.json"
+    $requestSchema = "$coordinationRoot/approval-request.v1.schema.json"
+    $decisionSchema = "$coordinationRoot/approval-decision.v1.schema.json"
+    $evidencePackSchema = "$coordinationRoot/go-live-evidence-pack.v1.schema.json"
+    $boundaryFile = "$coordinationRoot/operations-coordination-boundary.v1.json"
+    $baselineFile = "$coordinationRoot/operations-coordination-compatibility-baseline.v1.json"
+    $conformanceFile = "$coordinationRoot/operations-coordination.conformance.ps1"
+    $secretBoundary = "docs/contracts/secrets/secret-manager-boundary.v1.json"
+    $workflow = ".github/workflows/pr-gates.yml"
+
+    foreach ($file in @("$coordinationRoot/README.md", $onCallSchema, $requestSchema, $decisionSchema, $evidencePackSchema, $boundaryFile, $baselineFile, $conformanceFile, $secretBoundary)) {
+        Assert-File $file
+    }
+    $conformancePath = Join-Path $repoRoot $conformanceFile
+    if (Test-Path -LiteralPath $conformancePath -PathType Leaf) {
+        try {
+            $output = @(& $conformancePath)
+            foreach ($line in $output) { Write-Output $line }
+            if (@($output | Where-Object { $_ -like "status=pass reason_code=OPERATIONS_COORDINATION_INTERFACES_OK*" }).Count -ne 1) {
+                Add-Failure "OPERATIONS_COORDINATION_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+            }
+        }
+        catch {
+            Add-Failure "OPERATIONS_COORDINATION_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message
+        }
+    }
+
+    foreach ($setting in @("provider_adapter_ref", "schedule_ref", "escalation_policy_ref", "contact_target_ref", "approval_system_ref", "security_approval_role_refs", "required_approver_count", "two_person_enforcement", "outage_procedure_ref")) {
+        Assert-FileContains $boundaryFile ('"' + $setting + '": null') "OPERATIONS_COORDINATION_BINDING_PREMATURELY_SELECTED"
+    }
+    Assert-FileContains $boundaryFile '"unconfigured_approval_system_blocks_promotion": true' "APPROVAL_UNCONFIGURED_FAIL_CLOSED_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"unavailable_approval_system_blocks_promotion": true' "APPROVAL_UNAVAILABLE_FAIL_CLOSED_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"online_data_plane_dependency_allowed": false' "OPERATIONS_COORDINATION_DATA_PLANE_GUARD_MISSING"
+    Assert-FileContains $boundaryFile '"rollback_required": true' "OPERATIONS_COORDINATION_ROLLBACK_GUARD_MISSING"
+    Assert-FileContains $secretBoundary '"approval_contract": "ops/coordination/operations-coordination-boundary.v1.json"' "SECRET_APPROVAL_CONTRACT_MISSING"
+    Assert-FileContains $workflow "Verify On-call and Approval Interfaces" "CI_OPERATIONS_COORDINATION_GATE_MISSING"
+    Assert-FileContains $workflow "test-tbd-020" "CI_OPERATIONS_COORDINATION_COMMAND_MISSING"
 }
 
 function Invoke-AuthenticationBoundaryTest {
@@ -1516,6 +2317,7 @@ function Invoke-ProviderAdapterTest {
             $null -ne $boundary.adapter_method_signature -or
             $boundary.adapter_method_signature_status -ne "ADR_NEEDED" -or
             $boundary.dependency_injection_status -ne "ADR-002" -or
+            $boundary.secret_resolver_contract -ne "docs/contracts/secrets/secret-manager-boundary.v1.json" -or
             $null -ne $boundary.secret_resolver -or
             $boundary.secret_resolver_status -ne "TBD-012" -or
             $boundary.retry_and_fallback.implementation -ne "docs/contracts/retry-fallback/retry-fallback-boundary.v1.json" -or
@@ -2219,6 +3021,56 @@ switch ($Command) {
     "test-m2-001" {
         Invoke-OpenApiContractTest
     }
+    "test-tbd-005" {
+        Invoke-OpenApiContractTest
+        Invoke-AdminIdempotencyContractTest
+    }
+    "test-tbd-006" {
+        Invoke-OpenApiContractTest
+        Invoke-AdminPaginationContractTest
+    }
+    "test-tbd-007" {
+        Invoke-OpenApiContractTest
+        Invoke-SdkGenerationPipelineTest
+    }
+    "test-tbd-008" {
+        Invoke-OpenApiContractTest
+        Invoke-HttpErrorSemanticsTest
+    }
+    "test-tbd-009" {
+        Invoke-ConfigurableCoverageGateTest
+    }
+    "test-tbd-010" {
+        Invoke-ConfigurableSloDashboardTest
+    }
+    "test-tbd-011" {
+        Invoke-CloudProviderNeutralityTest
+    }
+    "test-tbd-012" {
+        Invoke-SecretManagerAbstractionTest
+    }
+    "test-tbd-013" {
+        Invoke-ImageTraceabilityTest
+    }
+    "test-tbd-014" {
+        Invoke-ProviderCanaryTest
+    }
+    "test-tbd-015" {
+        Invoke-OpenApiContractTest
+        Invoke-DeprecationWindowTest
+    }
+    "test-tbd-016" {
+        Invoke-RuntimeStalenessTest
+    }
+    "test-tbd-018" {
+        Invoke-OwnershipMetadataTest
+    }
+    "test-tbd-019" {
+        Invoke-ProductionEnvironmentVariablesTest
+    }
+    "test-tbd-020" {
+        Invoke-OperationsCoordinationTest
+    }
     "test-m2-002" {
         Invoke-OpenApiContractTest
         Invoke-AuthenticationBoundaryTest
@@ -2299,6 +3151,21 @@ $successReason = switch ($Command) {
     "test-m1-003" { "REDIS_SNAPSHOT_STORE_OK" }
     "test-m1-004" { "DATA_PLANE_SNAPSHOT_CONSUMER_OK" }
     "test-m2-001" { "OPENAPI_3_1_BASELINE_OK" }
+    "test-tbd-005" { "ADMIN_IDEMPOTENCY_EXTENSION_POINT_OK" }
+    "test-tbd-006" { "ADMIN_PAGINATION_REVIEW_BOUNDARY_OK" }
+    "test-tbd-007" { "SDK_GENERATION_PIPELINE_BOUNDARY_OK" }
+    "test-tbd-008" { "HTTP_ERROR_STATUS_SEMANTICS_BOUNDARY_OK" }
+    "test-tbd-009" { "CONFIGURABLE_COVERAGE_GATE_BOUNDARY_OK" }
+    "test-tbd-010" { "CONFIGURABLE_SLO_DASHBOARD_BOUNDARY_OK" }
+    "test-tbd-011" { "CLOUD_PROVIDER_NEUTRALITY_BOUNDARY_OK" }
+    "test-tbd-012" { "SECRET_MANAGER_ABSTRACTION_BOUNDARY_OK" }
+    "test-tbd-013" { "IMAGE_TRACEABILITY_BOUNDARY_OK" }
+    "test-tbd-014" { "PROVIDER_CANARY_CONFIGURABILITY_BOUNDARY_OK" }
+    "test-tbd-015" { "DEPRECATION_WINDOW_CONFIGURABILITY_BOUNDARY_OK" }
+    "test-tbd-016" { "RUNTIME_STALENESS_CONFIGURABILITY_BOUNDARY_OK" }
+    "test-tbd-018" { "OWNERSHIP_METADATA_PLACEHOLDER_BOUNDARY_OK" }
+    "test-tbd-019" { "PRODUCTION_ENVIRONMENT_VARIABLES_BOUNDARY_OK" }
+    "test-tbd-020" { "OPERATIONS_COORDINATION_INTERFACES_BOUNDARY_OK" }
     "test-m2-002" { "AUTHENTICATION_BOUNDARY_OK" }
     "test-m2-003" { "POLICY_DECISION_BOUNDARY_OK" }
     "test-m2-004" { "ROUTER_PLUGIN_BOUNDARY_OK" }

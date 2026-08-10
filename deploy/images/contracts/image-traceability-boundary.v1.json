@@ -1,0 +1,65 @@
+{
+  "boundary_version": 1,
+  "name": "image_tag_and_traceability_boundary",
+  "status": "traceability-ready-tag-format-unconfigured",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-005",
+    "REQ-BLD-009",
+    "REQ-CICD-001",
+    "REQ-CICD-003",
+    "REQ-REL-001",
+    "TBD-013"
+  ],
+  "tag_policy_schema": "deploy/images/contracts/image-tag-policy.v1.schema.json",
+  "publication_record_schema": "deploy/images/contracts/image-publication-record.v1.schema.json",
+  "current_policy": {
+    "tag_format": null,
+    "tag_components": null,
+    "normalization_rules": null,
+    "mutable_alias_policy": null,
+    "branch_policy": null,
+    "prerelease_policy": null,
+    "promotion_policy": null,
+    "active_policy_revision": null
+  },
+  "traceability": {
+    "source_repository_required": true,
+    "source_revision_required": true,
+    "source_version_required": true,
+    "image_digest_required": true,
+    "publication_record_required": true,
+    "oci_labels_must_match_record": true,
+    "tag_is_locator_not_identity": true,
+    "production_identity": "image-digest",
+    "rollback_identity": "previously-verified-image-digest"
+  },
+  "publication_guard": {
+    "digest_only_release_record_allowed": true,
+    "production_tag_publication_enabled": false,
+    "tag_policy_revision_required_for_release_tag": true,
+    "implicit_default_tag_allowed": false,
+    "unreviewed_mutable_alias_allowed": false,
+    "tag_format_validation_enabled": false
+  },
+  "configuration_lifecycle": {
+    "stages": [
+      "Draft",
+      "Validate",
+      "Build",
+      "Record",
+      "Publish",
+      "Observe",
+      "Rollback"
+    ],
+    "versioned": true,
+    "rollback_required": true,
+    "rollback_rule": "Select a previously verified immutable image digest and its matching publication record; never rebuild an old mutable tag."
+  },
+  "security": {
+    "credential_metadata_forbidden": true,
+    "secret_build_arguments_forbidden": true,
+    "publication_record_secret_free": true
+  },
+  "decision_status": "TBD-013"
+}

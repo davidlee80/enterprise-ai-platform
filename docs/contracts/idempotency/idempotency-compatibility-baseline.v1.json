@@ -1,0 +1,44 @@
+{
+  "baseline_version": 1,
+  "request_schema_id": "urn:enterprise-ai-platform:admin-idempotency:request:v1",
+  "decision_schema_id": "urn:enterprise-ai-platform:admin-idempotency:decision:v1",
+  "policy_schema_id": "urn:enterprise-ai-platform:admin-idempotency:policy:v1",
+  "required_request_fields": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "authenticated_subject_id",
+    "operation_id",
+    "resource_id",
+    "idempotency_key",
+    "request_fingerprint",
+    "config_version"
+  ],
+  "required_decision_fields": [
+    "schema_version",
+    "request_id",
+    "trace_id",
+    "tenant_id",
+    "operation_id",
+    "config_version",
+    "outcome",
+    "reason_code",
+    "record_version",
+    "audit_required"
+  ],
+  "required_outcomes": [
+    "proceed",
+    "duplicate",
+    "conflict",
+    "indeterminate"
+  ],
+  "required_tbd_fields": [
+    "transport.header_name",
+    "retention.ttl_seconds",
+    "storage.profile_ref",
+    "duplicate_handling.response_strategy",
+    "conflict_handling.response_strategy",
+    "store_failure_handling.strategy"
+  ]
+}

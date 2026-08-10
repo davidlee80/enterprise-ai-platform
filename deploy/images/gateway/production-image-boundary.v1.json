@@ -37,6 +37,7 @@
     "readiness_path": "/readyz"
   },
   "traceability": {
+    "contract": "deploy/images/contracts/image-traceability-boundary.v1.json",
     "image_tag_format": null,
     "image_tag_format_status": "TBD-013",
     "required_oci_labels": [

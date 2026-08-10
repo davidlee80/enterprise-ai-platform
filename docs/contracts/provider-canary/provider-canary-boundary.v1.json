@@ -1,0 +1,124 @@
+{
+  "boundary_version": 1,
+  "name": "provider_canary_configurability_boundary",
+  "status": "canary-interface-ready-policy-unconfigured",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-005",
+    "REQ-GEN-015",
+    "REQ-REL-003",
+    "REQ-REL-004",
+    "REQ-REL-006",
+    "REQ-REL-008",
+    "REQ-TST-010",
+    "TBD-014"
+  ],
+  "policy_schema": "docs/contracts/provider-canary/provider-canary-policy.v1.schema.json",
+  "observation_schema": "docs/contracts/provider-canary/provider-canary-observation.v1.schema.json",
+  "decision_schema": "docs/contracts/provider-canary/provider-canary-decision.v1.schema.json",
+  "current_policy": {
+    "active_policy_ref": null,
+    "baseline_provider_ids": null,
+    "canary_provider_ids": null,
+    "stages": null,
+    "allocation_key_ref": null,
+    "allocation_algorithm_ref": null,
+    "signal_set_ref": null,
+    "observation_windows": null,
+    "minimum_sample_sizes": null,
+    "promotion_criteria_refs": null,
+    "rollback_criteria_refs": null,
+    "automatic_promotion_enabled": null,
+    "automatic_rollback_enabled": null
+  },
+  "runtime_boundary": {
+    "consumes_published_snapshot": true,
+    "control_plane_postgresql_query_allowed": false,
+    "tenant_match_required": true,
+    "config_version_match_required": true,
+    "policy_revision_match_required": true,
+    "model_alias_match_required": true,
+    "hard_policy_filters_precede_weighting": true,
+    "weight_overrides_region_or_compliance": false,
+    "weight_is_priority": false,
+    "selection_algorithm_selected": false
+  },
+  "observation": {
+    "asynchronous_non_blocking": true,
+    "request_path_waits_for_window": false,
+    "usage_billing_audit_analytics_persistence_blocks_routing": false,
+    "signal_set_ref": null,
+    "observation_windows": null,
+    "minimum_sample_sizes": null,
+    "promotion_thresholds": null,
+    "rollback_thresholds": null,
+    "metric_labels": [
+      "tenant_id",
+      "config_version",
+      "policy_revision",
+      "stage_id",
+      "model_alias",
+      "provider_id",
+      "outcome",
+      "reason_code"
+    ],
+    "high_cardinality_labels_forbidden": [
+      "request_id",
+      "trace_id",
+      "user_id",
+      "prompt",
+      "response_body"
+    ]
+  },
+  "progression": {
+    "full_replacement_without_canary_allowed": false,
+    "unconfigured_behavior": "hold",
+    "automatic_promotion_enabled": null,
+    "automatic_rollback_enabled": null,
+    "publish_requires_explicit_reviewed_policy": true,
+    "promotion_requires_complete_observation": true,
+    "promotion_requires_configured_sample_size": true,
+    "promotion_requires_available_signals": true,
+    "promotion_requires_configured_criteria": true
+  },
+  "configuration_lifecycle": {
+    "stages": [
+      "Draft",
+      "Validate",
+      "Publish",
+      "Observe",
+      "Promote",
+      "Rollback"
+    ],
+    "versioned": true,
+    "revision_required": true,
+    "rollback_target_required": true,
+    "last_valid_snapshot_preserved_on_publish_failure": true
+  },
+  "change_evidence": {
+    "who_fields": [
+      "created_by",
+      "updated_by"
+    ],
+    "revision_field": "revision",
+    "when_fields": [
+      "updated_at",
+      "effective_at"
+    ],
+    "impact_scope_fields": [
+      "tenant_id",
+      "model_alias",
+      "baseline_provider_ids",
+      "canary_provider_ids"
+    ],
+    "rollback_revision_field": "rollback_revision"
+  },
+  "telemetry": {
+    "structured_decision_required": true,
+    "prompt_body_forbidden": true,
+    "response_body_forbidden": true,
+    "secret_material_forbidden": true,
+    "raw_provider_error_forbidden": true
+  },
+  "decision_status": "TBD-014"
+}

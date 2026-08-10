@@ -1,0 +1,30 @@
+{
+  "baseline_version": 1,
+  "source_contract_version": "1.0.0",
+  "required_http_semantics": {
+    "400": "Invalid request",
+    "401": "Authentication failed",
+    "403": "Policy or model denied",
+    "429": "Rate or quota exceeded",
+    "502": "Provider failure after fallback exhaustion"
+  },
+  "required_unresolved_fields": [
+    "public_body.schema",
+    "public_body.media_type",
+    "public_body.error_code_field",
+    "public_body.message_field",
+    "public_body.correlation_fields",
+    "status_402.enabled",
+    "status_402.meaning",
+    "internal_decision_context.public_error_code_mapping"
+  ],
+  "forbidden_public_data": [
+    "provider_credentials",
+    "secret_ref",
+    "internal_endpoint",
+    "policy_source",
+    "stack_trace",
+    "raw_provider_error",
+    "other_tenant_data"
+  ]
+}

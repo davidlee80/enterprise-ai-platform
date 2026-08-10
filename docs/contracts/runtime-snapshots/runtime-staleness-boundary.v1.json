@@ -1,0 +1,81 @@
+{
+  "boundary_version": 1,
+  "name": "runtime_snapshot_staleness_configurability_boundary",
+  "status": "policy-interface-ready-threshold-unconfigured",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-005",
+    "REQ-GEN-009",
+    "REQ-GEN-010",
+    "REQ-GEN-015",
+    "REQ-REL-006",
+    "REQ-REL-008",
+    "TASK-M1-004",
+    "TBD-016",
+    "TBD-017"
+  ],
+  "policy_schema": "docs/contracts/runtime-snapshots/runtime-staleness-policy.v1.schema.json",
+  "current_policy": {
+    "active_policy_ref": null,
+    "maximum_staleness_seconds": null,
+    "measurement_clock_ref": null
+  },
+  "measurement": {
+    "source_timestamp": "runtime-snapshot-publication-metadata.effective_at",
+    "clock_input": "utc-now",
+    "staleness_formula": "max(0, evaluated_at - effective_at)",
+    "threshold_comparison": "staleness_seconds > maximum_staleness_seconds",
+    "unconfigured_threshold_behavior": "measure-only-no-threshold-decision",
+    "negative_staleness_clamped_to_zero": true
+  },
+  "runtime_binding": {
+    "consumer_module": "packages/cache/snapshot-consumer/SnapshotConsumer.psm1",
+    "configuration_parameter": "MaximumStalenessSeconds",
+    "default_value": null,
+    "positive_number_required_when_configured": true,
+    "tenant_match_required": true,
+    "config_version_match_required": true,
+    "policy_revision_required": true,
+    "consumes_published_snapshot": true,
+    "control_plane_postgresql_query_allowed": false,
+    "last_valid_snapshot_preserved_on_redis_failure": true
+  },
+  "threshold_exceeded_behavior": {
+    "on_stale_policy_ref": null,
+    "request_action": null,
+    "evaluation_changes_request_availability": false,
+    "status": "TBD-017"
+  },
+  "configuration_lifecycle": {
+    "stages": ["Draft", "Validate", "Publish", "Observe", "Rollback"],
+    "versioned": true,
+    "revision_required": true,
+    "rollback_target_required": true,
+    "last_valid_policy_preserved_on_publish_failure": true
+  },
+  "change_evidence": {
+    "who_fields": ["created_by", "updated_by"],
+    "revision_field": "revision",
+    "when_fields": ["updated_at", "effective_at"],
+    "impact_scope_fields": ["tenant_id", "config_version"],
+    "rollback_revision_field": "rollback_revision"
+  },
+  "telemetry": {
+    "required_fields": [
+      "tenant_id",
+      "active_config_version",
+      "staleness_seconds",
+      "propagation_latency_seconds",
+      "maximum_staleness_seconds",
+      "over_maximum_staleness",
+      "on_stale",
+      "reason_code"
+    ],
+    "unconfigured_over_maximum_value": null,
+    "high_cardinality_labels_forbidden": ["request_id", "trace_id", "user_id", "notification_id", "content_hash"],
+    "prompt_body_forbidden": true,
+    "response_body_forbidden": true,
+    "secret_material_forbidden": true
+  },
+  "decision_status": "TBD-016"
+}

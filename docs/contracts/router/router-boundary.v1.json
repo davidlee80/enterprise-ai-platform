@@ -13,6 +13,7 @@
   "selection_algorithm_status": "ROUTE_STRATEGY_DOMAIN_DECISION",
   "weight_and_observation_semantics": null,
   "weight_and_observation_status": "TBD-014",
+  "weight_and_observation_contract": "docs/contracts/provider-canary/provider-canary-boundary.v1.json",
   "invariants": [
     "Only a Policy Decision v1 allow outcome may enter routing.",
     "Request, registry, and candidate configuration use the same tenant_id and config_version.",

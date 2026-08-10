@@ -49,7 +49,9 @@ not authorize the unresolved `api_key` table from the migration TBD register.
 Credential values are write-only boundary inputs. They must not be persisted,
 logged, added to metrics/traces, returned in decisions, or exposed through
 public errors. Provider credentials are outside this package and remain
-`secret_ref`-only. Secret Manager selection remains `TBD-012`.
+`secret_ref`-only. The product-neutral
+[`secret_ref` contract](../../docs/contracts/secrets/README.md) is implemented;
+Secret Manager product and authentication selection remain `TBD-012`.
 
 Run the executable conformance suite from the repository root:
 

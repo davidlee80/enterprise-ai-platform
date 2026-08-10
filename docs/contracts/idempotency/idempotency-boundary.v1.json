@@ -1,0 +1,101 @@
+{
+  "interface_version": 1,
+  "name": "admin_write_idempotency",
+  "scope": "control_plane_admin_writes",
+  "status": "contract-extension-point",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-004",
+    "REQ-GEN-005",
+    "REQ-GEN-013",
+    "REQ-API-007",
+    "REQ-API-008",
+    "REQ-API-010",
+    "REQ-DB-006",
+    "REQ-DB-008",
+    "REQ-TST-008",
+    "TBD-005"
+  ],
+  "request_schema": "idempotency-request.v1.schema.json",
+  "decision_schema": "idempotency-decision.v1.schema.json",
+  "policy_schema": "idempotency-policy.v1.schema.json",
+  "required_write_patterns": [
+    "POST /admin/<resource>",
+    "PATCH /admin/<resource>/{id}",
+    "POST /admin/<resource>/{id}:publish",
+    "POST /admin/<resource>/{id}:rollback"
+  ],
+  "isolation": {
+    "minimum_dimensions": [
+      "resolved_tenant_scope",
+      "operation_id",
+      "idempotency_key"
+    ],
+    "global_resource_rule": "A null tenant_id is valid only after authentication and resource-level authorization establish an explicitly global resource.",
+    "cross_tenant_lookup_forbidden": true
+  },
+  "transport": {
+    "header_name": null,
+    "status": "TBD-005"
+  },
+  "retention": {
+    "ttl_seconds": null,
+    "status": "TBD-005"
+  },
+  "storage": {
+    "profile_ref": null,
+    "status": "TBD-005",
+    "rule": "A temporary cache cannot become the unrecoverable source of a committed management change."
+  },
+  "duplicate_handling": {
+    "response_strategy": null,
+    "status": "TBD-005",
+    "rule": "The normalized boundary may report duplicate; the externally replayed response is not selected by this contract."
+  },
+  "conflict_handling": {
+    "response_strategy": null,
+    "status": "TBD-005",
+    "rule": "The normalized boundary may report conflict for a key reused with a different request fingerprint; HTTP/error mapping remains unresolved."
+  },
+  "store_failure_handling": {
+    "strategy": null,
+    "status": "TBD-005",
+    "rule": "Failure must be structured and must not create an unaudited or partially published management change."
+  },
+  "configuration_lifecycle": {
+    "stages": [
+      "Draft",
+      "Validate",
+      "Publish",
+      "Observe",
+      "Rollback"
+    ],
+    "versioned": true,
+    "rollback_required": true,
+    "publish_guard": "transport_header_name, ttl_seconds, storage_profile_ref, replay_response_strategy, conflict_response_strategy, and store_failure_strategy require a reviewed ADR/configuration decision before activation."
+  },
+  "audit": {
+    "required": true,
+    "delivery": "transactional_outbox",
+    "async_persistence": true,
+    "required_context": [
+      "request_id",
+      "trace_id",
+      "tenant_id",
+      "authenticated_subject_id",
+      "operation_id",
+      "resource_id",
+      "config_version",
+      "outcome",
+      "reason_code"
+    ]
+  },
+  "observability": {
+    "structured_reason_code_required": true,
+    "raw_idempotency_key_forbidden": true,
+    "request_id_prometheus_label_forbidden": true,
+    "user_id_prometheus_label_forbidden": true
+  },
+  "runtime_implementation_status": "not-selected-by-tbd-005-contract-task",
+  "public_error_schema_status": "TBD-008"
+}

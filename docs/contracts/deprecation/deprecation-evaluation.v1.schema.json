@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:deprecation:evaluation:v1",
+  "title": "Deprecation evaluation v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "evaluation_id",
+    "tenant_id",
+    "config_version",
+    "policy_revision",
+    "resource_kind",
+    "resource_ref",
+    "evaluated_at",
+    "state",
+    "reason_code",
+    "window_starts_at",
+    "window_ends_at",
+    "replacement_ref",
+    "enforcement_after_window_ref"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "evaluation_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": ["string", "null"], "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "policy_revision": { "type": "integer", "minimum": 1 },
+    "resource_kind": {
+      "type": "string",
+      "enum": ["api", "model_alias", "config_field", "capability"]
+    },
+    "resource_ref": { "type": "string", "minLength": 1 },
+    "evaluated_at": { "type": "string", "format": "date-time" },
+    "state": {
+      "type": "string",
+      "enum": ["unconfigured", "not_started", "in_window", "window_elapsed", "invalid", "indeterminate"]
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "DEPRECATION_POLICY_UNCONFIGURED",
+        "DEPRECATION_WINDOW_INVALID",
+        "DEPRECATION_NOT_STARTED",
+        "DEPRECATION_WINDOW_ACTIVE",
+        "DEPRECATION_WINDOW_ELAPSED",
+        "DEPRECATION_TENANT_MISMATCH",
+        "DEPRECATION_CONFIG_VERSION_MISMATCH",
+        "DEPRECATION_POLICY_REVISION_MISMATCH",
+        "DEPRECATION_RESOURCE_MISMATCH"
+      ]
+    },
+    "window_starts_at": { "type": ["string", "null"], "format": "date-time" },
+    "window_ends_at": { "type": ["string", "null"], "format": "date-time" },
+    "replacement_ref": { "type": ["string", "null"], "minLength": 1 },
+    "enforcement_after_window_ref": { "type": ["string", "null"], "minLength": 1 }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,71 @@
+{
+  "boundary_version": 1,
+  "name": "cloud_provider_selection_boundary",
+  "status": "provider-selection-unresolved",
+  "requirements": [
+    "REQ-GEN-003",
+    "REQ-GEN-005",
+    "REQ-IAC-001",
+    "REQ-IAC-002",
+    "REQ-IAC-008",
+    "TASK-IAC-001",
+    "TASK-M3-003",
+    "TBD-011"
+  ],
+  "selection_schema": "deploy/terraform/contracts/cloud-provider-selection.v1.schema.json",
+  "current_selection": {
+    "provider_id": null,
+    "provider_source": null,
+    "provider_version_constraint": null,
+    "deployment_locations": null,
+    "workload_identity_ref": null,
+    "remote_state_backend_ref": null
+  },
+  "capability_adapter_refs": {
+    "network": null,
+    "kubernetes": null,
+    "postgres": null,
+    "redis": null,
+    "kafka": null,
+    "object_storage": null,
+    "kms": null,
+    "dns": null
+  },
+  "core_topology": {
+    "module_source_policy": "repository-local-only",
+    "selection_cardinality": "one-or-more-reviewed-bindings",
+    "single_provider_architecture_required": false,
+    "provider_blocks_allowed": false,
+    "provider_resources_allowed": false,
+    "provider_data_sources_allowed": false,
+    "remote_backend_allowed": false,
+    "required_providers_allowed": false
+  },
+  "execution_guard": {
+    "contract_validation_enabled": true,
+    "provider_plan_enabled": false,
+    "provider_apply_enabled": false,
+    "activation_requirement": "A reviewed ADR and versioned registry must bind one or more provider implementations, deployment locations, workload identities, remote state, and capability adapters without changing the core capability contracts."
+  },
+  "configuration_lifecycle": {
+    "stages": [
+      "Draft",
+      "Validate",
+      "Plan",
+      "Review",
+      "Publish",
+      "Observe",
+      "Rollback"
+    ],
+    "versioned": true,
+    "rollback_required": true,
+    "rollback_rule": "Restore the prior reviewed provider selection, adapter revisions, identity reference, and remote-state configuration as one compatible set."
+  },
+  "security": {
+    "plaintext_credentials_forbidden": true,
+    "credential_outputs_forbidden": true,
+    "state_files_forbidden_in_repository": true,
+    "secret_ref_or_short_lived_identity_only": true
+  },
+  "decision_status": "TBD-011"
+}

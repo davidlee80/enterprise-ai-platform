@@ -26,4 +26,7 @@ correlation attributes rather than metric labels.
 
 Changes to envelope field meaning require a new explicit schema version and
 compatibility evidence. Rollback keeps the prior schema available for replay and
-consumers until its reviewed deprecation window closes.
+consumers until its reviewed deprecation window closes. The configurable window
+and lifecycle are defined by the versioned
+[`deprecation boundary`](../deprecation/README.md); its duration remains
+`TBD-015`.

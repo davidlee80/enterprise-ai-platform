@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:runtime-snapshot:staleness-policy:v1",
+  "title": "Runtime Snapshot staleness policy v1",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "tenant_id",
+    "config_version",
+    "revision",
+    "effective_at",
+    "rollback_revision",
+    "content_hash",
+    "maximum_staleness_seconds",
+    "measurement_clock_ref",
+    "on_stale_policy_ref",
+    "decision_status"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "minLength": 1 },
+    "version": { "type": "integer", "minimum": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string", "minLength": 1 },
+    "updated_by": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": ["string", "null"], "minLength": 1 },
+    "config_version": { "type": "integer", "minimum": 1 },
+    "revision": { "type": "integer", "minimum": 1 },
+    "effective_at": { "type": ["string", "null"], "format": "date-time" },
+    "rollback_revision": { "type": ["integer", "null"], "minimum": 1 },
+    "content_hash": { "type": ["string", "null"], "minLength": 1 },
+    "maximum_staleness_seconds": {
+      "type": ["number", "null"],
+      "exclusiveMinimum": 0
+    },
+    "measurement_clock_ref": { "type": ["string", "null"], "minLength": 1 },
+    "on_stale_policy_ref": { "type": ["string", "null"], "minLength": 1 },
+    "decision_status": { "const": "TBD-016" }
+  },
+  "additionalProperties": false
+}
