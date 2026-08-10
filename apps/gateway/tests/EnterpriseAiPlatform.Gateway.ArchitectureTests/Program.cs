@@ -1,5 +1,7 @@
 using System.Net;
 using System.Reflection;
+using System.Text;
+using EnterpriseAiPlatform.Gateway.Application.Invocation;
 using EnterpriseAiPlatform.Gateway.Application.Policy;
 using EnterpriseAiPlatform.Gateway.Application.Routing;
 using EnterpriseAiPlatform.Gateway.Application.Runtime;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 TestDependencyInjection();
 await TestRouterPluginAsync();
 await TestOpaPolicyRuntimeAsync();
+await TestGatewayRequestPipelineAsync();
 
 Console.WriteLine(
     "status=pass reason_code=GATEWAY_DDD_DI_RUNTIME_OK container=Microsoft.Extensions.DependencyInjection layers=Domain,Application,Infrastructure,Api");
@@ -36,6 +39,7 @@ static void TestDependencyInjection()
         Assert(provider.GetRequiredService<IPolicyRuntime>() is OpaPolicyRuntime, "DI_OPA_RUNTIME_NOT_REGISTERED");
         Assert(provider.GetRequiredService<EvaluatePolicy>() is not null, "DI_POLICY_USE_CASE_NOT_REGISTERED");
         Assert(provider.GetRequiredService<RouterPluginPipeline>() is not null, "DI_ROUTER_PIPELINE_NOT_REGISTERED");
+        Assert(provider.GetRequiredService<GatewayRequestPipeline>() is not null, "DI_GATEWAY_REQUEST_PIPELINE_NOT_REGISTERED");
 
         var readiness = provider.GetRequiredService<GetRuntimeReadiness>()
             .ExecuteAsync(CancellationToken.None).AsTask().GetAwaiter().GetResult();
@@ -77,6 +81,90 @@ static void TestDependencyInjection()
     var replacementReadiness = replacementProvider.GetRequiredService<GetRuntimeReadiness>()
         .ExecuteAsync(CancellationToken.None).AsTask().GetAwaiter().GetResult();
     Assert(replacementReadiness.ReasonCode == "TEST_RUNTIME_UNAVAILABLE", "DI_FAKE_NOT_USED");
+}
+
+static async Task TestGatewayRequestPipelineAsync()
+{
+    var version = ContractVersion.FromNumber(1);
+    var identity = new FakeRouterPlugin("identity", version, static (context, _) =>
+        ValueTask.FromResult(new RouterPluginResult(
+            "identity",
+            ContractVersion.FromNumber(1),
+            RouterPluginOutcome.Applied,
+            "IDENTITY_APPLIED",
+            context.Candidates.Select(candidate => candidate.ProviderId))));
+    var snapshot = new GatewayRuntimeSnapshot(
+        "tenant-verified",
+        42,
+        new PublishedPolicyContext(
+            "tenant-verified",
+            42,
+            version,
+            ["p_tenant", "p_model"],
+            "active",
+            ["smart-chat"],
+            ["cn-north"],
+            new PolicyBudget(90m, 100m),
+            [PolicyObligation.DisableBodyLogging()]),
+        new RouterRegistry(
+            "tenant-verified",
+            42,
+            [new RouterPluginRegistration("identity", version, true)],
+            [new RouterPipelineRegistration("test-composed", ["identity"])]),
+        [
+            new RouterCandidate("provider-a", "cn-north", 10, 100, true),
+            new RouterCandidate("provider-b", "cn-north", 20, 50, true)
+        ],
+        "test-composed",
+        "cn-north",
+        10m,
+        2);
+    var request = new GatewayInvocationRequest(
+        "request-gateway-test",
+        "trace-gateway-test",
+        "smart-chat",
+        Encoding.UTF8.GetBytes("{\"model\":\"smart-chat\",\"messages\":[{\"role\":\"user\",\"content\":\"test-only\"}]}"),
+        "Bearer credential-test-only");
+    var provider = new FakeGatewayProviderInvoker();
+    var pipeline = new GatewayRequestPipeline(
+        new FakeGatewayAuthenticator(GatewayAuthenticationOutcome.Authenticated),
+        new FakeGatewaySnapshotSource(snapshot),
+        new EvaluatePolicy(new FakePolicyRuntime(PolicyOutcome.Allow)),
+        new RouterPluginPipeline([identity]),
+        provider,
+        new ThrowingGatewayUsageSink());
+
+    var success = await pipeline.ExecuteAsync(request, CancellationToken.None);
+    Assert(success.Outcome == GatewayInvocationOutcome.Succeeded, "GATEWAY_PIPELINE_SUCCESS_FAILED");
+    Assert(success.ProviderId == "provider-b" && success.AttemptCount == 2, "GATEWAY_PIPELINE_FALLBACK_FAILED");
+    Assert(success.ConfigVersion == 42 && success.TenantId == "tenant-verified", "GATEWAY_PIPELINE_CONTEXT_LOST");
+    Assert(success.UsageReasonCode == "USAGE_ENQUEUE_UNAVAILABLE", "GATEWAY_PIPELINE_USAGE_FAILURE_BLOCKED_RESPONSE");
+    Assert(Encoding.UTF8.GetString(success.ResponseBody.Span).Contains("chat.completion", StringComparison.Ordinal), "GATEWAY_PIPELINE_RESPONSE_LOST");
+
+    var denied = await new GatewayRequestPipeline(
+        new FakeGatewayAuthenticator(GatewayAuthenticationOutcome.Denied),
+        new FakeGatewaySnapshotSource(snapshot),
+        new EvaluatePolicy(new FakePolicyRuntime(PolicyOutcome.Allow)),
+        new RouterPluginPipeline([identity]),
+        provider,
+        new RecordingGatewayUsageSink())
+        .ExecuteAsync(request, CancellationToken.None);
+    Assert(denied.Outcome == GatewayInvocationOutcome.Unauthorized, "GATEWAY_PIPELINE_AUTH_DENIAL_FAILED");
+    Assert(denied.ReasonCode == "AUTHENTICATION_DENIED", "GATEWAY_PIPELINE_AUTH_REASON_INVALID");
+
+    var policyDeniedUsage = new RecordingGatewayUsageSink();
+    var policyDenied = await new GatewayRequestPipeline(
+        new FakeGatewayAuthenticator(GatewayAuthenticationOutcome.Authenticated),
+        new FakeGatewaySnapshotSource(snapshot),
+        new EvaluatePolicy(new FakePolicyRuntime(PolicyOutcome.Deny)),
+        new RouterPluginPipeline([identity]),
+        provider,
+        policyDeniedUsage)
+        .ExecuteAsync(request, CancellationToken.None);
+    Assert(policyDenied.Outcome == GatewayInvocationOutcome.Forbidden, "GATEWAY_PIPELINE_POLICY_DENIAL_FAILED");
+    Assert(policyDeniedUsage.Observations.Count == 1, "GATEWAY_PIPELINE_DENIAL_USAGE_MISSING");
+
+    Console.WriteLine("status=pass reason_code=GATEWAY_REQUEST_PIPELINE_OK auth=verified policy=allow router=selected fallback=verified usage=non-blocking");
 }
 
 static async Task TestRouterPluginAsync()
@@ -361,5 +449,112 @@ internal sealed class StubHttpMessageHandler(
     {
         CallCount++;
         return _send(request, cancellationToken);
+    }
+}
+
+internal sealed class FakeGatewayAuthenticator(GatewayAuthenticationOutcome outcome) : IGatewayAuthenticator
+{
+    public ValueTask<GatewayAuthenticationDecision> AuthenticateAsync(
+        string? authorizationValue,
+        string requestId,
+        string traceId,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return ValueTask.FromResult(outcome == GatewayAuthenticationOutcome.Authenticated
+            ? new GatewayAuthenticationDecision(
+                outcome,
+                "AUTHENTICATION_SUCCEEDED",
+                "subject-test-only",
+                "tenant-verified",
+                ["chat:invoke"])
+            : new GatewayAuthenticationDecision(
+                outcome,
+                outcome == GatewayAuthenticationOutcome.Denied
+                    ? "AUTHENTICATION_DENIED"
+                    : "AUTHENTICATION_RUNTIME_UNAVAILABLE",
+                null,
+                null,
+                []));
+    }
+}
+
+internal sealed class FakeGatewaySnapshotSource(GatewayRuntimeSnapshot snapshot) : IGatewayRuntimeSnapshotSource
+{
+    public ValueTask<GatewayRuntimeSnapshot?> GetSnapshotAsync(
+        string tenantId,
+        string modelAlias,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return ValueTask.FromResult<GatewayRuntimeSnapshot?>(snapshot);
+    }
+}
+
+internal sealed class FakePolicyRuntime(PolicyOutcome outcome) : IPolicyRuntime
+{
+    public ValueTask<PolicyDecision> EvaluateAsync(
+        PolicyEvaluationRequest request,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return ValueTask.FromResult(new PolicyDecision(
+            request.RequestId,
+            request.TraceId,
+            request.TenantId,
+            request.ConfigVersion,
+            request.Resource.ModelAlias,
+            outcome,
+            outcome switch
+            {
+                PolicyOutcome.Allow => "POLICY_ALLOWED",
+                PolicyOutcome.Deny => "POLICY_DENIED",
+                _ => "POLICY_RUNTIME_UNAVAILABLE"
+            },
+            outcome == PolicyOutcome.Deny ? "POLICY_MODEL_DENIED" : null,
+            outcome == PolicyOutcome.Allow ? request.PolicyContext.Obligations : [],
+            outcome == PolicyOutcome.Indeterminate ? [] : request.PolicyContext.PolicyIds,
+            request.PolicyContext.PolicyVersion));
+    }
+}
+
+internal sealed class FakeGatewayProviderInvoker : IGatewayProviderInvoker
+{
+    public ValueTask<ProviderInvocationResult> InvokeAsync(
+        ProviderInvocationContext context,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (context.ProviderId == "provider-a")
+        {
+            return ValueTask.FromResult(new ProviderInvocationResult(
+                ProviderInvocationOutcome.Unavailable,
+                "PROVIDER_TIMEOUT",
+                ReadOnlyMemory<byte>.Empty,
+                null));
+        }
+
+        return ValueTask.FromResult(new ProviderInvocationResult(
+            ProviderInvocationOutcome.Succeeded,
+            "PROVIDER_SUCCEEDED",
+            Encoding.UTF8.GetBytes("{\"id\":\"chatcmpl-test\",\"object\":\"chat.completion\",\"created\":1,\"model\":\"smart-chat\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"ok\"},\"finish_reason\":\"stop\"}]}"),
+            "application/json"));
+    }
+}
+
+internal sealed class ThrowingGatewayUsageSink : IGatewayUsageSink
+{
+    public UsageEnqueueResult TryEnqueue(GatewayUsageObservation observation) =>
+        throw new InvalidOperationException("test-only enqueue failure");
+}
+
+internal sealed class RecordingGatewayUsageSink : IGatewayUsageSink
+{
+    public List<GatewayUsageObservation> Observations { get; } = [];
+
+    public UsageEnqueueResult TryEnqueue(GatewayUsageObservation observation)
+    {
+        Observations.Add(observation);
+        return new UsageEnqueueResult("enqueued", "USAGE_ENQUEUED");
     }
 }

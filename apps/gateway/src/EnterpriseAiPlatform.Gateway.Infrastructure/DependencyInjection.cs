@@ -1,6 +1,8 @@
 using EnterpriseAiPlatform.Gateway.Application.Policy;
 using EnterpriseAiPlatform.Gateway.Application.Routing;
 using EnterpriseAiPlatform.Gateway.Application.Runtime;
+using EnterpriseAiPlatform.Gateway.Application.Invocation;
+using EnterpriseAiPlatform.Gateway.Infrastructure.Invocation;
 using EnterpriseAiPlatform.Gateway.Infrastructure.Policy;
 using EnterpriseAiPlatform.Gateway.Infrastructure.Runtime;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,11 @@ public static class DependencyInjection
             serviceProvider.GetRequiredService<OpaPolicyRuntime>());
         services.TryAddTransient<EvaluatePolicy>();
         services.TryAddTransient<RouterPluginPipeline>();
+        services.TryAddTransient<GatewayRequestPipeline>();
+        services.TryAddSingleton<IGatewayAuthenticator, UnavailableGatewayAuthenticator>();
+        services.TryAddSingleton<IGatewayRuntimeSnapshotSource, UnavailableGatewayRuntimeSnapshotSource>();
+        services.TryAddSingleton<IGatewayProviderInvoker, UnavailableGatewayProviderInvoker>();
+        services.TryAddSingleton<IGatewayUsageSink, UnavailableGatewayUsageSink>();
         services.TryAddSingleton<IRuntimeReadinessSource, UnavailableRuntimeReadinessSource>();
         return services;
     }

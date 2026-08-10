@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("lint", "test", "test-linux", "test-code-001", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "test-tbd-005", "test-tbd-006", "test-tbd-007", "test-tbd-008", "test-tbd-009", "test-tbd-010", "test-tbd-011", "test-tbd-012", "test-tbd-013", "test-tbd-014", "test-tbd-015", "test-tbd-016", "test-tbd-018", "test-tbd-019", "test-tbd-020", "security", "build")]
+    [ValidateSet("lint", "test", "test-linux", "test-code-001", "test-m0-002", "test-m0-003", "test-m1-001", "test-m1-002", "test-m1-003", "test-m1-004", "test-m2-001", "test-m2-002", "test-m2-003", "test-m2-004", "test-m2-005", "test-m2-006", "test-m2-007", "test-m3-001", "test-m3-002", "test-m3-003", "test-m4-004", "test-m4-005", "test-m5-002", "test-m5-003", "test-readiness-gate", "production-readiness", "test-tbd-005", "test-tbd-006", "test-tbd-007", "test-tbd-008", "test-tbd-009", "test-tbd-010", "test-tbd-011", "test-tbd-012", "test-tbd-013", "test-tbd-014", "test-tbd-015", "test-tbd-016", "test-tbd-018", "test-tbd-019", "test-tbd-020", "security", "build")]
     [string]$Command
 )
 
@@ -206,6 +206,7 @@ function Get-ManagedReadmes {
         "docs/contracts/secrets/secret-manager-compatibility-baseline.v1.json",
         "docs/contracts/secrets/secret-manager.conformance.ps1",
         "docs/adr/README.md",
+        "docs/adr/ADR-005-gateway-request-pipeline-and-usage-enqueue.md",
         "docs/ci/README.md",
         "packages/db/migrations/README.md",
         "packages/db/migrations/TBD.md",
@@ -234,6 +235,9 @@ function Get-ManagedReadmes {
         "packages/auth/contracts/authentication-boundary.v1.json",
         "packages/auth/authentication-boundary.conformance.ps1",
         "apps/gateway/contracts/chat-completions.binding.v1.json",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Invocation/GatewayRequestPipeline.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/Invocation/UnavailableGatewayAdapters.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway/Api/GatewayEndpoints.cs",
         "apps/policy/policy-decision.conformance.ps1",
         "apps/router/router-plugin.conformance.ps1",
         "apps/provider/provider-adapter.conformance.ps1",
@@ -263,7 +267,27 @@ function Get-ManagedReadmes {
         "ops/slo/slo-compatibility-baseline.v1.json",
         "ops/slo/slo-dashboard.conformance.ps1",
         "ops/runbooks/README.md",
+        "ops/runbooks/control-plane-unavailable.md",
+        "ops/runbooks/redis-unavailable.md",
+        "ops/runbooks/provider-failure.md",
+        "ops/runbooks/configuration-publication-failure.md",
+        "ops/runbooks/database-migration-failure.md",
+        "ops/runbooks/deployment-rollback.md",
+        "ops/runbooks/runbook-set.conformance.ps1",
+        "ops/capacity/README.md",
+        "ops/capacity/capacity-profile.v1.schema.json",
+        "ops/capacity/capacity-boundary.v1.json",
+        "ops/capacity/capacity.conformance.ps1",
+        "ops/security/README.md",
+        "ops/security/threat-control-matrix.v1.json",
+        "ops/security/security-threat.conformance.ps1",
+        "tests/performance/README.md",
+        "tests/README.md",
+        "tests/performance/performance-profile.v1.schema.json",
+        "tests/performance/performance-boundary.v1.json",
+        "tests/performance/performance-regression.conformance.ps1",
         "scripts/README.md",
+        "scripts/production-readiness.ps1",
         "scripts/openapi.ps1"
     )
 
@@ -404,7 +428,8 @@ function Invoke-Test {
         "deploy/terraform",
         "ops",
         "docs",
-        "scripts"
+        "scripts",
+        "tests"
     )
 
     foreach ($name in $applicationNames) {
@@ -463,6 +488,11 @@ function Invoke-Test {
     Invoke-ProductionImageTest
     Invoke-GatewayHelmTest
     Invoke-TerraformSkeletonTest
+    Invoke-PerformanceRegressionTest
+    Invoke-SecurityThreatValidationTest
+    Invoke-RunbookSetTest
+    Invoke-CapacityNMinusOneTest
+    Invoke-ProductionReadinessGateSelfTest
 }
 
 function Invoke-ContractDirectoryTest {
@@ -1751,6 +1781,100 @@ function Invoke-OperationsCoordinationTest {
     Assert-FileContains $workflow "test-tbd-020" "CI_OPERATIONS_COORDINATION_COMMAND_MISSING"
 }
 
+function Invoke-PerformanceRegressionTest {
+    $root = "tests/performance"
+    $conformanceFile = "$root/performance-regression.conformance.ps1"
+    foreach ($file in @("$root/README.md", "$root/performance-profile.v1.schema.json", "$root/performance-boundary.v1.json", $conformanceFile)) {
+        Assert-File $file
+    }
+    try {
+        $output = @(& (Join-Path $repoRoot $conformanceFile))
+        foreach ($line in $output) { Write-Output $line }
+        if (@($output | Where-Object { $_ -like "status=pass reason_code=PERFORMANCE_REGRESSION_EVALUATOR_OK*" }).Count -ne 1) {
+            Add-Failure "PERFORMANCE_REGRESSION_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+        }
+    }
+    catch { Add-Failure "PERFORMANCE_REGRESSION_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message }
+    Assert-FileContains "$root/performance-boundary.v1.json" '"unconfigured": "measure-only-no-release-decision"' "PERFORMANCE_UNCONFIGURED_GUARD_MISSING"
+    Assert-FileContains ".github/workflows/pr-gates.yml" "test-m4-004" "CI_PERFORMANCE_REGRESSION_COMMAND_MISSING"
+}
+
+function Invoke-SecurityThreatValidationTest {
+    $root = "ops/security"
+    $conformanceFile = "$root/security-threat.conformance.ps1"
+    foreach ($file in @("$root/README.md", "$root/threat-control-matrix.v1.json", $conformanceFile)) { Assert-File $file }
+    try {
+        $output = @(& (Join-Path $repoRoot $conformanceFile))
+        foreach ($line in $output) { Write-Output $line }
+        if (@($output | Where-Object { $_ -like "status=pass reason_code=THREAT_CONTROL_MATRIX_OK*" }).Count -ne 1) {
+            Add-Failure "THREAT_CONTROL_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+        }
+    }
+    catch { Add-Failure "THREAT_CONTROL_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message }
+    Assert-FileContains "$root/threat-control-matrix.v1.json" '"missing_control_blocks_promotion": true' "THREAT_FAIL_CLOSED_GUARD_MISSING"
+    Assert-FileContains ".github/workflows/pr-gates.yml" "test-m4-005" "CI_THREAT_VALIDATION_COMMAND_MISSING"
+}
+
+function Invoke-RunbookSetTest {
+    $root = "ops/runbooks"
+    $conformanceFile = "$root/runbook-set.conformance.ps1"
+    foreach ($file in @(
+        "$root/README.md", "$root/control-plane-unavailable.md", "$root/redis-unavailable.md",
+        "$root/provider-failure.md", "$root/configuration-publication-failure.md",
+        "$root/database-migration-failure.md", "$root/deployment-rollback.md", $conformanceFile
+    )) { Assert-File $file }
+    try {
+        $output = @(& (Join-Path $repoRoot $conformanceFile))
+        foreach ($line in $output) { Write-Output $line }
+        if (@($output | Where-Object { $_ -like "status=pass reason_code=RUNBOOK_SET_OK*" }).Count -ne 1) {
+            Add-Failure "RUNBOOK_SET_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+        }
+    }
+    catch { Add-Failure "RUNBOOK_SET_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message }
+    Assert-FileContains ".github/workflows/pr-gates.yml" "test-m5-002" "CI_RUNBOOK_SET_COMMAND_MISSING"
+}
+
+function Invoke-CapacityNMinusOneTest {
+    $root = "ops/capacity"
+    $conformanceFile = "$root/capacity.conformance.ps1"
+    foreach ($file in @("$root/README.md", "$root/capacity-profile.v1.schema.json", "$root/capacity-boundary.v1.json", $conformanceFile)) { Assert-File $file }
+    try {
+        $output = @(& (Join-Path $repoRoot $conformanceFile))
+        foreach ($line in $output) { Write-Output $line }
+        if (@($output | Where-Object { $_ -like "status=pass reason_code=CAPACITY_N_MINUS_ONE_MODEL_OK*" }).Count -ne 1) {
+            Add-Failure "CAPACITY_N_MINUS_ONE_CONFORMANCE_FAILED" $conformanceFile "success evidence was not emitted"
+        }
+    }
+    catch { Add-Failure "CAPACITY_N_MINUS_ONE_CONFORMANCE_FAILED" $conformanceFile $_.Exception.Message }
+    Assert-FileContains "$root/capacity-boundary.v1.json" '"missing_or_failed_evidence_blocks_promotion": true' "CAPACITY_FAIL_CLOSED_GUARD_MISSING"
+    Assert-FileContains ".github/workflows/pr-gates.yml" "test-m5-003" "CI_CAPACITY_N_MINUS_ONE_COMMAND_MISSING"
+}
+
+function Invoke-ProductionReadinessGateSelfTest {
+    $readinessScript = "scripts/production-readiness.ps1"
+    Assert-File $readinessScript
+    try {
+        $output = @(& (Join-Path $repoRoot $readinessScript) -Mode self-test)
+        foreach ($line in $output) { Write-Output $line }
+        if (@($output | Where-Object { $_ -like "status=pass reason_code=PRODUCTION_READINESS_FAIL_CLOSED_OK*" }).Count -ne 1) {
+            Add-Failure "PRODUCTION_READINESS_SELF_TEST_FAILED" $readinessScript "expected blocker evidence was not emitted"
+        }
+    }
+    catch { Add-Failure "PRODUCTION_READINESS_SELF_TEST_FAILED" $readinessScript $_.Exception.Message }
+    Assert-FileContains ".github/workflows/pr-gates.yml" "test-readiness-gate" "CI_PRODUCTION_READINESS_SELF_TEST_MISSING"
+}
+
+function Invoke-ProductionReadinessEvaluation {
+    $readinessScript = "scripts/production-readiness.ps1"
+    Assert-File $readinessScript
+    $output = @(& (Join-Path $repoRoot $readinessScript) -Mode evaluate)
+    $exitCode = $LASTEXITCODE
+    foreach ($line in $output) { Write-Output $line }
+    if ($exitCode -ne 0) {
+        Add-Failure "PRODUCTION_READINESS_BLOCKED" $readinessScript "one or more mandatory production requirements remain incomplete"
+    }
+}
+
 function Invoke-AuthenticationBoundaryTest {
     $requestSchemaFile = "packages/auth/contracts/authentication-request.v1.schema.json"
     $decisionSchemaFile = "packages/auth/contracts/authentication-decision.v1.schema.json"
@@ -2633,8 +2757,8 @@ function Invoke-UsageEventTest {
             $boundary.producer -ne "gateway-data-plane" -or
             $boundary.online_enqueue_mode -ne "non_blocking_try_enqueue" -or
             $boundary.delivery_contract -ne "at_least_once_consumer_idempotency_required" -or
-            $null -ne $boundary.producer_method_signature -or
-            $boundary.producer_method_signature_status -ne "ADR_NEEDED" -or
+            $boundary.producer_method_signature -ne "UsageEnqueueResult TryEnqueue(GatewayUsageObservation observation)" -or
+            $boundary.producer_method_signature_status -ne "ADR-005" -or
             $boundary.dependency_injection_status -ne "ADR-002" -or
             $null -ne $boundary.broker_product -or
             $null -ne $boundary.topic_name -or
@@ -2733,7 +2857,9 @@ function Invoke-GatewayArchitectureTest {
         "apps/gateway/src/EnterpriseAiPlatform.Gateway.Domain/Runtime/RuntimeReadiness.cs",
         "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Runtime/IRuntimeReadinessSource.cs",
         "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Runtime/GetRuntimeReadiness.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Invocation/GatewayRequestPipeline.cs",
         "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/DependencyInjection.cs",
+        "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/Invocation/UnavailableGatewayAdapters.cs",
         "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/Runtime/UnavailableRuntimeReadinessSource.cs",
         "apps/gateway/src/EnterpriseAiPlatform.Gateway/Api/GatewayEndpoints.cs",
         "apps/gateway/tests/EnterpriseAiPlatform.Gateway.ArchitectureTests/EnterpriseAiPlatform.Gateway.ArchitectureTests.csproj",
@@ -2764,9 +2890,9 @@ function Invoke-GatewayArchitectureTest {
 
         $usageBoundary = Get-Content -LiteralPath (Join-Path $repoRoot $usageBoundaryFile) -Raw -Encoding UTF8 | ConvertFrom-Json
         if ($usageBoundary.dependency_injection_status -ne "ADR-002" -or
-            $usageBoundary.producer_method_signature_status -ne "ADR_NEEDED" -or
-            $null -ne $usageBoundary.producer_method_signature) {
-            Add-Failure "GATEWAY_USAGE_DI_OR_SIGNATURE_STATUS_INVALID" $usageBoundaryFile "DI is resolved by ADR-002 while the producer signature remains ADR-needed"
+            $usageBoundary.producer_method_signature_status -ne "ADR-005" -or
+            $usageBoundary.producer_method_signature -ne "UsageEnqueueResult TryEnqueue(GatewayUsageObservation observation)") {
+            Add-Failure "GATEWAY_USAGE_DI_OR_SIGNATURE_STATUS_INVALID" $usageBoundaryFile "DI and the non-blocking Usage enqueue signature must reference their accepted ADRs"
         }
     }
     catch {
@@ -3120,8 +3246,28 @@ switch ($Command) {
     "test-m3-003" {
         Invoke-TerraformSkeletonTest
     }
+    "test-m4-004" {
+        Invoke-PerformanceRegressionTest
+    }
+    "test-m4-005" {
+        Invoke-Security
+        Invoke-SecurityThreatValidationTest
+    }
+    "test-m5-002" {
+        Invoke-RunbookSetTest
+    }
+    "test-m5-003" {
+        Invoke-CapacityNMinusOneTest
+    }
+    "test-readiness-gate" {
+        Invoke-ProductionReadinessGateSelfTest
+    }
+    "production-readiness" {
+        Invoke-ProductionReadinessEvaluation
+    }
     "security" {
         Invoke-Security
+        Invoke-SecurityThreatValidationTest
     }
     "build" {
         Invoke-Lint
@@ -3175,6 +3321,12 @@ $successReason = switch ($Command) {
     "test-m3-001" { "PRODUCTION_IMAGE_RUNTIME_BOUNDARY_OK" }
     "test-m3-002" { "GATEWAY_HELM_CHART_OK" }
     "test-m3-003" { "TERRAFORM_SKELETON_OK" }
+    "test-m4-004" { "PERFORMANCE_REGRESSION_BOUNDARY_OK" }
+    "test-m4-005" { "SECURITY_THREAT_VALIDATION_BOUNDARY_OK" }
+    "test-m5-002" { "RUNBOOK_SET_BOUNDARY_OK" }
+    "test-m5-003" { "CAPACITY_N_MINUS_ONE_BOUNDARY_OK" }
+    "test-readiness-gate" { "PRODUCTION_READINESS_FAIL_CLOSED_BOUNDARY_OK" }
+    "production-readiness" { "PRODUCTION_READINESS_OK" }
     "security" { "BOOTSTRAP_SECRET_SCAN_OK" }
     "build" { "REPOSITORY_BUILD_ENTRY_OK" }
 }

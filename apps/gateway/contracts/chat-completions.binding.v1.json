@@ -42,6 +42,8 @@
   "usage_event_schema": "docs/contracts/events/usage/usage-event.v1.schema.json",
   "usage_processing_result_schema": "docs/contracts/events/usage/usage-processing-result.v1.schema.json",
   "usage_event_async_required": true,
+  "runtime_pipeline": "apps/gateway/src/EnterpriseAiPlatform.Gateway.Application/Invocation/GatewayRequestPipeline.cs",
+  "runtime_pipeline_decision": "docs/adr/ADR-005-gateway-request-pipeline-and-usage-enqueue.md",
   "runtime_handler": "apps/gateway/src/EnterpriseAiPlatform.Gateway/Program.cs",
   "runtime_handler_status": "implemented-bootstrap-v1",
   "runtime_language_decision": "docs/adr/ADR-001-gateway-dotnet-linux-runtime.md",

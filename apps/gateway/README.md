@@ -24,9 +24,12 @@ The language-neutral
 [`createChatCompletion` binding](contracts/chat-completions.binding.v1.json)
 maps `POST /v1/chat/completions` to the authoritative OpenAPI request, response,
 and stream schemas. `ADR-001` implements its bootstrap handler with C#/.NET 10,
-ASP.NET Core Minimal APIs, Kestrel, and locked NuGet restore on Linux. Until the
-remaining auth/policy/router composition decisions are implemented, the route
-fails closed with HTTP 503 and no invented `TBD-008` public error body.
+ASP.NET Core Minimal APIs, Kestrel, and locked NuGet restore on Linux. `ADR-005`
+composes the authenticated request, Runtime Snapshot, policy, routing, bounded
+Provider fallback, and non-blocking Usage enqueue boundaries behind replaceable
+application ports. The repository defaults remain deliberately unavailable:
+until production adapters are configured, the route fails closed with HTTP 503
+and no invented `TBD-008` public error body.
 
 From a Linux repository checkout with .NET SDK 10.0.302:
 
@@ -36,8 +39,9 @@ ASPNETCORE_URLS=http://0.0.0.0:8080 dotnet run --project apps/gateway/src/Enterp
 ```
 
 `/healthz` returns 200 once the process is live. `/readyz` deliberately returns
-503 until a validated Runtime Snapshot and the remaining runtime boundaries are
-composed; the bootstrap process must not receive normal model traffic.
+503 while the default unavailable adapters are registered. A production host
+must replace them with validated implementations and prove readiness before it
+receives normal model traffic.
 
 ## DDD and dependency injection
 
@@ -69,7 +73,7 @@ request path.
 An allowed Policy Decision now enters the versioned
 [`Router Plugin Boundary`](../../docs/contracts/router/router-boundary.v1.json).
 The Gateway requires a structured `selected` Route Decision before invoking the
-pending `TASK-M2-005` Provider Adapter; it never resolves Provider endpoints or
+`TASK-M2-005` Provider Adapter port; it never resolves Provider endpoints or
 credentials inside the Router boundary.
 
 The Provider Adapter boundary is now versioned and may dispatch to a registered
@@ -80,6 +84,10 @@ alias and opaque Provider/adapter IDs. Runtime endpoint, Provider model,
 Provider results enter the versioned
 [`Retry/Fallback Boundary`](../../docs/contracts/retry-fallback/retry-fallback-boundary.v1.json).
 Its Runtime Snapshot plan explicitly controls every retry/fallback attempt and
-delay. Gateway public-error mapping remains `TBD-008`/`TBD-017`; Usage event
-publication uses the asynchronous
-[`TASK-M2-007` boundary](../../docs/contracts/events/usage/README.md).
+delay. The `ADR-005` request pipeline executes only the published bounded plan,
+never invents an attempt, and stops on the first successful Provider result.
+Gateway public-error mapping remains `TBD-008`/`TBD-017`; Usage observations use
+the asynchronous, non-blocking
+[`TASK-M2-007` boundary](../../docs/contracts/events/usage/README.md), and an
+enqueue failure cannot turn a successful Provider response into a request
+failure.

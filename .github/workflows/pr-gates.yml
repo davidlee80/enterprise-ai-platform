@@ -118,6 +118,21 @@ jobs:
       - name: Verify On-call and Approval Interfaces
         shell: pwsh
         run: ./scripts/task.ps1 test-tbd-020
+      - name: Verify Performance Regression Boundary
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m4-004
+      - name: Verify Security Threat Validation
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m4-005
+      - name: Verify Runbook Set
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m5-002
+      - name: Verify Capacity and N-1 Model
+        shell: pwsh
+        run: ./scripts/task.ps1 test-m5-003
+      - name: Verify Production Readiness Fails Closed
+        shell: pwsh
+        run: ./scripts/task.ps1 test-readiness-gate
       - name: Verify Data Plane Snapshot Consumer
         shell: pwsh
         run: ./scripts/task.ps1 test-m1-004

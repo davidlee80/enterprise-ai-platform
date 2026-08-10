@@ -1,0 +1,22 @@
+{
+  "matrix_version": 1,
+  "status": "controls-partial-production-blocked",
+  "requirements": ["REQ-GEN-004", "REQ-GEN-012", "REQ-GEN-014", "REQ-TST-007", "REQ-TST-008", "TASK-M4-005"],
+  "threats": [
+    { "threat_id": "credential_leakage", "control_status": "implemented", "evidence_refs": ["scripts/task.ps1 security", "docs/contracts/secrets/secret-manager.conformance.ps1"] },
+    { "threat_id": "cross_tenant_unauthorized_access", "control_status": "implemented-contract-and-runtime-tests", "evidence_refs": ["packages/auth/authentication-boundary.conformance.ps1", "apps/gateway/tests/EnterpriseAiPlatform.Gateway.ArchitectureTests/Program.cs"] },
+    { "threat_id": "malicious_prompt_or_tool_arguments", "control_status": "missing-input-guardrail", "evidence_refs": [] },
+    { "threat_id": "ssrf_or_data_exfiltration", "control_status": "partial-adapter-boundaries", "evidence_refs": ["docs/contracts/providers/provider-adapter-boundary.v1.json", "apps/gateway/src/EnterpriseAiPlatform.Gateway.Infrastructure/Policy/OpaPolicyRuntimeOptions.cs"] },
+    { "threat_id": "provider_supply_chain_risk", "control_status": "blocked-sbom-scan-signing-unconfigured", "evidence_refs": ["deploy/images/gateway/production-image-boundary.v1.json"] },
+    { "threat_id": "pii_in_logs", "control_status": "partial-body-logging-guard", "evidence_refs": ["apps/gateway/gateway-runtime.conformance.ps1"] },
+    { "threat_id": "model_output_secret_leakage", "control_status": "missing-output-guardrail", "evidence_refs": [] },
+    { "threat_id": "replay_attack", "control_status": "partial-idempotency-interface-unconfigured", "evidence_refs": ["docs/contracts/idempotency/idempotency-boundary.v1.json"] },
+    { "threat_id": "resource_exhaustion", "control_status": "partial-capacity-profile-unconfigured", "evidence_refs": ["ops/capacity/capacity-boundary.v1.json"] }
+  ],
+  "production_readiness": {
+    "all_required_controls_implemented": false,
+    "missing_control_blocks_promotion": true,
+    "security_approval_ref": null,
+    "automated_evidence_pack_ref": null
+  }
+}

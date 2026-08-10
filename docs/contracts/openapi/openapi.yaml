@@ -85,6 +85,9 @@
           },
           "502": {
             "description": "Provider failure after fallback exhaustion. Error body contract remains TBD-008."
+          },
+          "503": {
+            "description": "A required runtime dependency or validated Runtime Snapshot is unavailable. Error body contract remains TBD-008."
           }
         }
       }

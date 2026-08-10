@@ -39,6 +39,7 @@ implementation.
 | `docs/adr/` | Reviewed architecture decisions for explicitly unresolved choices |
 | `.github/workflows/` | Pull-request lint, test, and security gates |
 | `scripts/` | Development, validation, migration, and build entrypoints |
+| `tests/` | Cross-component performance and quality-gate harnesses |
 
 Application and package ownership metadata lives in each component README and
 links to the shared placeholders under `ops/`. Concrete team names, upgrade
@@ -72,6 +73,12 @@ suites. From the repository root, run:
 ./scripts/task.sh test-m3-001
 ./scripts/task.sh test-m3-002
 ./scripts/task.sh test-m3-003
+./scripts/task.sh test-m4-004
+./scripts/task.sh test-m4-005
+./scripts/task.sh test-m5-002
+./scripts/task.sh test-m5-003
+./scripts/task.sh test-readiness-gate
+./scripts/task.sh production-readiness
 ./scripts/task.sh security
 ./scripts/task.sh build
 ```

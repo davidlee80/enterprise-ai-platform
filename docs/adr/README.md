@@ -21,3 +21,6 @@ Accepted Gateway decisions:
   Gateway with an async, cancellable, registry-composed plugin port.
 - `ADR-004-opa-policy-runtime.md` resolves `TBD-004` for the Gateway with an
   OPA Data API sidecar behind a replaceable application port.
+- `ADR-005-gateway-request-pipeline-and-usage-enqueue.md` composes the approved
+  Gateway boundaries and fixes the non-blocking in-process Usage enqueue port;
+  broker and production adapter choices remain unresolved.

@@ -179,6 +179,19 @@ free-form evidence, or online Data Plane coupling, and verifies rollback guards.
 Concrete products, schedules, escalation/contact targets, roles, approver count,
 separation-of-duty behavior, and outage procedure remain unconfigured.
 
+## M4/M5 readiness boundaries
+
+The PR job validates a configurable performance evaluator, the complete threat
+inventory with fail-closed missing-control handling, six critical service
+runbooks, and the capacity/N-1 evaluator. These gates make missing production
+profiles and evidence explicit; they do not substitute test fixtures for real
+load, security approval, or Provider/Region exercises.
+
+The `test-readiness-gate` PR step verifies fail-closed behavior against the
+known incomplete production bindings. It does not assert production readiness;
+the separate `production-readiness` command is expected to fail until every
+mandatory evidence source is present.
+
 The test job applies all current migrations to an isolated, empty PostgreSQL
 18.4 CI service and verifies the resulting table set. This version is a CI
 compatibility sample, not a production PostgreSQL version decision. The service

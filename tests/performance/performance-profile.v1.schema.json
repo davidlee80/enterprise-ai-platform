@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:test:performance-profile:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "name", "status", "version", "created_at", "updated_at",
+    "created_by", "updated_by", "tenant_id", "revision", "effective_at",
+    "rollback_revision", "content_hash", "scenario_ref", "request_count",
+    "concurrency", "input_token_distribution_ref",
+    "output_token_distribution_ref", "minimum_success_ratio",
+    "maximum_p95_milliseconds", "maximum_p99_milliseconds",
+    "maximum_ttft_milliseconds", "decision_status"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["draft", "validated", "published", "retired"] },
+    "version": { "type": "integer", "minimum": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string", "minLength": 1 },
+    "updated_by": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": ["string", "null"] },
+    "revision": { "type": "integer", "minimum": 1 },
+    "effective_at": { "type": ["string", "null"], "format": "date-time" },
+    "rollback_revision": { "type": ["integer", "null"], "minimum": 1 },
+    "content_hash": { "type": ["string", "null"] },
+    "scenario_ref": { "type": "string", "minLength": 1 },
+    "request_count": { "type": "integer", "minimum": 1 },
+    "concurrency": { "type": "integer", "minimum": 1 },
+    "input_token_distribution_ref": { "type": "string", "minLength": 1 },
+    "output_token_distribution_ref": { "type": "string", "minLength": 1 },
+    "minimum_success_ratio": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "maximum_p95_milliseconds": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "maximum_p99_milliseconds": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "maximum_ttft_milliseconds": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "decision_status": { "const": "TBD-009,TBD-010" }
+  }
+}

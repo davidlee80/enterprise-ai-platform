@@ -202,6 +202,9 @@ if ($failures.Count -eq 0) {
         if ($testOutput -notcontains "status=pass reason_code=GATEWAY_DDD_DI_RUNTIME_OK container=Microsoft.Extensions.DependencyInjection layers=Domain,Application,Infrastructure,Api") {
             Add-ConformanceFailure "DI_RUNTIME_TEST_EVIDENCE_MISSING" $testProject "container validation and replacement evidence was not emitted"
         }
+        if (@($testOutput | Where-Object { $_ -like "status=pass reason_code=GATEWAY_REQUEST_PIPELINE_OK*" }).Count -ne 1) {
+            Add-ConformanceFailure "GATEWAY_REQUEST_PIPELINE_EVIDENCE_MISSING" $testProject "authenticated policy/router/provider/fallback/non-blocking Usage evidence was not emitted"
+        }
     }
     catch {
         Add-ConformanceFailure "DI_RUNTIME_TEST_FAILED" $testProject $_.Exception.Message

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterprise-ai-platform:operations:capacity-profile:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "name", "status", "version", "created_at", "updated_at",
+    "created_by", "updated_by", "tenant_id", "revision", "effective_at",
+    "rollback_revision", "content_hash", "target_rps", "target_concurrency",
+    "input_token_distribution_ref", "output_token_distribution_ref",
+    "ttft_objective_ref", "provider_quota_profile_refs",
+    "maximum_fallback_amplification", "provider_n_minus_one_scenario_ref",
+    "region_n_minus_one_scenario_ref", "decision_status"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["draft", "validated", "published", "retired"] },
+    "version": { "type": "integer", "minimum": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string", "minLength": 1 },
+    "updated_by": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": ["string", "null"] },
+    "revision": { "type": "integer", "minimum": 1 },
+    "effective_at": { "type": ["string", "null"], "format": "date-time" },
+    "rollback_revision": { "type": ["integer", "null"], "minimum": 1 },
+    "content_hash": { "type": ["string", "null"] },
+    "target_rps": { "type": "number", "exclusiveMinimum": 0 },
+    "target_concurrency": { "type": "integer", "minimum": 1 },
+    "input_token_distribution_ref": { "type": "string", "minLength": 1 },
+    "output_token_distribution_ref": { "type": "string", "minLength": 1 },
+    "ttft_objective_ref": { "type": "string", "minLength": 1 },
+    "provider_quota_profile_refs": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "maximum_fallback_amplification": { "type": "number", "minimum": 1 },
+    "provider_n_minus_one_scenario_ref": { "type": "string", "minLength": 1 },
+    "region_n_minus_one_scenario_ref": { "type": "string", "minLength": 1 },
+    "decision_status": { "const": "PRODUCTION_VALUES_UNCONFIGURED" }
+  }
+}

@@ -182,6 +182,24 @@ fail-closed promotion behavior, online Data Plane independence, sensitive-field
 guards, and revision rollback. All concrete coordination systems and bindings
 remain unconfigured.
 
+`test-m4-004` validates the performance regression profile and evaluator. It is
+measure-only until all reviewed thresholds are configured and does not claim
+real-environment load evidence.
+
+`test-m4-005` validates the nine-threat control matrix, Secret scan, Data Plane
+database separation, tenant-mismatch evidence, and fail-closed production
+readiness while required controls remain incomplete.
+
+`test-m5-002` validates the six critical failure-mode runbooks and all required
+operational sections. `test-m5-003` validates the configurable capacity and
+Provider/Region N-1 model without selecting production values.
+
+`test-readiness-gate` proves that the production aggregator detects every
+currently known mandatory blocker. `production-readiness` evaluates real
+repository state and intentionally returns nonzero until required tables,
+runtime adapters, supply-chain/GitOps assets, production profiles, owners,
+on-call, and approval evidence are configured.
+
 Coverage-gate commands are also available directly:
 
 ```powershell

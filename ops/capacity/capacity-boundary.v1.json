@@ -1,0 +1,28 @@
+{
+  "boundary_version": 1,
+  "name": "capacity_and_n_minus_one_boundary",
+  "status": "model-ready-production-profile-unconfigured",
+  "requirements": ["REQ-OPS-002", "REQ-OPS-003", "REQ-TST-006", "TASK-M5-003"],
+  "profile_schema": "ops/capacity/capacity-profile.v1.schema.json",
+  "required_dimensions": [
+    "rps", "concurrency", "input_token_distribution",
+    "output_token_distribution", "ttft", "provider_quota",
+    "fallback_amplification"
+  ],
+  "required_failure_scenarios": ["provider_n_minus_one", "region_n_minus_one"],
+  "current_profile_ref": null,
+  "current_evidence_ref": null,
+  "production_promotion": {
+    "reviewed_profile_required": true,
+    "provider_n_minus_one_evidence_required": true,
+    "region_n_minus_one_evidence_required": true,
+    "missing_or_failed_evidence_blocks_promotion": true
+  },
+  "configuration_lifecycle": {
+    "versioned": true,
+    "revision_required": true,
+    "rollback_required": true,
+    "prior_compatible_profile_retained": true
+  },
+  "decision_status": "PRODUCTION_VALUES_UNCONFIGURED"
+}

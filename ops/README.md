@@ -5,6 +5,8 @@ evidence-pack assets.
 
 - [Ownership metadata](ownership/README.md)
 - [On-call and approval interfaces](coordination/README.md)
+- [Capacity and N-1 validation](capacity/README.md)
+- [Security threat validation](security/README.md)
 - [Configurable SLI/SLO Dashboard boundary](slo/README.md)
 - [Runbook placeholders](runbooks/README.md)
 

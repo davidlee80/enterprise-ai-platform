@@ -1,0 +1,26 @@
+{
+  "boundary_version": 1,
+  "name": "performance_regression_boundary",
+  "status": "evaluator-ready-load-evidence-unconfigured",
+  "requirements": ["REQ-TST-006", "TASK-M4-004", "REQ-OPS-002"],
+  "profile_schema": "tests/performance/performance-profile.v1.schema.json",
+  "current_profile_ref": null,
+  "current_load_driver_ref": null,
+  "current_environment_evidence_ref": null,
+  "required_observations": [
+    "request_count", "success_ratio", "p95_milliseconds",
+    "p99_milliseconds", "ttft_milliseconds"
+  ],
+  "threshold_behavior": {
+    "unconfigured": "measure-only-no-release-decision",
+    "configured_failure": "block-promotion",
+    "partial_threshold_configuration_allowed": false
+  },
+  "production_readiness": {
+    "reviewed_profile_required": true,
+    "real_environment_evidence_required": true,
+    "load_driver_required": true,
+    "ready": false
+  },
+  "decision_status": "TBD-009,TBD-010"
+}
