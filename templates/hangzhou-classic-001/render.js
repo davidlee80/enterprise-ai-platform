@@ -137,12 +137,24 @@
     const element = document.getElementById("tips");
 
     element.innerHTML = manifest.content.tips
-      .map(tip => `
-        <div class="tip-row">
-          <span class="tip-check">✓</span>
-          <span>${tip.text}</span>
-        </div>
-      `)
+      .map(tip => {
+        const icon = manifest.icons[tip.type];
+
+        const mark = icon
+          ? `<img
+              class="tip-icon"
+              src="${icon.resolvedUrl}"
+              alt="${tip.type}"
+            />`
+          : `<span class="tip-check">✓</span>`;
+
+        return `
+          <div class="tip-row">
+            ${mark}
+            <span>${tip.text}</span>
+          </div>
+        `;
+      })
       .join("");
   }
 
