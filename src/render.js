@@ -1,9 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import ejs from "ejs";
-import { chromium } from "playwright";
 import { writeSubsetFonts } from "./fonts.js";
 import { materializeResources } from "./assets.js";
+import { withPage } from "./browser.js";
 
 function toFileUrl(filePath) {
   return new URL(`file://${path.resolve(filePath)}`).href;
@@ -97,54 +97,49 @@ export async function renderPoster({
     writeSubsetFonts(manifest, outputDirectory, sourceTemplateDirectory)
   ]);
 
-  const browser = await chromium.launch({
-    headless: true
-  });
-
-  try {
-    const page = await browser.newPage({
+  return withPage(
+    {
       viewport: {
         width: 768,
         height: 1024
       },
       deviceScaleFactor: 2
-    });
+    },
+    async page => {
+      await page.goto(toFileUrl(htmlPath), {
+        waitUntil: "load"
+      });
 
-    await page.goto(toFileUrl(htmlPath), {
-      waitUntil: "load"
-    });
-
-    await page.waitForFunction(
-      () =>
-        window.__POSTER_RENDER_READY__ === true ||
-        Boolean(window.__POSTER_RENDER_ERROR__),
-      null,
-      { timeout: 15000 }
-    );
-
-    const quality = await qualityCheck(page);
-
-    if (!quality.passed) {
-      throw new Error(
-        `海报质检失败：${quality.failures.join("；")}`
+      await page.waitForFunction(
+        () =>
+          window.__POSTER_RENDER_READY__ === true ||
+          Boolean(window.__POSTER_RENDER_ERROR__),
+        null,
+        { timeout: 15000 }
       );
+
+      const quality = await qualityCheck(page);
+
+      if (!quality.passed) {
+        throw new Error(
+          `海报质检失败：${quality.failures.join("；")}`
+        );
+      }
+
+      const poster = page.locator("#poster");
+
+      await poster.screenshot({
+        path: pngPath,
+        type: "png",
+        animations: "disabled"
+      });
+
+      return {
+        status: "completed",
+        htmlPath,
+        imagePath: pngPath,
+        quality
+      };
     }
-
-    const poster = page.locator("#poster");
-
-    await poster.screenshot({
-      path: pngPath,
-      type: "png",
-      animations: "disabled"
-    });
-
-    return {
-      status: "completed",
-      htmlPath,
-      imagePath: pngPath,
-      quality
-    };
-  } finally {
-    await browser.close();
-  }
+  );
 }

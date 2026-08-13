@@ -1,8 +1,12 @@
-import test from "node:test";
+import test, { after } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { generatePoster } from "../src/pipeline.js";
+import { getBrowser, closeBrowser } from "../src/browser.js";
+
+// 浏览器是单例且常驻，测试跑完必须关闭，否则测试进程不退出。
+after(() => closeBrowser());
 
 const request = JSON.parse(
   await fs.readFile(
@@ -56,4 +60,41 @@ test("产物自包含：资源与字体均为相对路径引用", async () => {
     assets.length >= 11,
     `产物应包含 7 张素材 + 4 个图标，实际 ${assets.length} 个`
   );
+});
+
+test("并发渲染复用同一浏览器实例且都能出图", async () => {
+  const jobIds = ["test-concurrent-a", "test-concurrent-b", "test-concurrent-c"];
+
+  await Promise.all(
+    jobIds.map(jobId =>
+      fs.rm(path.join(process.cwd(), "output", jobId), {
+        recursive: true,
+        force: true
+      })
+    )
+  );
+
+  const before = await getBrowser();
+
+  const results = await Promise.all(
+    jobIds.map(jobId => generatePoster({ jobId, request }))
+  );
+
+  const after = await getBrowser();
+
+  assert.equal(before, after, "并发渲染期间浏览器实例被重建了");
+
+  for (const [index, result] of results.entries()) {
+    assert.equal(
+      result.status,
+      "completed",
+      `${jobIds[index]} 未完成`
+    );
+
+    const png = await fs.stat(
+      path.join(process.cwd(), "output", jobIds[index], "poster.png")
+    );
+
+    assert.ok(png.size > 10000, `${jobIds[index]} 的 PNG 过小`);
+  }
 });

@@ -8,6 +8,7 @@ import {
   selectIcons
 } from "./selectors.js";
 import { renderPoster } from "./render.js";
+import { closeBrowser } from "./browser.js";
 
 const isDirectRun =
   process.argv[1] &&
@@ -123,9 +124,14 @@ export async function generatePoster({
 if (isDirectRun) {
   const request = await readRequest();
 
-  const result = await generatePoster({
-    request
-  });
+  try {
+    const result = await generatePoster({
+      request
+    });
 
-  console.log(JSON.stringify(result, null, 2));
+    console.log(JSON.stringify(result, null, 2));
+  } finally {
+    // 浏览器实例常驻，不关闭进程不会退出。
+    await closeBrowser();
+  }
 }

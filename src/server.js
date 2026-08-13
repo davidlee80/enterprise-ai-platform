@@ -2,6 +2,7 @@ import express from "express";
 import { v4 as uuid } from "uuid";
 import { generatePoster } from "./pipeline.js";
 import { assertValid } from "./validate.js";
+import { closeBrowser } from "./browser.js";
 
 const app = express();
 const jobs = new Map();
@@ -82,6 +83,16 @@ app.get("/api/v1/posters/:jobId", (request, response) => {
   response.json(job);
 });
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log("Poster API: http://localhost:3000");
 });
+
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  process.on(signal, async () => {
+    server.close();
+
+    await closeBrowser();
+
+    process.exit(0);
+  });
+}
