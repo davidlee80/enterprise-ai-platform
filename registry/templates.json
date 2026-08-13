@@ -1,0 +1,22 @@
+[
+  {
+    "templateId": "hangzhou-classic-001",
+    "version": "1.0.0",
+    "manifestPath": "templates/hangzhou-classic-001/manifest.json",
+    "templatePath": "templates/hangzhou-classic-001/index.ejs",
+    "ratios": ["3:4"],
+    "minDays": 5,
+    "maxDays": 5,
+    "tags": [
+      "杭州",
+      "江南",
+      "国风",
+      "清新",
+      "水墨",
+      "情侣",
+      "家庭",
+      "舒缓"
+    ],
+    "status": "published"
+  }
+]

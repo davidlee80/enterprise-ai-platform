@@ -1,0 +1,65 @@
+[
+  {
+    "assetId": "hero-hangzhou-001",
+    "url": "/public/images/hangzhou-hero.webp",
+    "tags": ["杭州", "江南", "山水", "横幅", "清新", "国风"],
+    "ratio": 3.84,
+    "transparent": false,
+    "qualityScore": 0.98,
+    "commercialUse": true
+  },
+  {
+    "assetId": "route-background-001",
+    "url": "/public/images/route-background.webp",
+    "tags": ["江南", "路线背景", "浅色", "水墨"],
+    "ratio": 0.9,
+    "transparent": false,
+    "qualityScore": 0.95,
+    "commercialUse": true
+  },
+  {
+    "assetId": "leifeng-pagoda-001",
+    "url": "/public/images/leifeng-pagoda.webp",
+    "tags": ["杭州", "雷峰塔", "西湖", "透明背景", "国风插画"],
+    "ratio": 1,
+    "transparent": true,
+    "qualityScore": 0.96,
+    "commercialUse": true
+  },
+  {
+    "assetId": "temple-001",
+    "url": "/public/images/temple.webp",
+    "tags": ["杭州", "寺庙", "灵隐寺", "透明背景", "国风插画"],
+    "ratio": 1,
+    "transparent": true,
+    "qualityScore": 0.95,
+    "commercialUse": true
+  },
+  {
+    "assetId": "bridge-001",
+    "url": "/public/images/canal-bridge.webp",
+    "tags": ["杭州", "石桥", "运河", "透明背景", "国风插画"],
+    "ratio": 1.4,
+    "transparent": true,
+    "qualityScore": 0.94,
+    "commercialUse": true
+  },
+  {
+    "assetId": "wetland-001",
+    "url": "/public/images/wetland.webp",
+    "tags": ["杭州", "湿地", "夜景", "透明背景", "国风插画"],
+    "ratio": 1.5,
+    "transparent": true,
+    "qualityScore": 0.93,
+    "commercialUse": true
+  },
+  {
+    "assetId": "ancient-town-001",
+    "url": "/public/images/ancient-town.webp",
+    "tags": ["杭州", "江南民居", "古镇", "透明背景", "国风插画"],
+    "ratio": 1.5,
+    "transparent": true,
+    "qualityScore": 0.94,
+    "commercialUse": true
+  }
+]

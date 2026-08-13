@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.0",
+  "trip": {
+    "destination": {
+      "name": "杭州",
+      "province": "浙江",
+      "country": "中国"
+    },
+    "startDate": "2026-09-15",
+    "endDate": "2026-09-19",
+    "days": 5,
+    "peopleCount": 2,
+    "travelers": ["情侣"],
+    "pace": "舒缓"
+  },
+
+  "content": {
+    "title": "杭州5天旅行攻略重点总结",
+    "subtitle": "人间天堂 · 诗画江南",
+    "keywords": ["杭州", "江南", "国风", "西湖", "古镇"]
+  },
+
+  "itinerary": [
+    {
+      "day": 1,
+      "theme": "西湖经典线",
+      "summary": "西湖、雷峰塔、湖滨夜景",
+      "estimatedCost": 260,
+      "color": "#65943D",
+      "visualTags": ["杭州", "西湖", "雷峰塔", "国风插画"],
+      "visualPosition": { "x": 47, "y": 17 }
+    },
+    {
+      "day": 2,
+      "theme": "禅意茶香线",
+      "summary": "灵隐寺、飞来峰、龙井茶园、河坊街",
+      "estimatedCost": 305,
+      "color": "#ED7617",
+      "visualTags": ["杭州", "寺庙", "茶园", "国风插画"],
+      "visualPosition": { "x": 79, "y": 36 }
+    },
+    {
+      "day": 3,
+      "theme": "运河人文线",
+      "summary": "拱宸桥、京杭大运河、中国丝绸博物馆",
+      "estimatedCost": 205,
+      "color": "#2D76B5",
+      "visualTags": ["杭州", "运河", "石桥", "国风插画"],
+      "visualPosition": { "x": 69, "y": 67 }
+    },
+    {
+      "day": 4,
+      "theme": "自然漫艺线",
+      "summary": "西溪湿地、北高峰、夜间演出",
+      "estimatedCost": 615,
+      "color": "#7057A3",
+      "visualTags": ["杭州", "湿地", "夜景", "国风插画"],
+      "visualPosition": { "x": 26, "y": 79 }
+    },
+    {
+      "day": 5,
+      "theme": "古镇收尾线",
+      "summary": "塘栖古镇、广济桥、浙江美术馆",
+      "estimatedCost": 190,
+      "color": "#538645",
+      "visualTags": ["杭州", "古镇", "江南民居", "国风插画"],
+      "visualPosition": { "x": 14, "y": 45 }
+    }
+  ],
+
+  "tips": [
+    {
+      "type": "date",
+      "text": "最佳旅行时间：3—5月、9—11月，气候宜人"
+    },
+    {
+      "type": "transport",
+      "text": "建议乘坐地铁、公交出行，便捷环保"
+    },
+    {
+      "type": "walking",
+      "text": "景点步行较多，建议穿舒适的鞋子"
+    },
+    {
+      "type": "reservation",
+      "text": "热门景点建议提前预约，避免排队"
+    },
+    {
+      "type": "crowd",
+      "text": "避开节假日高峰，错峰出行更从容"
+    },
+    {
+      "type": "environment",
+      "text": "文明旅游，爱护环境，尊重当地文化"
+    }
+  ],
+
+  "budget": {
+    "currency": "CNY",
+    "items": [
+      {
+        "type": "ticket",
+        "name": "门票",
+        "amount": 550
+      },
+      {
+        "type": "food",
+        "name": "餐饮",
+        "amount": 770
+      },
+      {
+        "type": "transport",
+        "name": "市内交通",
+        "amount": 145
+      },
+      {
+        "type": "other",
+        "name": "其他",
+        "amount": 110
+      }
+    ],
+    "total": 1575,
+    "excluded": ["住宿", "往返交通"]
+  }
+}

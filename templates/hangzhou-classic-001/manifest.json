@@ -1,0 +1,72 @@
+{
+  "templateId": "hangzhou-classic-001",
+  "version": "1.0.0",
+  "name": "江南国风五日行程",
+  "status": "published",
+
+  "ratios": ["3:4"],
+  "supportedDays": {
+    "min": 5,
+    "max": 5
+  },
+
+  "tags": {
+    "styles": ["国风", "清新", "江南", "水墨"],
+    "destinations": ["杭州", "江南", "古镇", "山水"],
+    "travelers": ["情侣", "家庭", "朋友"],
+    "pace": ["舒缓", "普通"]
+  },
+
+  "features": {
+    "route": true,
+    "budget": true,
+    "tips": true
+  },
+
+  "contentLimits": {
+    "titleMaxChars": 18,
+    "subtitleMaxChars": 18,
+    "dayTitleMaxChars": 7,
+    "daySummaryMaxChars": 25,
+    "tipsMaxCount": 6,
+    "tipMaxChars": 30
+  },
+
+  "slots": [
+    {
+      "slotId": "hero",
+      "type": "image",
+      "requiredTags": ["杭州", "江南", "山水", "横幅"]
+    },
+    {
+      "slotId": "routeBackground",
+      "type": "image",
+      "requiredTags": ["江南", "路线背景", "浅色"]
+    },
+    {
+      "slotId": "day1",
+      "type": "image",
+      "requiredTags": ["雷峰塔", "透明背景"]
+    },
+    {
+      "slotId": "day2",
+      "type": "image",
+      "requiredTags": ["寺庙", "透明背景"]
+    },
+    {
+      "slotId": "day3",
+      "type": "image",
+      "requiredTags": ["石桥", "透明背景"]
+    },
+    {
+      "slotId": "day4",
+      "type": "image",
+      "requiredTags": ["湿地", "夜景", "透明背景"]
+    },
+    {
+      "slotId": "day5",
+      "type": "image",
+      "requiredTags": ["江南民居", "透明背景"]
+    }
+  ]
+}

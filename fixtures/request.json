@@ -1,0 +1,24 @@
+{
+  "destination": "杭州",
+  "startDate": "2026-09-15",
+  "endDate": "2026-09-19",
+  "peopleCount": 2,
+  "budget": 4000,
+
+  "profile": {
+    "travelers": ["情侣"],
+    "ageGroup": "25-35",
+    "pace": "舒缓",
+    "preferences": ["自然风光", "人文", "古镇", "摄影"],
+    "avoid": ["高强度徒步"],
+    "visualPreferences": ["国风", "清新", "江南"]
+  },
+
+  "output": {
+    "ratio": "3:4",
+    "format": "png",
+    "language": "zh-CN",
+    "showBudget": true,
+    "showRoute": true
+  }
+}

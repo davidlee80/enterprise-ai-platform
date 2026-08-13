@@ -1,0 +1,30 @@
+[
+  {
+    "iconId": "ticket-classic",
+    "semantic": "ticket",
+    "styleSet": "chinese-line",
+    "url": "/public/icons/ticket.svg",
+    "tags": ["门票", "国风", "线性"]
+  },
+  {
+    "iconId": "food-classic",
+    "semantic": "food",
+    "styleSet": "chinese-line",
+    "url": "/public/icons/food.svg",
+    "tags": ["餐饮", "国风", "线性"]
+  },
+  {
+    "iconId": "transport-classic",
+    "semantic": "transport",
+    "styleSet": "chinese-line",
+    "url": "/public/icons/bus.svg",
+    "tags": ["交通", "国风", "线性"]
+  },
+  {
+    "iconId": "other-classic",
+    "semantic": "other",
+    "styleSet": "chinese-line",
+    "url": "/public/icons/other.svg",
+    "tags": ["其他", "国风", "线性"]
+  }
+]

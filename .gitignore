@@ -1,0 +1,4 @@
+node_modules/
+output/
+public/images/original/
+*.log
