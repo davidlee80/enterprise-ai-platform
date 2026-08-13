@@ -3,26 +3,10 @@ import path from "node:path";
 import ejs from "ejs";
 import { chromium } from "playwright";
 import { writeSubsetFonts } from "./fonts.js";
+import { materializeResources } from "./assets.js";
 
 function toFileUrl(filePath) {
   return new URL(`file://${path.resolve(filePath)}`).href;
-}
-
-function resolvePublicAsset(assetUrl) {
-  const relative = assetUrl.replace(/^\/+/, "");
-  return toFileUrl(path.join(process.cwd(), relative));
-}
-
-function enrichResourceUrls(manifest) {
-  for (const asset of Object.values(manifest.assets)) {
-    asset.resolvedUrl = resolvePublicAsset(asset.url);
-  }
-
-  for (const icon of Object.values(manifest.icons)) {
-    icon.resolvedUrl = resolvePublicAsset(icon.url);
-  }
-
-  return manifest;
 }
 
 async function qualityCheck(page) {
@@ -73,7 +57,8 @@ export async function renderPoster({
   template,
   outputDirectory
 }) {
-  enrichResourceUrls(manifest);
+  await fs.mkdir(outputDirectory, { recursive: true });
+  await materializeResources(manifest, outputDirectory);
 
   const templatePath = path.join(
     process.cwd(),
@@ -82,7 +67,6 @@ export async function renderPoster({
 
   const html = await ejs.renderFile(templatePath, {
     manifest,
-    resolveAsset: resolvePublicAsset,
     safeJson(value) {
       return JSON.stringify(value)
         .replaceAll("<", "\\u003c")
