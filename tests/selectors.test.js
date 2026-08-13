@@ -82,6 +82,48 @@ test("selectAssets 为每个槽位选出互不重复的素材", async () => {
   );
 });
 
+test("selectIcons 覆盖 tips 与 budget 的全部语义", async () => {
+  const icons = await selectIcons();
+
+  const tipTypes = [
+    "date",
+    "transport",
+    "walking",
+    "reservation",
+    "crowd",
+    "environment"
+  ];
+
+  const budgetTypes = ["ticket", "food", "transport", "other"];
+
+  for (const semantic of [...tipTypes, ...budgetTypes]) {
+    assert.ok(
+      icons[semantic],
+      `语义「${semantic}」没有可用图标（tips/budget 会渲染出空图）`
+    );
+
+    assert.ok(
+      icons[semantic].url,
+      `语义「${semantic}」的图标缺少 url`
+    );
+  }
+});
+
+test("注册的图标文件都真实存在", async () => {
+  const icons = await selectIcons();
+
+  for (const [semantic, icon] of Object.entries(icons)) {
+    const file = path.join(
+      process.cwd(),
+      icon.url.replace(/^\/+/, "")
+    );
+
+    await fs.access(file).catch(() => {
+      assert.fail(`语义「${semantic}」指向的文件不存在：${icon.url}`);
+    });
+  }
+});
+
 test("槽位标签完全相同时也不会把同一素材塞进多个槽位", async () => {
   const assets = await selectAssets({
     manifestPath: "fixtures/duplicate-slots.manifest.json"
