@@ -1,0 +1,60 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { assertValid } from "../src/validate.js";
+
+const plan = JSON.parse(
+  await fs.readFile(
+    path.join(process.cwd(), "fixtures/hangzhou-plan.json"),
+    "utf8"
+  )
+);
+
+test("合法行程通过校验", async () => {
+  await assertValid("travel-plan", plan);
+});
+
+test("缺少 visualPosition 时报错并指出字段路径", async () => {
+  const broken = structuredClone(plan);
+
+  delete broken.itinerary[2].visualPosition;
+
+  await assert.rejects(
+    () => assertValid("travel-plan", broken),
+    /itinerary\/2.*visualPosition/
+  );
+});
+
+test("budget.items[].type 越界时报错", async () => {
+  const broken = structuredClone(plan);
+
+  broken.budget.items[0].type = "hotel";
+
+  await assert.rejects(
+    () => assertValid("travel-plan", broken),
+    /budget\/items\/0\/type/
+  );
+});
+
+test("trip.days 非整数时报错", async () => {
+  const broken = structuredClone(plan);
+
+  broken.trip.days = 5.5;
+
+  await assert.rejects(
+    () => assertValid("travel-plan", broken),
+    /trip\/days/
+  );
+});
+
+test("itinerary[].color 非法色值时报错", async () => {
+  const broken = structuredClone(plan);
+
+  broken.itinerary[0].color = "绿色";
+
+  await assert.rejects(
+    () => assertValid("travel-plan", broken),
+    /itinerary\/0\/color/
+  );
+});
