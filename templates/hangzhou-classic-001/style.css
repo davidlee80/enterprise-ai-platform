@@ -1,0 +1,107 @@
+@font-face {
+  font-family: "Poster Sans";
+  src: url("./fonts/sans-subset.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Poster Serif";
+  src: url("./fonts/serif-subset.woff2") format("woff2");
+  font-weight: 700;
+  font-display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 768px;
+  height: 1024px;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: #f8faf2;
+  font-family: "Poster Sans", sans-serif;
+}
+
+.poster {
+  width: 768px;
+  height: 1024px;
+  overflow: hidden;
+  color: #334b37;
+  background: #fbfcf5;
+}
+
+/* ---------- 头图 ---------- */
+
+.hero {
+  position: relative;
+  height: 215px;
+  padding-top: 38px;
+  text-align: center;
+  background-position: center;
+  background-size: cover;
+}
+
+.hero h1 {
+  margin: 0;
+  color: #285c36;
+  font-family: "Poster Serif", serif;
+  font-size: 47px;
+  line-height: 1.25;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  margin-top: 8px;
+  color: #3f6645;
+  font-size: 21px;
+  letter-spacing: 8px;
+}
+
+/* ---------- 卡片栅格 ---------- */
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 438px 274px;
+  gap: 10px;
+  padding: 10px 11px 12px;
+}
+
+.route-card,
+.schedule-card,
+.tips-card,
+.budget-card {
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid #cad9b9;
+  border-radius: 14px;
+}
+
+.section-title {
+  height: 36px;
+  padding: 7px 14px;
+  color: #fff;
+  background: linear-gradient(90deg, #4d793b, #6e914f);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.section-title.light {
+  color: #426642;
+  background: #f5f8eb;
+  border-bottom: 1px solid #dce5d3;
+}
+
+.route-map {
+  position: relative;
+  height: 400px;
+  background-position: center;
+  background-size: cover;
+}

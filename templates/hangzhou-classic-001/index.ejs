@@ -1,146 +1,56 @@
-<div class="poster" id="poster">
-  <header
-    class="hero"
-    style="background-image:
-      linear-gradient(
-        to bottom,
-        rgba(255,255,255,.05),
-        rgba(248,251,240,.55)
-      ),
-      url('<%= resolveAsset(manifest.assets.hero.url) %>')"
-  >
-    <h1 id="posterTitle"></h1>
-    <div id="posterSubtitle" class="subtitle"></div>
-  </header>
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title><%= manifest.content.title %></title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-  <main class="content">
-    <section class="route-card">
-      <div class="section-title">核心路线示意图</div>
-      <div id="routeMap" class="route-map"></div>
-    </section>
+  <body>
+    <div class="poster" id="poster">
+      <header
+        class="hero"
+        style="background-image:
+          linear-gradient(
+            to bottom,
+            rgba(255,255,255,.05),
+            rgba(248,251,240,.55)
+          ),
+          url('<%= manifest.assets.hero.resolvedUrl %>')"
+      >
+        <h1 id="posterTitle"></h1>
+        <div id="posterSubtitle" class="subtitle"></div>
+      </header>
 
-    <section class="schedule-card">
-      <div class="section-title">5天路线速览</div>
-      <div id="schedule"></div>
-    </section>
+      <main class="content">
+        <section class="route-card">
+          <div class="section-title">核心路线示意图</div>
+          <div id="routeMap" class="route-map"></div>
+        </section>
 
-    <section class="tips-card">
-      <div class="section-title light">备注事项 / 出行建议</div>
-      <div id="tips"></div>
-    </section>
+        <section class="schedule-card">
+          <div class="section-title">5天路线速览</div>
+          <div id="schedule"></div>
+        </section>
 
-    <section class="budget-card">
-      <div class="section-title light">花销明细（参考）</div>
-      <div id="budgetItems"></div>
-      <div id="budgetTotal"></div>
-    </section>
-  </main>
-</div>
+        <section class="tips-card">
+          <div class="section-title light">备注事项 / 出行建议</div>
+          <div id="tips"></div>
+        </section>
 
-<script>
-  window.__POSTER_MANIFEST__ =
-    <%- safeJson(manifest) %>;
-</script>
+        <section class="budget-card">
+          <div class="section-title light">花销明细（参考）</div>
+          <div id="budgetItems"></div>
+          <div id="budgetTotal"></div>
+        </section>
+      </main>
+    </div>
 
-<script src="./render.js"></script>
+    <script>
+      window.__POSTER_MANIFEST__ =
+        <%- safeJson(manifest) %>;
+    </script>
 
-@font-face {
-  font-family: "Source Han Sans SC";
-  src: url("../../public/fonts/SourceHanSansSC-Regular.woff2");
-}
-
-@font-face {
-  font-family: "Source Han Serif SC";
-  src: url("../../public/fonts/SourceHanSerifSC-Bold.woff2");
-  font-weight: 700;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 768px;
-  height: 1024px;
-  margin: 0;
-  overflow: hidden;
-}
-
-body {
-  background: #f8faf2;
-  font-family: "Source Han Sans SC", sans-serif;
-}
-
-.poster {
-  width: 768px;
-  height: 1024px;
-  overflow: hidden;
-  color: #334b37;
-  background: #fbfcf5;
-}
-
-.hero {
-  position: relative;
-  height: 215px;
-  padding-top: 38px;
-  text-align: center;
-  background-position: center;
-  background-size: cover;
-}
-
-.hero h1 {
-  margin: 0;
-  color: #285c36;
-  font-family: "Source Han Serif SC", serif;
-  font-size: 47px;
-  line-height: 1.25;
-  letter-spacing: 2px;
-}
-
-.subtitle {
-  margin-top: 8px;
-  color: #3f6645;
-  font-size: 21px;
-  letter-spacing: 8px;
-}
-
-.content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 438px 274px;
-  gap: 10px;
-  padding: 10px 11px 12px;
-}
-
-.route-card,
-.schedule-card,
-.tips-card,
-.budget-card {
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid #cad9b9;
-  border-radius: 14px;
-}
-
-.section-title {
-  height: 36px;
-  padding: 7px 14px;
-  color: #fff;
-  background: linear-gradient(90deg, #4d793b, #6e914f);
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.section-title.light {
-  color: #426642;
-  background: #f5f8eb;
-  border-bottom: 1px solid #dce5d3;
-}
-
-.route-map {
-  position: relative;
-  height: 400px;
-  background-position: center;
-  background-size: cover;
-}
+    <script src="./render.js"></script>
+  </body>
+</html>

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node src/server.js",
     "generate": "node src/pipeline.js",
-    "test": "node --test tests/",
+    "test": "node --test \"tests/*.test.js\"",
     "install-browser": "npx playwright install chromium",
     "optimize-assets": "node scripts/optimize-assets.js"
   },
