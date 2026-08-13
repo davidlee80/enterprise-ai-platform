@@ -36,10 +36,6 @@ function validatePlan(plan) {
   if (budgetTotal !== plan.budget.total) {
     plan.budget.total = budgetTotal;
   }
-
-  if (plan.itinerary.length !== 5) {
-    throw new Error("当前模板只支持五天行程");
-  }
 }
 
 function buildRoute(days) {

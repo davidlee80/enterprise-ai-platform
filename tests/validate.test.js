@@ -65,3 +65,28 @@ test("generateTravelPlan 的输出满足行程契约", async () => {
 
   await assertValid("travel-plan", generated);
 });
+
+test("fixtures/request.json 满足请求契约", async () => {
+  const request = JSON.parse(
+    await fs.readFile(
+      path.join(process.cwd(), "fixtures/request.json"),
+      "utf8"
+    )
+  );
+
+  await assertValid("poster-request", request);
+});
+
+test("缺少 output.ratio 的请求被拒绝", async () => {
+  await assert.rejects(
+    () => assertValid("poster-request", { destination: "杭州", output: {} }),
+    /output.*ratio/
+  );
+});
+
+test("缺少 destination 的请求被拒绝", async () => {
+  await assert.rejects(
+    () => assertValid("poster-request", { output: { ratio: "3:4" } }),
+    /destination/
+  );
+});

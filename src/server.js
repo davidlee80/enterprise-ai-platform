@@ -1,6 +1,7 @@
 import express from "express";
 import { v4 as uuid } from "uuid";
 import { generatePoster } from "./pipeline.js";
+import { assertValid } from "./validate.js";
 
 const app = express();
 const jobs = new Map();
@@ -17,6 +18,14 @@ app.use(
 );
 
 app.post("/api/v1/posters", async (request, response) => {
+  try {
+    await assertValid("poster-request", request.body);
+  } catch (error) {
+    return response.status(400).json({
+      message: error.message
+    });
+  }
+
   const jobId = uuid();
 
   jobs.set(jobId, {
