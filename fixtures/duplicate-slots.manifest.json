@@ -1,0 +1,24 @@
+{
+  "templateId": "test-duplicate-slots",
+  "version": "0.0.0",
+  "name": "去重测试用模板（三个槽位标签完全相同）",
+  "status": "draft",
+
+  "slots": [
+    {
+      "slotId": "left",
+      "type": "image",
+      "requiredTags": ["杭州", "透明背景", "国风插画"]
+    },
+    {
+      "slotId": "middle",
+      "type": "image",
+      "requiredTags": ["杭州", "透明背景", "国风插画"]
+    },
+    {
+      "slotId": "right",
+      "type": "image",
+      "requiredTags": ["杭州", "透明背景", "国风插画"]
+    }
+  ]
+}

@@ -52,17 +52,10 @@ export async function selectTemplate(request, plan) {
       const days = plan.trip.days;
       return days >= item.minDays && days <= item.maxDays;
     })
-    .map(item => {
-      const score =
-        tagScore(requestTags, item.tags) * 0.7 +
-        (item.ratios.includes(request.output.ratio) ? 0.15 : 0) +
-        (plan.trip.days >= item.minDays &&
-        plan.trip.days <= item.maxDays
-          ? 0.15
-          : 0);
-
-      return { ...item, score };
-    })
+    .map(item => ({
+      ...item,
+      score: tagScore(requestTags, item.tags)
+    }))
     .sort((a, b) => b.score - a.score);
 
   if (!candidates.length) {
@@ -78,9 +71,13 @@ export async function selectAssets(template) {
 
   const result = {};
 
+  // 同一张素材不应出现在多个槽位，否则海报会出现重复插画。
+  const used = new Set();
+
   for (const slot of templateManifest.slots) {
     const candidates = assets
       .filter(asset => asset.commercialUse)
+      .filter(asset => !used.has(asset.assetId))
       .map(asset => {
         const score =
           tagScore(slot.requiredTags, asset.tags) * 0.85 +
@@ -93,6 +90,8 @@ export async function selectAssets(template) {
     if (!candidates.length || candidates[0].score < 0.3) {
       throw new Error(`槽位 ${slot.slotId} 没有匹配素材`);
     }
+
+    used.add(candidates[0].assetId);
 
     result[slot.slotId] = candidates[0];
   }
