@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import ejs from "ejs";
 import { chromium } from "playwright";
+import { writeSubsetFonts } from "./fonts.js";
 
 function toFileUrl(filePath) {
   return new URL(`file://${path.resolve(filePath)}`).href;
@@ -108,7 +109,8 @@ export async function renderPoster({
   await Promise.all([
     fs.writeFile(htmlPath, html, "utf8"),
     fs.copyFile(sourceCss, cssPath),
-    fs.copyFile(sourceJs, jsPath)
+    fs.copyFile(sourceJs, jsPath),
+    writeSubsetFonts(manifest, outputDirectory, sourceTemplateDirectory)
   ]);
 
   const browser = await chromium.launch({
