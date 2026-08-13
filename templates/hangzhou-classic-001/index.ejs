@@ -13,33 +13,71 @@
         style="background-image:
           linear-gradient(
             to bottom,
-            rgba(255,255,255,.05),
-            rgba(248,251,240,.55)
+            rgba(251,252,245,.74) 0%,
+            rgba(251,252,245,.30) 46%,
+            rgba(248,251,240,.58) 100%
           ),
           url('<%= manifest.assets.hero.resolvedUrl %>')"
       >
         <h1 id="posterTitle"></h1>
-        <div id="posterSubtitle" class="subtitle"></div>
+
+        <div class="subtitle-row">
+          <span class="subtitle-rule"></span>
+          <div id="posterSubtitle" class="subtitle"></div>
+          <span class="subtitle-rule"></span>
+        </div>
       </header>
 
       <main class="content">
         <section class="route-card">
-          <div class="section-title">核心路线示意图</div>
+          <div class="section-title">
+            <img
+              class="section-icon"
+              src="<%= manifest.icons['section-route'].resolvedUrl %>"
+              alt=""
+            />
+            核心路线示意图
+          </div>
+
           <div id="routeMap" class="route-map"></div>
         </section>
 
         <section class="schedule-card">
-          <div class="section-title">5天路线速览</div>
+          <div class="section-title">
+            <img
+              class="section-icon"
+              src="<%= manifest.icons['section-schedule'].resolvedUrl %>"
+              alt=""
+            />
+            <%= manifest.content.itinerary.length %>天路线速览
+          </div>
+
           <div id="schedule"></div>
         </section>
 
         <section class="tips-card">
-          <div class="section-title light">备注事项 / 出行建议</div>
+          <div class="section-title">
+            <img
+              class="section-icon"
+              src="<%= manifest.icons['section-tips'].resolvedUrl %>"
+              alt=""
+            />
+            备注事项 / 出行建议
+          </div>
+
           <div id="tips"></div>
         </section>
 
         <section class="budget-card">
-          <div class="section-title light">花销明细（参考）</div>
+          <div class="section-title">
+            <img
+              class="section-icon"
+              src="<%= manifest.icons['section-budget'].resolvedUrl %>"
+              alt=""
+            />
+            花销明细（参考）
+          </div>
+
           <div id="budgetItems"></div>
           <div id="budgetTotal"></div>
         </section>

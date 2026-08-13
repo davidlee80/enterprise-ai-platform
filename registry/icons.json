@@ -1,74 +1,124 @@
 [
   {
-    "iconId": "date-classic",
-    "semantic": "date",
+    "iconId": "tip-date-line",
+    "semantic": "tip-date",
     "styleSet": "chinese-line",
     "url": "/public/icons/calendar.svg",
-    "pattern": "日历",
+    "pattern": "日历（绿色描边圆形）",
     "tags": ["日期", "时间", "国风", "线性"]
   },
   {
-    "iconId": "transport-classic",
-    "semantic": "transport",
+    "iconId": "tip-transport-line",
+    "semantic": "tip-transport",
     "styleSet": "chinese-line",
     "url": "/public/icons/bus.svg",
-    "pattern": "公交车",
+    "pattern": "公交车（绿色描边圆形）",
     "tags": ["交通", "国风", "线性"]
   },
   {
-    "iconId": "walking-classic",
-    "semantic": "walking",
+    "iconId": "tip-walking-line",
+    "semantic": "tip-walking",
     "styleSet": "chinese-line",
     "url": "/public/icons/clothing.svg",
-    "pattern": "运动鞋",
+    "pattern": "运动鞋（绿色描边圆形）",
     "tags": ["步行", "穿着", "国风", "线性"]
   },
   {
-    "iconId": "reservation-classic",
-    "semantic": "reservation",
+    "iconId": "tip-reservation-line",
+    "semantic": "tip-reservation",
     "styleSet": "chinese-line",
     "url": "/public/icons/ticket.svg",
-    "pattern": "售票亭牌匾",
+    "pattern": "售票亭牌匾（绿色描边圆形）",
     "tags": ["预约", "景点", "国风", "线性"]
   },
   {
-    "iconId": "crowd-classic",
-    "semantic": "crowd",
+    "iconId": "tip-crowd-line",
+    "semantic": "tip-crowd",
     "styleSet": "chinese-line",
     "url": "/public/icons/other.svg",
-    "pattern": "人群",
+    "pattern": "人群（绿色描边圆形）",
     "tags": ["人流", "错峰", "国风", "线性"]
   },
   {
-    "iconId": "environment-classic",
-    "semantic": "environment",
+    "iconId": "tip-environment-line",
+    "semantic": "tip-environment",
     "styleSet": "chinese-line",
     "url": "/public/icons/location.svg",
-    "pattern": "叶子",
+    "pattern": "叶子（绿色描边圆形）",
     "tags": ["环保", "自然", "国风", "线性"]
   },
+
   {
-    "iconId": "ticket-classic",
-    "semantic": "ticket",
-    "styleSet": "chinese-line",
-    "url": "/public/icons/ticket.svg",
-    "pattern": "售票亭牌匾",
-    "tags": ["门票", "国风", "线性"]
+    "iconId": "budget-ticket-color",
+    "semantic": "budget-ticket",
+    "styleSet": "color-flat",
+    "url": "/public/icons/budget-ticket.png",
+    "pattern": "黄色门票",
+    "tags": ["门票", "彩色"]
   },
   {
-    "iconId": "food-classic",
-    "semantic": "food",
-    "styleSet": "chinese-line",
-    "url": "/public/icons/food.svg",
-    "pattern": "餐碗",
-    "tags": ["餐饮", "国风", "线性"]
+    "iconId": "budget-food-color",
+    "semantic": "budget-food",
+    "styleSet": "color-flat",
+    "url": "/public/icons/budget-food.png",
+    "pattern": "热汤碗",
+    "tags": ["餐饮", "彩色"]
   },
   {
-    "iconId": "other-classic",
-    "semantic": "other",
-    "styleSet": "chinese-line",
-    "url": "/public/icons/reservation.svg",
-    "pattern": "人像",
-    "tags": ["其他", "国风", "线性"]
+    "iconId": "budget-transport-color",
+    "semantic": "budget-transport",
+    "styleSet": "color-flat",
+    "url": "/public/icons/budget-transport.png",
+    "pattern": "蓝色公交车",
+    "tags": ["交通", "彩色"]
+  },
+  {
+    "iconId": "budget-other-color",
+    "semantic": "budget-other",
+    "styleSet": "color-flat",
+    "url": "/public/icons/budget-shopping.png",
+    "pattern": "绿色购物袋",
+    "tags": ["其他", "购物", "彩色"]
+  },
+  {
+    "iconId": "budget-total-color",
+    "semantic": "budget-total",
+    "styleSet": "color-flat",
+    "url": "/public/icons/budget-total.png",
+    "pattern": "钱袋",
+    "tags": ["合计", "预算", "彩色"]
+  },
+
+  {
+    "iconId": "section-route-color",
+    "semantic": "section-route",
+    "styleSet": "color-flat",
+    "url": "/public/icons/section-route.png",
+    "pattern": "定位钉（模板内用 CSS 染白）",
+    "tags": ["路线", "章节"]
+  },
+  {
+    "iconId": "section-schedule-color",
+    "semantic": "section-schedule",
+    "styleSet": "color-flat",
+    "url": "/public/icons/section-schedule.png",
+    "pattern": "日历（模板内用 CSS 染白）",
+    "tags": ["行程", "章节"]
+  },
+  {
+    "iconId": "section-tips-color",
+    "semantic": "section-tips",
+    "styleSet": "color-flat",
+    "url": "/public/icons/section-tips.png",
+    "pattern": "灯泡（模板内用 CSS 染白）",
+    "tags": ["建议", "章节"]
+  },
+  {
+    "iconId": "section-budget-color",
+    "semantic": "section-budget",
+    "styleSet": "color-flat",
+    "url": "/public/icons/section-budget.png",
+    "pattern": "钱包（模板内用 CSS 染白）",
+    "tags": ["花销", "章节"]
   }
 ]

@@ -82,31 +82,39 @@ test("selectAssets 为每个槽位选出互不重复的素材", async () => {
   );
 });
 
-test("selectIcons 覆盖 tips 与 budget 的全部语义", async () => {
+test("selectIcons 覆盖 tips / budget / 章节标题的全部语义", async () => {
   const icons = await selectIcons();
 
-  const tipTypes = [
-    "date",
-    "transport",
-    "walking",
-    "reservation",
-    "crowd",
-    "environment"
+  const required = [
+    ...["date", "transport", "walking", "reservation", "crowd", "environment"]
+      .map(type => `tip-${type}`),
+    ...["ticket", "food", "transport", "other", "total"]
+      .map(type => `budget-${type}`),
+    ...["route", "schedule", "tips", "budget"]
+      .map(name => `section-${name}`)
   ];
 
-  const budgetTypes = ["ticket", "food", "transport", "other"];
-
-  for (const semantic of [...tipTypes, ...budgetTypes]) {
+  for (const semantic of required) {
     assert.ok(
       icons[semantic],
-      `语义「${semantic}」没有可用图标（tips/budget 会渲染出空图）`
+      `语义「${semantic}」没有可用图标（会渲染出空图）`
     );
 
-    assert.ok(
-      icons[semantic].url,
-      `语义「${semantic}」的图标缺少 url`
-    );
+    assert.ok(icons[semantic].url, `语义「${semantic}」的图标缺少 url`);
   }
+});
+
+test("图标 semantic 与 iconId 均无重复", async () => {
+  const icons = await selectIcons();
+  const entries = Object.values(icons);
+
+  const iconIds = entries.map(icon => icon.iconId);
+
+  assert.equal(
+    new Set(iconIds).size,
+    iconIds.length,
+    "iconId 重复会导致产物文件互相覆盖"
+  );
 });
 
 test("注册的图标文件都真实存在", async () => {

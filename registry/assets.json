@@ -36,19 +36,19 @@
     "commercialUse": true
   },
   {
-    "assetId": "bridge-001",
-    "url": "/public/images/canal-bridge.webp",
-    "tags": ["杭州", "石桥", "运河", "透明背景", "国风插画"],
-    "ratio": 1.4,
+    "assetId": "stone-bridge-001",
+    "url": "/public/images/stone-bridge.webp",
+    "tags": ["杭州", "石桥", "拱桥", "运河", "透明背景", "国风插画"],
+    "ratio": 2.1,
     "transparent": true,
-    "qualityScore": 0.94,
+    "qualityScore": 0.96,
     "commercialUse": true
   },
   {
-    "assetId": "wetland-001",
-    "url": "/public/images/wetland.webp",
-    "tags": ["杭州", "湿地", "夜景", "透明背景", "国风插画"],
-    "ratio": 1.5,
+    "assetId": "wetland-walkway-001",
+    "url": "/public/images/wetland-walkway.webp",
+    "tags": ["杭州", "湿地", "栈道", "西溪", "透明背景", "国风插画"],
+    "ratio": 0.7,
     "transparent": true,
     "qualityScore": 0.93,
     "commercialUse": true
@@ -60,6 +60,15 @@
     "ratio": 1.5,
     "transparent": true,
     "qualityScore": 0.94,
+    "commercialUse": true
+  },
+  {
+    "assetId": "tea-garden-001",
+    "url": "/public/images/tea-garden.webp",
+    "tags": ["杭州", "茶园", "龙井", "透明背景", "国风插画"],
+    "ratio": 1.5,
+    "transparent": true,
+    "qualityScore": 0.92,
     "commercialUse": true
   }
 ]

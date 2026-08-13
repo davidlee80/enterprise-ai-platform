@@ -37,6 +37,33 @@ const ICONS = [
   { name: "budget-total", left: 1860, width: 160, label: "钱袋" }
 ];
 
+/*
+ * 插画：输出到 public/images/original/ 保留原始像素与白底，
+ * 由 scripts/make-transparent.js 负责抠背景。
+ * 现有素材缺少 DAY3「运河人文线」需要的石拱桥（canal-bridge.webp 实为木栈道）。
+ */
+const ILLUSTRATION_DIRECTORY = path.join(
+  process.cwd(),
+  "public/images/original"
+);
+
+const ILLUSTRATIONS = [
+  {
+    name: "stone-bridge",
+    left: 40,
+    top: 290,
+    width: 680,
+    height: 320,
+    label: "石拱桥",
+    // 相对收紧后图像的遮罩，用背景色抹掉邻近元素蹭进来的部分：
+    // 左上角是柳枝，右上角是远山树影。
+    masks: [
+      { left: 0, top: 0, width: 228, height: 62 },
+      { left: 556, top: 0, width: 116, height: 38 }
+    ]
+  }
+];
+
 const OUTPUT_SIZE = 128;
 const PADDING = 6;
 
@@ -188,8 +215,91 @@ async function extract(icon) {
   );
 }
 
+/** 裁切插画：自动收紧 bbox，保留原始尺寸与白底。 */
+async function extractIllustration(item) {
+  const region = {
+    left: item.left,
+    top: item.top,
+    width: item.width,
+    height: item.height
+  };
+
+  const raw = await sharp(SHEET)
+    .extract(region)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const background = [raw.data[0], raw.data[1], raw.data[2]];
+
+  const box = tighten(
+    raw.data,
+    raw.info.width,
+    raw.info.height,
+    raw.info.channels,
+    background
+  );
+
+  if (!box) {
+    throw new Error(`${item.name} 粗框内没有检测到内容`);
+  }
+
+  const tight = {
+    left: region.left + Math.max(0, box.minX - PADDING),
+    top: region.top + Math.max(0, box.minY - PADDING),
+    width: Math.min(
+      region.width - Math.max(0, box.minX - PADDING),
+      box.maxX - box.minX + 1 + PADDING * 2
+    ),
+    height: Math.min(
+      region.height - Math.max(0, box.minY - PADDING),
+      box.maxY - box.minY + 1 + PADDING * 2
+    )
+  };
+
+  const file = path.join(ILLUSTRATION_DIRECTORY, `${item.name}.png`);
+
+  const masks = (item.masks ?? []).map(mask => ({
+    input: {
+      create: {
+        width: mask.width,
+        height: mask.height,
+        channels: 3,
+        background: {
+          r: background[0],
+          g: background[1],
+          b: background[2]
+        }
+      }
+    },
+    left: mask.left,
+    top: mask.top
+  }));
+
+  await sharp(SHEET)
+    .extract(tight)
+    .composite(masks)
+    .png()
+    .toFile(file);
+
+  console.log(
+    `${item.name.padEnd(20)} ${item.label.padEnd(4)} ` +
+      `${tight.width}×${tight.height}  ` +
+      `${((await fs.stat(file)).size / 1024).toFixed(1)} KB  → original/`
+  );
+}
+
 for (const icon of ICONS) {
   await extract(icon);
 }
 
-console.log(`\n已写入 ${ICONS.length} 个图标到 public/icons/`);
+await fs.mkdir(ILLUSTRATION_DIRECTORY, { recursive: true });
+
+for (const item of ILLUSTRATIONS) {
+  await extractIllustration(item);
+}
+
+console.log(
+  `\n已写入 ${ICONS.length} 个图标到 public/icons/，` +
+    `${ILLUSTRATIONS.length} 张插画到 public/images/original/`
+);

@@ -99,12 +99,13 @@ export async function selectAssets(template) {
   return result;
 }
 
+/*
+ * 返回 semantic → icon 的扁平表。
+ * semantic 带用途前缀（tip- / budget- / section-），因此 tips 与 budget
+ * 都有的 transport 不会互相覆盖，模板按 `tip-${type}` 这样取用。
+ */
 export async function selectIcons() {
   const icons = await readJson("registry/icons.json");
 
-  return Object.fromEntries(
-    icons
-      .filter(item => item.styleSet === "chinese-line")
-      .map(item => [item.semantic, item])
-  );
+  return Object.fromEntries(icons.map(item => [item.semantic, item]));
 }

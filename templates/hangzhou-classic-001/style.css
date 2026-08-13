@@ -41,8 +41,8 @@ body {
 
 .hero {
   position: relative;
-  height: 215px;
-  padding-top: 38px;
+  height: 220px;
+  padding-top: 34px;
   text-align: center;
   background-position: center;
   background-size: cover;
@@ -50,18 +50,39 @@ body {
 
 .hero h1 {
   margin: 0;
-  color: #285c36;
+  color: #245730;
   font-family: "Poster Serif", serif;
   font-size: 47px;
-  line-height: 1.25;
+  line-height: 1.24;
   letter-spacing: 2px;
+  /* 头图素材的塔身正落在文字带上，用同色光晕拉开对比。 */
+  text-shadow:
+    0 0 10px rgba(251, 252, 245, 0.9),
+    0 0 20px rgba(251, 252, 245, 0.7);
+}
+
+.subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 11px;
+}
+
+.subtitle-rule {
+  width: 74px;
+  height: 2px;
+  background: #4d793b;
+  box-shadow: 0 0 8px rgba(251, 252, 245, 0.95);
 }
 
 .subtitle {
-  margin-top: 8px;
   color: #3f6645;
-  font-size: 21px;
-  letter-spacing: 8px;
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-shadow:
+    0 0 8px rgba(251, 252, 245, 0.95),
+    0 0 16px rgba(251, 252, 245, 0.8);
 }
 
 /* ---------- 卡片栅格 ---------- */
@@ -69,44 +90,93 @@ body {
 .content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 438px 274px;
+  grid-template-rows: 468px 301px;
   gap: 10px;
-  padding: 10px 11px 12px;
+  padding: 10px 11px 15px;
 }
 
 .route-card,
 .schedule-card,
 .tips-card,
 .budget-card {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid #cad9b9;
-  border-radius: 14px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #dfe8d4;
+  border-radius: 16px;
 }
 
+/* 章节标题：深绿药丸，只包住文字，不再是整行渐变条。 */
 .section-title {
-  height: 36px;
-  padding: 7px 14px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 15px;
   color: #fff;
   background: linear-gradient(90deg, #4d793b, #6e914f);
-  font-size: 17px;
+  border-radius: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 
-.section-title.light {
-  color: #426642;
-  background: #f5f8eb;
-  border-bottom: 1px solid #dce5d3;
+/* 素材图里的章节图标是深绿实心，染白后压在药丸上。 */
+.section-icon {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
+
+/* ---------- 路线图 ---------- */
 
 .route-map {
   position: relative;
-  height: 400px;
-  background-position: center;
-  background-size: cover;
+  flex: 1;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 10px;
+  /* 简易手绘地图底：浅绿陆地 + 柔和色块，替代缺失的地图素材。 */
+  background:
+    radial-gradient(
+      58% 42% at 26% 72%,
+      rgba(186, 214, 168, 0.55) 0%,
+      rgba(186, 214, 168, 0) 100%
+    ),
+    radial-gradient(
+      52% 38% at 78% 26%,
+      rgba(196, 220, 178, 0.5) 0%,
+      rgba(196, 220, 178, 0) 100%
+    ),
+    #eef5e4;
 }
 
-/* ---------- 路线图节点 ---------- */
+/* 西湖水域：不规则圆角形状 + 文字标注。 */
+.route-map::before {
+  content: "";
+  position: absolute;
+  left: 15%;
+  top: 34%;
+  width: 44%;
+  height: 33%;
+  background: #d9edf3;
+  border-radius: 62% 38% 46% 54% / 42% 56% 44% 58%;
+  transform: rotate(-7deg);
+}
+
+.route-map::after {
+  content: "西湖";
+  position: absolute;
+  left: 26%;
+  top: 46%;
+  color: #6d97a5;
+  font-size: 14px;
+  letter-spacing: 3px;
+}
 
 .route-lines {
   position: absolute;
@@ -117,72 +187,87 @@ body {
 
 .route-node {
   position: absolute;
-  width: 96px;
+  width: 98px;
   transform: translate(-50%, -50%);
   text-align: center;
 }
 
 .route-landmark {
   display: block;
-  width: 64px;
-  height: 64px;
+  width: 66px;
+  height: 56px;
   margin: 0 auto;
   object-fit: contain;
 }
 
+/* 徽章与文字都要压在插画与地图之上，并靠白描边/光晕保证可读。 */
 .route-number {
+  position: relative;
+  z-index: 1;
   width: 26px;
   height: 26px;
-  margin: 0 auto;
-  border-radius: 50%;
+  margin: 1px auto 0;
   background: var(--day-color, #4d793b);
+  border: 2px solid #fbfcf5;
+  border-radius: 50%;
   color: #fff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  line-height: 26px;
+  line-height: 22px;
 }
 
 .route-day {
+  position: relative;
+  z-index: 1;
   margin-top: 2px;
   color: var(--day-color, #4d793b);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(251, 252, 245, 0.95);
 }
 
 .route-name {
+  position: relative;
+  z-index: 1;
   color: #33502f;
   font-size: 12px;
+  font-weight: 700;
   line-height: 1.3;
+  text-shadow: 0 0 6px rgba(251, 252, 245, 0.95);
 }
 
 /* ---------- 五天速览 ---------- */
 
 #schedule {
-  height: 400px;
-  padding: 0 10px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .day-row {
   display: flex;
+  flex: 1;
   align-items: center;
-  gap: 8px;
-  height: 80px;
+  gap: 10px;
+  padding-right: 10px;
   overflow: hidden;
-  border-bottom: 1px dashed #dfe8d4;
-}
-
-.day-row:last-child {
-  border-bottom: none;
+  background: var(--day-tint, #f5f8eb);
+  border: 1px solid var(--day-line, #dce5d3);
+  border-radius: 12px;
 }
 
 .day-index {
-  flex: 0 0 42px;
-  padding: 4px 0;
-  border-radius: 8px;
+  flex: 0 0 46px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: var(--day-color, #4d793b);
   color: #fff;
-  text-align: center;
 }
 
 .day-index small {
@@ -194,8 +279,8 @@ body {
 
 .day-index strong {
   display: block;
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 23px;
+  line-height: 1.05;
 }
 
 .day-content {
@@ -205,54 +290,59 @@ body {
 
 .day-content h3 {
   margin: 0 0 3px;
-  color: #2c4a30;
+  color: var(--day-color, #2c4a30);
   font-size: 16px;
   font-weight: 700;
 }
 
 .day-content p {
   margin: 0;
-  color: #5c7259;
+  color: #5f7459;
   font-size: 12px;
   line-height: 1.35;
 }
 
 .day-price {
-  flex: 0 0 84px;
-  padding: 5px 4px;
-  border: 1px solid var(--day-color, #4d793b);
-  border-radius: 8px;
-  background: #fcfdfa;
-  color: var(--day-color, #4d793b);
+  flex: 0 0 74px;
   text-align: center;
 }
 
 .day-price small {
   display: block;
+  color: #8a9a86;
   font-size: 10px;
 }
 
 .day-price strong {
   display: block;
-  font-size: 13px;
+  color: var(--day-color, #2c4a30);
+  font-size: 15px;
   white-space: nowrap;
 }
 
 /* ---------- 备注事项 ---------- */
 
 #tips {
-  height: 236px;
-  padding: 6px 12px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-top: 6px;
+  padding: 0 2px;
 }
 
 .tip-row {
   display: flex;
+  flex: 1;
   align-items: center;
-  gap: 9px;
-  height: 37px;
+  gap: 10px;
   color: #40573f;
   font-size: 13px;
   line-height: 1.3;
+  border-bottom: 1px dashed #e4ebda;
+}
+
+.tip-row:last-child {
+  border-bottom: none;
 }
 
 /* 图标素材自带绿色描边圆环，这里只约束尺寸，不再叠加 border。 */
@@ -280,49 +370,64 @@ body {
 /* ---------- 花销明细 ---------- */
 
 #budgetItems {
-  padding: 4px 12px 0;
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .budget-item {
   display: flex;
+  flex: 1;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  height: 43px;
-  color: #40573f;
-  font-size: 14px;
-  border-bottom: 1px dashed #e2ead8;
-}
-
-.budget-item:last-child {
-  border-bottom: none;
-}
-
-.budget-item img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
+  justify-content: center;
+  gap: 7px;
+  overflow: hidden;
+  background: #fafcf5;
+  border-radius: 10px;
 }
 
 .budget-name {
-  flex: 0 0 76px;
+  color: #40573f;
+  font-size: 13px;
   font-weight: 700;
 }
 
-.budget-item div:last-child {
-  margin-left: auto;
+.budget-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.budget-amount {
   color: #2c4a30;
+  font-size: 13px;
   font-weight: 700;
 }
 
 #budgetTotal {
   display: flex;
+  flex: 0 0 92px;
   align-items: center;
-  gap: 8px;
-  height: 56px;
-  margin: 2px 12px 0;
-  padding: 0 12px;
-  border-radius: 10px;
-  background: #f5f8eb;
+  gap: 12px;
+  margin-top: 9px;
+  padding: 0 8px;
+  border-top: 1px dashed #dce5d3;
+}
+
+.total-brand {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.total-icon {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
 }
 
 .total-label {
@@ -331,18 +436,21 @@ body {
   font-weight: 700;
 }
 
-#budgetTotal strong {
+.total-figure {
+  flex: 1;
+  text-align: center;
+}
+
+.total-figure strong {
+  display: block;
   color: #ed7617;
   font-family: "Poster Serif", serif;
-  font-size: 22px;
+  font-size: 34px;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
-#budgetTotal small {
-  max-width: 62px;
-  margin-left: auto;
+.total-figure small {
   color: #8a9a86;
-  font-size: 9px;
-  line-height: 1.2;
-  text-align: right;
+  font-size: 11px;
 }

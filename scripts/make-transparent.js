@@ -28,8 +28,19 @@ function formatSize(bytes) {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
+/** 按魔数判断类型：原始素材有 BMP（伪装成 .webp）也有裁切出的 PNG。 */
+function detectMimeType(buffer) {
+  const head = buffer.subarray(0, 4);
+
+  if (head.subarray(0, 2).toString("latin1") === "BM") return "image/bmp";
+  if (head.toString("latin1") === "RIFF") return "image/webp";
+  if (head[0] === 0x89 && head[1] === 0x50) return "image/png";
+
+  return "image/jpeg";
+}
+
 async function processImage(page, buffer) {
-  const dataUrl = `data:image/bmp;base64,${buffer.toString("base64")}`;
+  const dataUrl = `data:${detectMimeType(buffer)};base64,${buffer.toString("base64")}`;
 
   return page.evaluate(
     async ({ source, tolerance, feather, quality }) => {
@@ -160,16 +171,22 @@ const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage();
 
+  const backups = await fs.readdir(BACKUP_DIRECTORY);
+
   for (const asset of targets) {
     const fileName = path.basename(asset.url);
-    const backup = path.join(BACKUP_DIRECTORY, fileName);
+    const stem = fileName.replace(/\.[^.]+$/, "");
     const target = path.join(IMAGE_DIRECTORY, fileName);
 
-    // 优先读原始 BMP：它没有经过有损压缩，抠背景更干净。
-    const source = await fs
-      .access(backup)
-      .then(() => backup)
-      .catch(() => target);
+    // 优先读 original/ 下的原始文件：它没有经过有损压缩，抠背景更干净。
+    // 扩展名可能与 registry 里的 url 不同（BMP 伪装成 .webp，裁切产物是 .png）。
+    const backupName = backups.find(
+      name => name.replace(/\.[^.]+$/, "") === stem
+    );
+
+    const source = backupName
+      ? path.join(BACKUP_DIRECTORY, backupName)
+      : target;
 
     const original = await fs.readFile(source);
     const result = await processImage(page, original);

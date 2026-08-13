@@ -7,12 +7,31 @@
   document.getElementById("posterSubtitle").textContent =
     manifest.content.subtitle;
 
+  /** 把 day 主题色转成低透明度描边/底色，供卡片行使用。 */
+  function tint(color, alpha) {
+    const value = color.replace("#", "");
+
+    const r = parseInt(value.slice(0, 2), 16);
+    const g = parseInt(value.slice(2, 4), 16);
+    const b = parseInt(value.slice(4, 6), 16);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  function dayVariables(day) {
+    return [
+      `--day-color:${day.color}`,
+      `--day-tint:${tint(day.color, 0.08)}`,
+      `--day-line:${tint(day.color, 0.32)}`
+    ].join(";");
+  }
+
   function createRoutePath(points, width, height) {
     if (!points.length) return "";
 
     const converted = points.map(point => ({
-      x: point.x / 100 * width,
-      y: point.y / 100 * height
+      x: (point.x / 100) * width,
+      y: (point.y / 100) * height
     }));
 
     let path = `M ${converted[0].x} ${converted[0].y}`;
@@ -35,16 +54,9 @@
   function renderRoute() {
     const map = document.getElementById("routeMap");
 
-    map.style.backgroundImage =
-      `url("${manifest.assets.routeBackground.resolvedUrl}")`;
-
-    const width = 365;
-    const height = 400;
-    const path = createRoutePath(
-      manifest.route.points,
-      width,
-      height
-    );
+    const width = 346;
+    const height = 409;
+    const path = createRoutePath(manifest.route.points, width, height);
 
     map.innerHTML = `
       <svg
@@ -81,23 +93,23 @@
     `;
 
     manifest.content.itinerary.forEach(day => {
-      const asset =
-        manifest.assets[`day${day.day}`];
+      const asset = manifest.assets[`day${day.day}`];
 
       const node = document.createElement("div");
+
       node.className = "route-node";
       node.style.left = `${day.visualPosition.x}%`;
       node.style.top = `${day.visualPosition.y}%`;
-      node.style.setProperty("--day-color", day.color);
+      node.style.cssText += `;${dayVariables(day)}`;
 
       node.innerHTML = `
-        <div class="route-number">${day.day}</div>
-        <div class="route-day">DAY ${day.day}</div>
         <img
           class="route-landmark"
           src="${asset.resolvedUrl}"
           alt="${day.theme}"
         />
+        <div class="route-number">${day.day}</div>
+        <div class="route-day">DAY ${day.day}</div>
         <div class="route-name">${day.theme}</div>
       `;
 
@@ -110,10 +122,7 @@
 
     element.innerHTML = manifest.content.itinerary
       .map(day => `
-        <article
-          class="day-row"
-          style="--day-color:${day.color}"
-        >
+        <article class="day-row" style="${dayVariables(day)}">
           <div class="day-index">
             <small>DAY</small>
             <strong>${day.day}</strong>
@@ -138,7 +147,7 @@
 
     element.innerHTML = manifest.content.tips
       .map(tip => {
-        const icon = manifest.icons[tip.type];
+        const icon = manifest.icons[`tip-${tip.type}`];
 
         const mark = icon
           ? `<img
@@ -159,33 +168,41 @@
   }
 
   function renderBudget() {
-    const iconMap = {
-      ticket: manifest.icons.ticket,
-      food: manifest.icons.food,
-      transport: manifest.icons.transport,
-      other: manifest.icons.other
-    };
-
     document.getElementById("budgetItems").innerHTML =
       manifest.content.budget.items
-        .map(item => `
-          <div class="budget-item">
-            <div class="budget-name">${item.name}</div>
-            <img
-              src="${iconMap[item.type].resolvedUrl}"
-              alt="${item.name}"
-            />
-            <div>约 ¥${item.amount}</div>
-          </div>
-        `)
+        .map(item => {
+          const icon = manifest.icons[`budget-${item.type}`];
+
+          return `
+            <div class="budget-item">
+              <div class="budget-name">${item.name}</div>
+              <img
+                class="budget-icon"
+                src="${icon.resolvedUrl}"
+                alt="${item.name}"
+              />
+              <div class="budget-amount">约 ¥${item.amount}</div>
+            </div>
+          `;
+        })
         .join("");
 
+    const total = manifest.content.budget.total.toLocaleString("zh-CN");
+
     document.getElementById("budgetTotal").innerHTML = `
-      <div class="total-label">预算合计</div>
-      <strong>
-        约 ¥ ${manifest.content.budget.total.toLocaleString("zh-CN")}/人
-      </strong>
-      <small>住宿及往返交通另计</small>
+      <div class="total-brand">
+        <img
+          class="total-icon"
+          src="${manifest.icons["budget-total"].resolvedUrl}"
+          alt="预算合计"
+        />
+        <div class="total-label">预算合计</div>
+      </div>
+
+      <div class="total-figure">
+        <strong>约 ¥ ${total}/人</strong>
+        <small>住宿及往返交通另计</small>
+      </div>
     `;
   }
 
