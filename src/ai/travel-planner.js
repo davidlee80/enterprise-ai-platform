@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { assertValid } from "../validate.js";
 
 export async function generateTravelPlan(request) {
   const mode = process.env.AI_MODE || "fixture";
@@ -13,7 +14,7 @@ export async function generateTravelPlan(request) {
       "utf8"
     );
 
-    return JSON.parse(content);
+    return assertValid("travel-plan", JSON.parse(content));
   }
 
   /*
@@ -21,6 +22,7 @@ export async function generateTravelPlan(request) {
    *
    * 必须要求模型按 travel-plan.schema.json 输出，
    * 不允许模型直接返回 HTML、图片地址或图标地址。
+   * 拿到响应后同样要走 assertValid("travel-plan", ...)。
    */
   throw new Error("尚未配置远程 AI Provider");
 }

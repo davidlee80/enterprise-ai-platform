@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { assertValid } from "../src/validate.js";
+import { generateTravelPlan } from "../src/ai/travel-planner.js";
 
 const plan = JSON.parse(
   await fs.readFile(
@@ -57,4 +58,10 @@ test("itinerary[].color 非法色值时报错", async () => {
     () => assertValid("travel-plan", broken),
     /itinerary\/0\/color/
   );
+});
+
+test("generateTravelPlan 的输出满足行程契约", async () => {
+  const generated = await generateTravelPlan({ destination: "杭州" });
+
+  await assertValid("travel-plan", generated);
 });
