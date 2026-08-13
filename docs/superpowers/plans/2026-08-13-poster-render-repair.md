@@ -56,7 +56,7 @@
 
 **D3 — 不改动既有布局数值。** `hero 215px`、`grid-template-rows: 438px 274px`、`gap 10px` 全部保留（`215+10+438+10+274+12 = 959`，底部留 65px 呼吸区）。新增样式只填空缺，不重排既有版式。
 
-**D4 — 视觉严格对齐 `public/287c37369ac7166021452f488b73b138.png` 素材图。** 该图是组件雪碧图（非版式稿），明确了：`.route-number` 为 day 色实心圆 + 白字；`.day-index` 为 day 色圆角方块、上 `DAY` 小字下大号数字；`.day-price` 为浅底 + day 色描边胶囊；`#budgetTotal` 为浅底圆角卡 + 橙色 `#ed7617` 大号金额；`.tip-row` 图标为绿色描边圆形。
+**D4 — 视觉严格对齐 `public/design-sheet.png` 素材图（原名为哈希串，第二轮已重命名）。** 该图是组件雪碧图（非版式稿），明确了：`.route-number` 为 day 色实心圆 + 白字；`.day-index` 为 day 色圆角方块、上 `DAY` 小字下大号数字；`.day-price` 为浅底 + day 色描边胶囊；`#budgetTotal` 为浅底圆角卡 + 橙色 `#ed7617` 大号金额；`.tip-row` 图标为绿色描边圆形。
 
 ---
 

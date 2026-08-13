@@ -5,7 +5,7 @@ import sharp from "sharp";
 /*
  * 从设计素材总图裁切图标入库。
  *
- * public/287c37369ac7166021452f488b73b138.png 是一张 2048×2048 的组件雪碧图，
+ * public/design-sheet.png 是一张 2048×2048 的组件雪碧图，
  * 其中第四行是章节标题图标（定位钉/日历/灯泡/钱包）与彩色花销图标
  * （票/碗/公交/购物袋/钱袋）。这些图标此前从未被切分入库，
  * 导致 public/icons/ 只有一批文件名与图案错配的旧文件。
@@ -16,7 +16,7 @@ import sharp from "sharp";
 
 const SHEET = path.join(
   process.cwd(),
-  "public/287c37369ac7166021452f488b73b138.png"
+  "public/design-sheet.png"
 );
 
 const ICON_DIRECTORY = path.join(process.cwd(), "public/icons");
