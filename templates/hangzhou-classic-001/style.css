@@ -105,3 +105,235 @@ body {
   background-position: center;
   background-size: cover;
 }
+
+/* ---------- 路线图节点 ---------- */
+
+.route-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.route-node {
+  position: absolute;
+  width: 96px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.route-landmark {
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.route-number {
+  width: 26px;
+  height: 26px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--day-color, #4d793b);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 26px;
+}
+
+.route-day {
+  margin-top: 2px;
+  color: var(--day-color, #4d793b);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.route-name {
+  color: #33502f;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+/* ---------- 五天速览 ---------- */
+
+#schedule {
+  height: 400px;
+  padding: 0 10px;
+}
+
+.day-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 80px;
+  overflow: hidden;
+  border-bottom: 1px dashed #dfe8d4;
+}
+
+.day-row:last-child {
+  border-bottom: none;
+}
+
+.day-index {
+  flex: 0 0 42px;
+  padding: 4px 0;
+  border-radius: 8px;
+  background: var(--day-color, #4d793b);
+  color: #fff;
+  text-align: center;
+}
+
+.day-index small {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.day-index strong {
+  display: block;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.day-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.day-content h3 {
+  margin: 0 0 3px;
+  color: #2c4a30;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.day-content p {
+  margin: 0;
+  color: #5c7259;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.day-price {
+  flex: 0 0 84px;
+  padding: 5px 4px;
+  border: 1px solid var(--day-color, #4d793b);
+  border-radius: 8px;
+  background: #fcfdfa;
+  color: var(--day-color, #4d793b);
+  text-align: center;
+}
+
+.day-price small {
+  display: block;
+  font-size: 10px;
+}
+
+.day-price strong {
+  display: block;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* ---------- 备注事项 ---------- */
+
+#tips {
+  height: 236px;
+  padding: 6px 12px;
+}
+
+.tip-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 37px;
+  color: #40573f;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.tip-check {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid #7ba05b;
+  border-radius: 50%;
+  color: #4d793b;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 21px;
+  text-align: center;
+}
+
+/* ---------- 花销明细 ---------- */
+
+#budgetItems {
+  padding: 4px 12px 0;
+}
+
+.budget-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 43px;
+  color: #40573f;
+  font-size: 14px;
+  border-bottom: 1px dashed #e2ead8;
+}
+
+.budget-item:last-child {
+  border-bottom: none;
+}
+
+.budget-item img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.budget-name {
+  flex: 0 0 76px;
+  font-weight: 700;
+}
+
+.budget-item div:last-child {
+  margin-left: auto;
+  color: #2c4a30;
+  font-weight: 700;
+}
+
+#budgetTotal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  margin: 2px 12px 0;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: #f5f8eb;
+}
+
+.total-label {
+  color: #6b5a3a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#budgetTotal strong {
+  color: #ed7617;
+  font-family: "Poster Serif", serif;
+  font-size: 22px;
+  white-space: nowrap;
+}
+
+#budgetTotal small {
+  max-width: 62px;
+  margin-left: auto;
+  color: #8a9a86;
+  font-size: 9px;
+  line-height: 1.2;
+  text-align: right;
+}
